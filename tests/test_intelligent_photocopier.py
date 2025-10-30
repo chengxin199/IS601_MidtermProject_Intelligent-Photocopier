@@ -21,10 +21,10 @@ class TestConfig:
     def test_config_initialization(self):
         """Test config initialization."""
         config = Config()
-        assert hasattr(config, 'openai_api_key')
-        assert hasattr(config, 'model')
-        assert hasattr(config, 'max_tokens')
-        assert hasattr(config, 'temperature')
+        assert hasattr(config, "openai_api_key")
+        assert hasattr(config, "model")
+        assert hasattr(config, "max_tokens")
+        assert hasattr(config, "temperature")
 
     def test_config_defaults(self):
         """Test config default values or loaded from .env."""
@@ -36,13 +36,11 @@ class TestConfig:
 
     def test_config_environment_override(self):
         """Test environment variable override."""
-        with patch.dict(os.environ, {
-            'OPENAI_MODEL': 'gpt-4',
-            'MAX_TOKENS': '3000',
-            'TEMPERATURE': '0.5'
-        }):
+        with patch.dict(
+            os.environ, {"OPENAI_MODEL": "gpt-4", "MAX_TOKENS": "3000", "TEMPERATURE": "0.5"}
+        ):
             config = Config()
-            assert config.model == 'gpt-4'
+            assert config.model == "gpt-4"
             assert config.max_tokens == 3000
             assert config.temperature == 0.5
 
@@ -54,7 +52,7 @@ class TestConfig:
 
     def test_is_configured_with_key(self):
         """Test configuration check with API key."""
-        with patch.dict(os.environ, {'OPENAI_API_KEY': 'test-key'}):
+        with patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"}):
             config = Config()
             assert config.is_configured()
 
@@ -91,7 +89,7 @@ class TestConfig:
         # Mock environment without any API key
         with patch.dict(os.environ, {}, clear=True):
             # Mock Path.exists to return False so .env is not loaded
-            with patch('pathlib.Path.exists', return_value=False):
+            with patch("pathlib.Path.exists", return_value=False):
                 config = Config()
                 assert config.openai_api_key is None
                 # Test that missing config includes API key
@@ -116,11 +114,11 @@ class TestContentAnalyzer:
 
         result = analyzer.extract_course_info(content)
 
-        assert result['title'] == 'Test Course Title'
+        assert result["title"] == "Test Course Title"
         # Course ID format: <LETTER><NUMBER>-<slug>, accept any letter/number
-        assert 'test-course-title' in result['course_id']
-        assert isinstance(result['objectives'], list)
-        assert isinstance(result['topics'], list)
+        assert "test-course-title" in result["course_id"]
+        assert isinstance(result["objectives"], list)
+        assert isinstance(result["topics"], list)
 
     def test_extract_course_info_with_objectives(self):
         """Test extracting course info with objectives."""
@@ -135,7 +133,7 @@ class TestContentAnalyzer:
         """
         result = analyzer.extract_course_info(content)
 
-        assert len(result['objectives']) >= 3
+        assert len(result["objectives"]) >= 3
 
     def test_title_to_slug(self):
         """Test converting title to URL-friendly slug."""
@@ -178,7 +176,9 @@ class TestContentAnalyzer:
         assert title_with_brackets == "Advanced Topics"
 
         # Test pattern i==1: "A2 Title [Core]" format at start of line (line 117)
-        title_pattern_1 = analyzer._extract_title("A2 DRY Programming [Core Module]\nSome description")
+        title_pattern_1 = analyzer._extract_title(
+            "A2 DRY Programming [Core Module]\nSome description"
+        )
         assert "DRY Programming" in title_pattern_1
 
         # Test without course ID
@@ -353,6 +353,7 @@ class TestFileManager:
     def teardown_method(self):
         """Clean up test environment."""
         import shutil
+
         if Path(self.temp_dir).exists():
             shutil.rmtree(self.temp_dir)
 
@@ -364,80 +365,83 @@ class TestFileManager:
     def test_create_course(self):
         """Test creating course with content."""
         content = {
-            'README.md': '# Test Course\n\nThis is a test course.',
-            'lesson-content.md': '# Lesson Content\n\nDetailed content here.',
+            "README.md": "# Test Course\n\nThis is a test course.",
+            "lesson-content.md": "# Lesson Content\n\nDetailed content here.",
         }
 
-        course_path = self.file_manager.create_course('A2-test-course', content)
+        course_path = self.file_manager.create_course("A2-test-course", content)
 
         # Check directory created
         assert course_path.exists()
-        assert course_path.name == 'A2-test-course'
+        assert course_path.name == "A2-test-course"
 
         # Check files created
-        assert (course_path / 'README.md').exists()
-        assert (course_path / 'lesson-content.md').exists()
+        assert (course_path / "README.md").exists()
+        assert (course_path / "lesson-content.md").exists()
 
         # Check content
-        readme_content = (course_path / 'README.md').read_text()
-        assert 'Test Course' in readme_content
+        readme_content = (course_path / "README.md").read_text()
+        assert "Test Course" in readme_content
 
     def test_create_directory_structure(self):
         """Test creating directory structure."""
-        course_path = Path(self.temp_dir) / 'test-course'
+        course_path = Path(self.temp_dir) / "test-course"
         course_path.mkdir()
 
         self.file_manager._create_directory_structure(course_path)
 
         # Check required directories exist
-        assert (course_path / 'reference').exists()
-        assert (course_path / 'solutions').exists()
-        assert (course_path / 'tests').exists()
+        assert (course_path / "reference").exists()
+        assert (course_path / "solutions").exists()
+        assert (course_path / "tests").exists()
 
     def test_create_content_files(self):
         """Test creating content files."""
-        course_path = Path(self.temp_dir) / 'test-course'
+        course_path = Path(self.temp_dir) / "test-course"
         course_path.mkdir()
 
         content = {
-            'README.md': '# Test Course',
-            'reference/quick_reference.md': '# Quick Reference'
+            "README.md": "# Test Course",
+            "reference/quick_reference.md": "# Quick Reference",
         }
 
         self.file_manager._create_content_files(course_path, content)
 
         # Check files created
-        assert (course_path / 'README.md').exists()
-        assert (course_path / 'reference' / 'quick_reference.md').exists()
+        assert (course_path / "README.md").exists()
+        assert (course_path / "reference" / "quick_reference.md").exists()
 
     def test_create_reference_files(self):
         """Test creating reference files in course."""
-        course_path = Path(self.temp_dir) / 'test-course'
+        course_path = Path(self.temp_dir) / "test-course"
         course_path.mkdir()
-        (course_path / 'reference').mkdir()
+        (course_path / "reference").mkdir()
 
         self.file_manager._create_reference_files(course_path)
 
         # Check that reference files are created (with underscores, not hyphens)
-        ref_dir = course_path / 'reference'
-        assert (ref_dir / 'exercise_instructions.md').exists()
-        assert (ref_dir / 'quick_reference.md').exists()
-        assert (ref_dir / 'best_practices.md').exists()
+        ref_dir = course_path / "reference"
+        assert (ref_dir / "exercise_instructions.md").exists()
+        assert (ref_dir / "quick_reference.md").exists()
+        assert (ref_dir / "best_practices.md").exists()
 
         # Check content
-        exercise_content = (ref_dir / 'exercise_instructions.md').read_text()
-        assert 'Exercise Instructions' in exercise_content
+        exercise_content = (ref_dir / "exercise_instructions.md").read_text()
+        assert "Exercise Instructions" in exercise_content
+
+
 class TestTemplateExtractor:
     """Test template extraction functionality."""
 
     def setup_method(self):
         """Set up test environment with mock template."""
         self.temp_dir = tempfile.mkdtemp()
-        self.template_path = Path(self.temp_dir) / 'template'
+        self.template_path = Path(self.temp_dir) / "template"
         self.template_path.mkdir()
 
         # Create mock template files
-        (self.template_path / 'README.md').write_text("""
+        (self.template_path / "README.md").write_text(
+            """
 # A1: Template Course
 
 ## Learning Objectives
@@ -447,9 +451,11 @@ class TestTemplateExtractor:
 ## Course Structure
 - Introduction
 - Practice
-""")
+"""
+        )
 
-        (self.template_path / 'lesson-content.md').write_text("""
+        (self.template_path / "lesson-content.md").write_text(
+            """
 # Lesson Content
 
 This is the main lesson content.
@@ -458,17 +464,19 @@ This is the main lesson content.
 def example():
     return "Hello World"
 ```
-""")
+"""
+        )
 
         # Create subdirectories
-        (self.template_path / 'reference').mkdir()
-        (self.template_path / 'reference' / 'quick_reference.md').write_text("# Quick Reference")
+        (self.template_path / "reference").mkdir()
+        (self.template_path / "reference" / "quick_reference.md").write_text("# Quick Reference")
 
         self.extractor = TemplateExtractor(self.template_path)
 
     def teardown_method(self):
         """Clean up test environment."""
         import shutil
+
         if Path(self.temp_dir).exists():
             shutil.rmtree(self.temp_dir)
 
@@ -480,25 +488,25 @@ def example():
         """Test extracting template structure."""
         structure = self.extractor.extract_structure()
 
-        assert 'course_id' in structure
-        assert 'files' in structure
-        assert 'content_patterns' in structure
-        assert 'formatting_style' in structure
+        assert "course_id" in structure
+        assert "files" in structure
+        assert "content_patterns" in structure
+        assert "formatting_style" in structure
 
     def test_extract_file_structure(self):
         """Test extracting file structure."""
         structure = self.extractor._extract_file_structure()
 
-        assert 'directories' in structure
-        assert 'files' in structure
-        assert 'reference' in structure['directories']
-        assert 'README.md' in structure['files']
+        assert "directories" in structure
+        assert "files" in structure
+        assert "reference" in structure["directories"]
+        assert "README.md" in structure["files"]
 
     def test_infer_file_purpose(self):
         """Test inferring file purposes."""
-        assert self.extractor._infer_file_purpose('README.md') == 'course_overview'
-        assert self.extractor._infer_file_purpose('lesson-content.md') == 'main_lesson'
-        assert self.extractor._infer_file_purpose('test_something.py') == 'test_file'
+        assert self.extractor._infer_file_purpose("README.md") == "course_overview"
+        assert self.extractor._infer_file_purpose("lesson-content.md") == "main_lesson"
+        assert self.extractor._infer_file_purpose("test_something.py") == "test_file"
 
     def test_analyze_content_structure(self):
         """Test analyzing content structure."""
@@ -518,22 +526,22 @@ def test():
 """
         structure = self.extractor._analyze_content_structure(content)
 
-        assert structure['header_count'] > 0
-        assert structure['code_block_count'] > 0
-        assert structure['bullet_list_items'] > 0
+        assert structure["header_count"] > 0
+        assert structure["code_block_count"] > 0
+        assert structure["bullet_list_items"] > 0
 
     def test_extract_emoji_patterns(self):
         """Test extracting emoji patterns."""
         content = "🎯 Learning objectives 📚 Course materials 🚀 Get started"
         emojis = self.extractor._extract_emoji_patterns(content)
 
-        assert '🎯' in emojis
-        assert '📚' in emojis
-        assert '🚀' in emojis
+        assert "🎯" in emojis
+        assert "📚" in emojis
+        assert "🚀" in emojis
 
     def test_template_not_found(self):
         """Test handling missing template."""
-        non_existent_path = Path(self.temp_dir) / 'nonexistent'
+        non_existent_path = Path(self.temp_dir) / "nonexistent"
         extractor = TemplateExtractor(non_existent_path)
 
         with pytest.raises(FileNotFoundError):
@@ -542,7 +550,7 @@ def test():
     def test_extract_formatting_style_no_readme(self):
         """Test formatting style extraction when README doesn't exist."""
         # Create empty template directory
-        empty_template = Path(self.temp_dir) / 'empty_template'
+        empty_template = Path(self.temp_dir) / "empty_template"
         empty_template.mkdir()
 
         extractor = TemplateExtractor(empty_template)
@@ -562,6 +570,7 @@ class TestIntegration:
     def teardown_method(self):
         """Clean up integration test environment."""
         import shutil
+
         if Path(self.temp_dir).exists():
             shutil.rmtree(self.temp_dir)
 
@@ -574,27 +583,24 @@ class TestIntegration:
 
         # Create files
         file_manager = FileManager(Path(self.temp_dir))
-        mock_content = {
-            'README.md': '# Test Course',
-            'lesson-content.md': 'Content here'
-        }
+        mock_content = {"README.md": "# Test Course", "lesson-content.md": "Content here"}
 
-        course_path = file_manager.create_course('A2-test-integration-course', mock_content)
+        course_path = file_manager.create_course("A2-test-integration-course", mock_content)
 
         # Verify results
         assert course_path.exists()
-        assert (course_path / 'README.md').exists()
-        assert course_info['title'] == 'Test Integration Course'
+        assert (course_path / "README.md").exists()
+        assert course_info["title"] == "Test Integration Course"
 
-    @patch('src.intelligent_photocopier.config.config')
+    @patch("src.intelligent_photocopier.config.config")
     def test_config_integration(self, mock_config):
         """Test configuration integration."""
-        mock_config.openai_api_key = 'test-key'
-        mock_config.model = 'gpt-4o-mini'
+        mock_config.openai_api_key = "test-key"
+        mock_config.model = "gpt-4o-mini"
 
         # Config should be accessible
-        assert mock_config.openai_api_key == 'test-key'
-        assert mock_config.model == 'gpt-4o-mini'
+        assert mock_config.openai_api_key == "test-key"
+        assert mock_config.model == "gpt-4o-mini"
 
     def test_file_manager_update_main_readme(self):
         """Test file manager's update_main_readme method (line 223)."""
@@ -602,16 +608,17 @@ class TestIntegration:
         try:
             file_manager = FileManager(Path(temp_dir))
             # This method is a TODO placeholder - just call it to cover the line
-            file_manager.update_main_readme('A2', 'Test Course')
+            file_manager.update_main_readme("A2", "Test Course")
             # Should not raise any exception
         finally:
             import shutil
+
             shutil.rmtree(temp_dir)
 
     def test_template_extractor_navigation_structure(self):
         """Test template extractor's navigation structure (lines 101)."""
         temp_dir = tempfile.mkdtemp()
-        template_path = Path(temp_dir) / 'template'
+        template_path = Path(temp_dir) / "template"
         template_path.mkdir()
 
         # Test WITHOUT README to trigger line 101 (return {})
@@ -622,11 +629,12 @@ class TestIntegration:
             assert nav_structure == {}
         finally:
             import shutil
+
             shutil.rmtree(temp_dir)
 
         # Test WITH README for normal path
         temp_dir2 = tempfile.mkdtemp()
-        template_path2 = Path(temp_dir2) / 'template'
+        template_path2 = Path(temp_dir2) / "template"
         template_path2.mkdir()
 
         # Create README with internal links
@@ -638,37 +646,39 @@ class TestIntegration:
 ## Section 1
 ## Section 2
 """
-        (template_path2 / 'README.md').write_text(readme_content)
+        (template_path2 / "README.md").write_text(readme_content)
 
         try:
             extractor = TemplateExtractor(template_path2)
             structure = extractor.extract_structure()
 
             # Should have extracted navigation structure
-            assert 'content_patterns' in structure
+            assert "content_patterns" in structure
         finally:
             import shutil
+
             shutil.rmtree(temp_dir2)
 
     def test_template_extractor_file_purpose(self):
         """Test template extractor's file purpose detection (line 142)."""
         temp_dir = tempfile.mkdtemp()
-        template_path = Path(temp_dir) / 'template'
+        template_path = Path(temp_dir) / "template"
         template_path.mkdir()
 
         # Create various file types
-        (template_path / 'README.md').write_text('# README')
-        (template_path / 'lesson-content.md').write_text('# Lesson')
-        (template_path / 'unknown_file.md').write_text('# Unknown')
+        (template_path / "README.md").write_text("# README")
+        (template_path / "lesson-content.md").write_text("# Lesson")
+        (template_path / "unknown_file.md").write_text("# Unknown")
 
         try:
             extractor = TemplateExtractor(template_path)
             # Call _infer_file_purpose to cover line 142 (correct method name)
-            purpose_unknown = extractor._infer_file_purpose('some_random_file.txt')
-            assert purpose_unknown == 'unknown'
+            purpose_unknown = extractor._infer_file_purpose("some_random_file.txt")
+            assert purpose_unknown == "unknown"
 
-            purpose_readme = extractor._infer_file_purpose('README.md')
-            assert purpose_readme == 'course_overview'  # Correct expected value
+            purpose_readme = extractor._infer_file_purpose("README.md")
+            assert purpose_readme == "course_overview"  # Correct expected value
         finally:
             import shutil
+
             shutil.rmtree(temp_dir)

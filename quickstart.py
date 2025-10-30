@@ -42,8 +42,9 @@ def check_setup():
 
         # Offer to create .env file
         create_env = input("Create .env file from template? (Y/n): ").lower().strip()
-        if create_env in ['', 'y', 'yes']:
+        if create_env in ["", "y", "yes"]:
             import shutil
+
             shutil.copy(project_root / ".env.example", env_file)
             print(f"✅ Created {env_file}")
             print("📝 Please edit .env and add your OpenAI API key")
@@ -86,25 +87,32 @@ def run_option(choice):
     if choice == "1":
         print("Running API test...")
         from src.intelligent_photocopier.test_api import main as test_main
+
         test_main()
 
     elif choice == "2":
         print("Running demo...")
         from src.intelligent_photocopier.demo import demo_course_generation
+
         demo_course_generation()
 
     elif choice == "3":
         print("Starting interactive mode...")
         from src.intelligent_photocopier.main import IntelligentPhotocopier
+
         photocopier = IntelligentPhotocopier(str(project_root))
         photocopier.run_interactive()
 
     elif choice == "4":
         print("📖 Documentation:")
         print()
-        print("🔗 Project Repository: https://github.com/chengxin199/IS601_MidtermProject_Intelligent-Photocopier")
+        print(
+            "🔗 Project Repository: https://github.com/chengxin199/IS601_MidtermProject_Intelligent-Photocopier"
+        )
         print("📄 README: Check the README.md file for detailed instructions")
-        print("📚 Course Template: See Lessons/A1-Defensive-Programming/ for the template structure")
+        print(
+            "📚 Course Template: See Lessons/A1-Defensive-Programming/ for the template structure"
+        )
         print("⚙️  Configuration: Check .env.example for configuration options")
         print()
 
@@ -138,7 +146,7 @@ def main():
 
         print()
         continue_prompt = input("Press Enter to continue or 'q' to quit: ").strip().lower()
-        if continue_prompt == 'q':
+        if continue_prompt == "q":
             print("👋 Goodbye!")
             break
         print()

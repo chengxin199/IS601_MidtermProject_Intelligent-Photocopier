@@ -45,10 +45,15 @@ exclude = [
 ]
 extend-ignore = [
   "E203",  # Black compatibility (whitespace before :)
-  "W503"   # Line-break before binary operator (Black-compatible style)
+  "W503",  # Line-break before binary operator (Black-compatible style)
 ]
 per-file-ignores = [
   "__init__.py:F401",  # allow package re-exports
+  "src/intelligent_photocopier/course_generator.py:E501",  # Long AI prompt strings
+  "src/intelligent_photocopier/demo.py:E501",  # Long strings in demo
+  "src/intelligent_photocopier/file_manager.py:E501",  # Long strings
+  "quickstart.py:E501",  # Long strings
+  "tests/test_*.py:E501",  # Long strings in tests
 ]
 # Plugins installed (bugbear/comprehensions) will contribute additional checks automatically.
 
@@ -77,6 +82,7 @@ disable = [
   "C0114",  # missing-module-docstring
   "C0115",  # missing-class-docstring
   "C0116",  # missing-function-docstring
+  "C0301",  # line-too-long (handled by Black/flake8)
   "R0903",  # too-few-public-methods
   "R0801",  # duplicate-code (not useful in tiny projects)
 ]

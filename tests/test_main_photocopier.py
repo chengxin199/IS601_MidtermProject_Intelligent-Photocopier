@@ -13,14 +13,14 @@ from src.intelligent_photocopier.main import IntelligentPhotocopier
 def create_complete_course_info(**overrides):
     """Create a complete course_info dict with all required fields."""
     default_info = {
-        'title': 'Test Course',
-        'course_id': 'A2',
-        'objectives': ['Learn basics'],
-        'description': 'Test description',
-        'duration': '2 hours',
-        'level': 'Beginner',
-        'topics': ['Topic 1'],
-        'prerequisites': ['Basic knowledge']
+        "title": "Test Course",
+        "course_id": "A2",
+        "objectives": ["Learn basics"],
+        "description": "Test description",
+        "duration": "2 hours",
+        "level": "Beginner",
+        "topics": ["Topic 1"],
+        "prerequisites": ["Basic knowledge"],
     }
     default_info.update(overrides)
     return default_info
@@ -37,6 +37,7 @@ class TestIntelligentPhotocopier:
     def teardown_method(self):
         """Clean up test environment."""
         import shutil
+
         if Path(self.temp_dir).exists():
             shutil.rmtree(self.temp_dir)
 
@@ -50,14 +51,14 @@ class TestIntelligentPhotocopier:
         photocopier = IntelligentPhotocopier(str(self.temp_dir))
         assert photocopier.base_path == Path(self.temp_dir)
 
-    @patch('src.intelligent_photocopier.main.TemplateExtractor')
+    @patch("src.intelligent_photocopier.main.TemplateExtractor")
     def test_generate_course_success(self, mock_template_extractor):
         """Test successful course generation."""
         # Setup template extractor mock
         mock_extractor = Mock()
         mock_extractor.extract_structure.return_value = {
-            'files': ['README.md', 'lesson-content.md'],
-            'content_patterns': {}
+            "files": ["README.md", "lesson-content.md"],
+            "content_patterns": {},
         }
         mock_template_extractor.return_value = mock_extractor
 
@@ -68,14 +69,17 @@ class TestIntelligentPhotocopier:
         photocopier.analyzer.extract_course_info = Mock(return_value=create_complete_course_info())
 
         # Mock the generator (correct attribute name)
-        photocopier.course_generator.generate_course_content = Mock(return_value={
-            'README.md': '# Test Course',
-            'lesson-content.md': '# Lesson Content'
-        })
+        photocopier.course_generator.generate_course_content = Mock(
+            return_value={"README.md": "# Test Course", "lesson-content.md": "# Lesson Content"}
+        )
 
         # Mock the file manager
-        photocopier.file_manager.create_course = Mock(return_value=Path(self.temp_dir) / "A2-test-course")
-        self.photocopier.file_manager.create_course = Mock(return_value=Path(self.temp_dir) / "A2-test-course")
+        photocopier.file_manager.create_course = Mock(
+            return_value=Path(self.temp_dir) / "A2-test-course"
+        )
+        self.photocopier.file_manager.create_course = Mock(
+            return_value=Path(self.temp_dir) / "A2-test-course"
+        )
 
         # Test course generation directly (skip interactive input)
         test_content = "Test course about programming"
@@ -89,114 +93,124 @@ class TestIntelligentPhotocopier:
         photocopier.course_generator.generate_course_content.assert_called()
         photocopier.file_manager.create_course.assert_called()
 
-    @patch('src.intelligent_photocopier.main.TemplateExtractor')
+    @patch("src.intelligent_photocopier.main.TemplateExtractor")
     def test_generate_course_analyzer_failure(self, mock_template_extractor):
         """Test course generation when analyzer fails."""
         # Setup template extractor mock
         mock_extractor = Mock()
-        mock_extractor.extract_structure.return_value = {'files': []}
+        mock_extractor.extract_structure.return_value = {"files": []}
         mock_template_extractor.return_value = mock_extractor
 
         # Mock analyzer failure
-        self.photocopier.analyzer.extract_course_info = Mock(side_effect=Exception("Analysis failed"))
+        self.photocopier.analyzer.extract_course_info = Mock(
+            side_effect=Exception("Analysis failed")
+        )
 
         test_content = "Test course"
 
-        with patch('builtins.print'):
+        with patch("builtins.print"):
             result = self.photocopier.generate_course(test_content)
 
         # Should handle error gracefully
         assert result is False
         self.photocopier.analyzer.extract_course_info.assert_called()
 
-    @patch('src.intelligent_photocopier.main.TemplateExtractor')
+    @patch("src.intelligent_photocopier.main.TemplateExtractor")
     def test_generate_course_generator_failure(self, mock_template_extractor):
         """Test course generation when generator fails."""
         # Setup template extractor mock
         mock_extractor = Mock()
-        mock_extractor.extract_structure.return_value = {'files': []}
+        mock_extractor.extract_structure.return_value = {"files": []}
         mock_template_extractor.return_value = mock_extractor
 
         # Mock analyzer success
-        self.photocopier.analyzer.extract_course_info = Mock(return_value=create_complete_course_info())
+        self.photocopier.analyzer.extract_course_info = Mock(
+            return_value=create_complete_course_info()
+        )
 
         # Mock template extractor instance
-        self.photocopier.template_extractor.extract_structure = Mock(return_value={'files': []})
+        self.photocopier.template_extractor.extract_structure = Mock(return_value={"files": []})
 
         # Mock generator failure (correct attribute name)
-        self.photocopier.course_generator.generate_course_content = Mock(side_effect=Exception("Generation failed"))
+        self.photocopier.course_generator.generate_course_content = Mock(
+            side_effect=Exception("Generation failed")
+        )
 
         test_content = "Test course"
 
-        with patch('builtins.print'):
+        with patch("builtins.print"):
             result = self.photocopier.generate_course(test_content)
 
         # Should handle error gracefully
         assert result is False
         self.photocopier.course_generator.generate_course_content.assert_called()
 
-    @patch('src.intelligent_photocopier.main.TemplateExtractor')
+    @patch("src.intelligent_photocopier.main.TemplateExtractor")
     def test_generate_course_file_manager_failure(self, mock_template_extractor):
         """Test course generation when file manager fails."""
         # Setup template extractor mock
         mock_extractor = Mock()
-        mock_extractor.extract_structure.return_value = {'files': []}
+        mock_extractor.extract_structure.return_value = {"files": []}
         mock_template_extractor.return_value = mock_extractor
 
         # Mock analyzer success
-        self.photocopier.analyzer.extract_course_info = Mock(return_value=create_complete_course_info())
+        self.photocopier.analyzer.extract_course_info = Mock(
+            return_value=create_complete_course_info()
+        )
 
         # Mock template extractor instance
-        self.photocopier.template_extractor.extract_structure = Mock(return_value={'files': []})
+        self.photocopier.template_extractor.extract_structure = Mock(return_value={"files": []})
 
         # Mock generator success (correct attribute name)
-        self.photocopier.course_generator.generate_course_content = Mock(return_value={
-            'README.md': '# Test'
-        })
+        self.photocopier.course_generator.generate_course_content = Mock(
+            return_value={"README.md": "# Test"}
+        )
 
         # Mock file manager failure
-        self.photocopier.file_manager.create_course = Mock(side_effect=Exception("File creation failed"))
+        self.photocopier.file_manager.create_course = Mock(
+            side_effect=Exception("File creation failed")
+        )
 
         test_content = "Test course"
 
-        with patch('builtins.print'):
+        with patch("builtins.print"):
             result = self.photocopier.generate_course(test_content)
 
         # Should handle error gracefully
         assert result is False
         self.photocopier.file_manager.create_course.assert_called()
 
-    @patch('src.intelligent_photocopier.main.TemplateExtractor')
+    @patch("src.intelligent_photocopier.main.TemplateExtractor")
     def test_course_id_generation(self, mock_template_extractor):
         """Test automatic course ID generation."""
         # Setup template extractor mock
         mock_extractor = Mock()
-        mock_extractor.extract_structure.return_value = {'files': []}
+        mock_extractor.extract_structure.return_value = {"files": []}
         mock_template_extractor.return_value = mock_extractor
 
         # Mock analyzer to return info with course_id
-        mock_course_info = create_complete_course_info(
-            course_id='B1'  # Custom course ID
-        )
+        mock_course_info = create_complete_course_info(course_id="B1")  # Custom course ID
         self.photocopier.analyzer.extract_course_info = Mock(return_value=mock_course_info)
 
         # Mock template extractor instance
-        self.photocopier.template_extractor.extract_structure = Mock(return_value={'files': []})
+        self.photocopier.template_extractor.extract_structure = Mock(return_value={"files": []})
 
         # Mock other components (correct attribute names)
-        self.photocopier.course_generator.generate_course_content = Mock(return_value={'README.md': '# Test'})
+        self.photocopier.course_generator.generate_course_content = Mock(
+            return_value={"README.md": "# Test"}
+        )
         self.photocopier.file_manager.create_course = Mock(return_value=Path(self.temp_dir))
 
         test_content = "Test course"
 
-        with patch('builtins.print'):
+        with patch("builtins.print"):
             result = self.photocopier.generate_course(test_content)
 
         # Verify course was created with the generated ID
         assert result is True
         call_args = self.photocopier.file_manager.create_course.call_args
         created_course_id = call_args[0][0]  # First argument
-        assert 'B1' in created_course_id
+        assert "B1" in created_course_id
 
     def test_lessons_path_creation(self):
         """Test that lessons path is created if it doesn't exist."""
@@ -210,57 +224,65 @@ class TestIntelligentPhotocopier:
 
         finally:
             import shutil
+
             if Path(new_temp_dir).exists():
                 shutil.rmtree(new_temp_dir)
 
-    @patch('src.intelligent_photocopier.main.TemplateExtractor')
+    @patch("src.intelligent_photocopier.main.TemplateExtractor")
     def test_course_slug_generation(self, mock_template_extractor):
         """Test course slug generation for directory naming."""
         # Setup template extractor mock
         mock_extractor = Mock()
-        mock_extractor.extract_structure.return_value = {'files': []}
+        mock_extractor.extract_structure.return_value = {"files": []}
         mock_template_extractor.return_value = mock_extractor
 
         # Mock analyzer with specific title
-        self.photocopier.analyzer.extract_course_info = Mock(return_value=create_complete_course_info(
-            title='Advanced Python: Best Practices & Patterns',
-            course_id='B2'
-        ))
+        self.photocopier.analyzer.extract_course_info = Mock(
+            return_value=create_complete_course_info(
+                title="Advanced Python: Best Practices & Patterns", course_id="B2"
+            )
+        )
 
         # Mock template extractor instance
-        self.photocopier.template_extractor.extract_structure = Mock(return_value={'files': []})
+        self.photocopier.template_extractor.extract_structure = Mock(return_value={"files": []})
 
         # Mock other components (correct attribute names)
-        self.photocopier.course_generator.generate_course_content = Mock(return_value={'README.md': '# Test'})
+        self.photocopier.course_generator.generate_course_content = Mock(
+            return_value={"README.md": "# Test"}
+        )
         self.photocopier.file_manager.create_course = Mock(return_value=Path(self.temp_dir))
 
         test_content = "Advanced course"
 
-        with patch('builtins.print'):
+        with patch("builtins.print"):
             result = self.photocopier.generate_course(test_content)
 
         # Verify slugified course ID was used
         assert result is True
         call_args = self.photocopier.file_manager.create_course.call_args
         created_course_id = call_args[0][0]  # First argument
-        assert 'B2' in created_course_id
+        assert "B2" in created_course_id
 
-    @patch('builtins.print')
-    @patch('src.intelligent_photocopier.main.TemplateExtractor')
+    @patch("builtins.print")
+    @patch("src.intelligent_photocopier.main.TemplateExtractor")
     def test_success_message_output(self, mock_template_extractor, mock_print):
         """Test that success messages are printed."""
         # Setup mocks for successful generation
         mock_extractor = Mock()
-        mock_extractor.extract_structure.return_value = {'files': []}
+        mock_extractor.extract_structure.return_value = {"files": []}
         mock_template_extractor.return_value = mock_extractor
 
-        self.photocopier.analyzer.extract_course_info = Mock(return_value=create_complete_course_info())
+        self.photocopier.analyzer.extract_course_info = Mock(
+            return_value=create_complete_course_info()
+        )
 
         # Mock template extractor instance
-        self.photocopier.template_extractor.extract_structure = Mock(return_value={'files': []})
+        self.photocopier.template_extractor.extract_structure = Mock(return_value={"files": []})
 
         # Mock successful generation (correct attribute names)
-        self.photocopier.course_generator.generate_course_content = Mock(return_value={'README.md': '# Test'})
+        self.photocopier.course_generator.generate_course_content = Mock(
+            return_value={"README.md": "# Test"}
+        )
 
         course_path = Path(self.temp_dir) / "A2-test-course"
         self.photocopier.file_manager.create_course = Mock(return_value=course_path)
@@ -278,10 +300,10 @@ class TestIntelligentPhotocopier:
         photocopier = IntelligentPhotocopier(self.temp_dir)
 
         # Verify all components exist (correct attribute names)
-        assert hasattr(photocopier, 'analyzer')
-        assert hasattr(photocopier, 'template_extractor')
-        assert hasattr(photocopier, 'course_generator')
-        assert hasattr(photocopier, 'file_manager')
+        assert hasattr(photocopier, "analyzer")
+        assert hasattr(photocopier, "template_extractor")
+        assert hasattr(photocopier, "course_generator")
+        assert hasattr(photocopier, "file_manager")
 
     def test_path_handling(self):
         """Test proper path handling for different input types."""
@@ -303,169 +325,171 @@ class TestIntelligentPhotocopier:
         finally:
             os.chdir(original_cwd)
 
-    @patch('src.intelligent_photocopier.config.config.is_configured')
+    @patch("src.intelligent_photocopier.config.config.is_configured")
     def test_configuration_check_interactive(self, mock_is_configured):
         """Test that configuration is checked during run_interactive."""
         mock_is_configured.return_value = False
 
         # Mock the input calls that would happen in run_interactive
-        with patch('builtins.input', side_effect=['n']):  # User says no to continue
-            with patch('builtins.print'):
+        with patch("builtins.input", side_effect=["n"]):  # User says no to continue
+            with patch("builtins.print"):
                 result = self.photocopier.run_interactive()
 
         # Should return False when user doesn't want to continue
         assert result is False
 
-    @patch('src.intelligent_photocopier.config.config.is_configured')
-    @patch('src.intelligent_photocopier.main.TemplateExtractor')
+    @patch("src.intelligent_photocopier.config.config.is_configured")
+    @patch("src.intelligent_photocopier.main.TemplateExtractor")
     def test_run_interactive_success(self, mock_template_extractor, mock_is_configured):
         """Test successful run_interactive flow."""
         mock_is_configured.return_value = True
 
         # Setup template extractor mock
         mock_extractor = Mock()
-        mock_extractor.extract_structure.return_value = {'files': []}
+        mock_extractor.extract_structure.return_value = {"files": []}
         mock_template_extractor.return_value = mock_extractor
 
         # Mock all components
-        self.photocopier.analyzer.extract_course_info = Mock(return_value=create_complete_course_info())
-        self.photocopier.template_extractor.extract_structure = Mock(return_value={'files': []})
-        self.photocopier.course_generator.generate_course_content = Mock(return_value={'README.md': '# Test'})
+        self.photocopier.analyzer.extract_course_info = Mock(
+            return_value=create_complete_course_info()
+        )
+        self.photocopier.template_extractor.extract_structure = Mock(return_value={"files": []})
+        self.photocopier.course_generator.generate_course_content = Mock(
+            return_value={"README.md": "# Test"}
+        )
         self.photocopier.file_manager.create_course = Mock(return_value=Path(self.temp_dir))
 
         # Mock input to provide content and end signal
-        input_sequence = [
-            'Test course content',
-            'More content',
-            'END'  # Signal to end input
-        ]
+        input_sequence = ["Test course content", "More content", "END"]  # Signal to end input
 
-        with patch('builtins.input', side_effect=input_sequence):
-            with patch('builtins.print'):
+        with patch("builtins.input", side_effect=input_sequence):
+            with patch("builtins.print"):
                 result = self.photocopier.run_interactive()
 
         # Should succeed
         assert result is True
 
-    @patch('src.intelligent_photocopier.config.config.is_configured')
-    @patch('src.intelligent_photocopier.config.config.create_sample_env_file')
+    @patch("src.intelligent_photocopier.config.config.is_configured")
+    @patch("src.intelligent_photocopier.config.config.create_sample_env_file")
     def test_run_interactive_with_config_placeholder(self, mock_create_sample, mock_is_configured):
         """Test run_interactive when user chooses to continue with placeholder."""
         mock_is_configured.return_value = False
-        mock_create_sample.return_value = Path('.env.example')
+        mock_create_sample.return_value = Path(".env.example")
 
         # Mock input: 'y' to continue with placeholder, then provide content
-        input_sequence = [
-            'y',  # Continue with placeholder
-            'Test course',
-            'END'  # End input
-        ]
+        input_sequence = ["y", "Test course", "END"]  # Continue with placeholder  # End input
 
         # Mock the generate_course to succeed
-        with patch.object(self.photocopier, 'generate_course', return_value=True):
-            with patch('builtins.input', side_effect=input_sequence):
-                with patch('builtins.print'):
+        with patch.object(self.photocopier, "generate_course", return_value=True):
+            with patch("builtins.input", side_effect=input_sequence):
+                with patch("builtins.print"):
                     result = self.photocopier.run_interactive()
 
         assert result is True
         mock_create_sample.assert_called_once()
 
-    @patch('src.intelligent_photocopier.config.config.is_configured')
+    @patch("src.intelligent_photocopier.config.config.is_configured")
     def test_run_interactive_empty_content(self, mock_is_configured):
         """Test run_interactive with empty content."""
         mock_is_configured.return_value = True
 
         # Mock input to provide empty content (immediate END)
-        with patch('builtins.input', return_value='END'):
-            with patch('builtins.print'):
+        with patch("builtins.input", return_value="END"):
+            with patch("builtins.print"):
                 result = self.photocopier.run_interactive()
 
         # Should return False when no content provided
         assert result is False
 
-    @patch('src.intelligent_photocopier.config.config.is_configured')
+    @patch("src.intelligent_photocopier.config.config.is_configured")
     def test_run_interactive_keyboard_interrupt(self, mock_is_configured):
         """Test run_interactive handles KeyboardInterrupt."""
         mock_is_configured.return_value = True
 
         # Mock input to raise KeyboardInterrupt
-        with patch('builtins.input', side_effect=KeyboardInterrupt):
-            with patch('builtins.print'):
+        with patch("builtins.input", side_effect=KeyboardInterrupt):
+            with patch("builtins.print"):
                 result = self.photocopier.run_interactive()
 
         # Should return False when interrupted
         assert result is False
 
-    @patch('src.intelligent_photocopier.config.config.is_configured')
-    @patch('src.intelligent_photocopier.main.TemplateExtractor')
+    @patch("src.intelligent_photocopier.config.config.is_configured")
+    @patch("src.intelligent_photocopier.main.TemplateExtractor")
     def test_run_interactive_eof_signal(self, mock_template_extractor, mock_is_configured):
         """Test run_interactive handles EOF (Ctrl+D) properly."""
         mock_is_configured.return_value = True
 
         # Setup template extractor mock
         mock_extractor = Mock()
-        mock_extractor.extract_structure.return_value = {'files': []}
+        mock_extractor.extract_structure.return_value = {"files": []}
         mock_template_extractor.return_value = mock_extractor
 
         # Mock all components for successful generation
-        self.photocopier.analyzer.extract_course_info = Mock(return_value=create_complete_course_info())
-        self.photocopier.template_extractor.extract_structure = Mock(return_value={'files': []})
-        self.photocopier.course_generator.generate_course_content = Mock(return_value={'README.md': '# Test'})
+        self.photocopier.analyzer.extract_course_info = Mock(
+            return_value=create_complete_course_info()
+        )
+        self.photocopier.template_extractor.extract_structure = Mock(return_value={"files": []})
+        self.photocopier.course_generator.generate_course_content = Mock(
+            return_value={"README.md": "# Test"}
+        )
         self.photocopier.file_manager.create_course = Mock(return_value=Path(self.temp_dir))
 
         # Mock input to raise EOFError (simulating Ctrl+D)
-        with patch('builtins.input', side_effect=['Line 1', 'Line 2', EOFError]):
-            with patch('builtins.print'):
+        with patch("builtins.input", side_effect=["Line 1", "Line 2", EOFError]):
+            with patch("builtins.print"):
                 result = self.photocopier.run_interactive()
 
         # Should succeed
         assert result is True
 
-    @patch('src.intelligent_photocopier.config.config.is_configured')
-    @patch('src.intelligent_photocopier.config.config.get_missing_config')
-    @patch('src.intelligent_photocopier.config.config.create_sample_env_file')
-    def test_run_interactive_config_missing_items(self, mock_create_sample, mock_get_missing, mock_is_configured):
+    @patch("src.intelligent_photocopier.config.config.is_configured")
+    @patch("src.intelligent_photocopier.config.config.get_missing_config")
+    @patch("src.intelligent_photocopier.config.config.create_sample_env_file")
+    def test_run_interactive_config_missing_items(
+        self, mock_create_sample, mock_get_missing, mock_is_configured
+    ):
         """Test run_interactive shows missing config items (line 44)."""
         mock_is_configured.return_value = False
-        mock_get_missing.return_value = ['OpenAI API Key', 'Model Configuration']
-        mock_create_sample.return_value = Path('.env.example')
+        mock_get_missing.return_value = ["OpenAI API Key", "Model Configuration"]
+        mock_create_sample.return_value = Path(".env.example")
 
         # User chooses not to continue
-        with patch('builtins.input', return_value='n'):
-            with patch('builtins.print'):
+        with patch("builtins.input", return_value="n"):
+            with patch("builtins.print"):
                 result = self.photocopier.run_interactive()
 
         # Should have printed missing items (line 44)
         assert result is False
         mock_get_missing.assert_called_once()
 
-    @patch('sys.argv', ['main.py', '--help'])
+    @patch("sys.argv", ["main.py", "--help"])
     def test_main_help_flag(self):
         """Test main() with --help flag (lines 133-159)."""
         from src.intelligent_photocopier.main import main
 
-        with patch('builtins.print') as mock_print:
+        with patch("builtins.print") as mock_print:
             main()
 
         # Should have printed help message
         mock_print.assert_called()
         # Check that help content was printed
         call_args = str(mock_print.call_args_list)
-        assert 'Intelligent Photocopier' in call_args or 'Usage' in call_args
+        assert "Intelligent Photocopier" in call_args or "Usage" in call_args
 
-    @patch('sys.argv', ['main.py', '-h'])
+    @patch("sys.argv", ["main.py", "-h"])
     def test_main_h_flag(self):
         """Test main() with -h flag (lines 133-159)."""
         from src.intelligent_photocopier.main import main
 
-        with patch('builtins.print') as mock_print:
+        with patch("builtins.print") as mock_print:
             main()
 
         # Should have printed help message
         mock_print.assert_called()
 
-    @patch('sys.argv', ['main.py'])
-    @patch('src.intelligent_photocopier.main.IntelligentPhotocopier')
+    @patch("sys.argv", ["main.py"])
+    @patch("src.intelligent_photocopier.main.IntelligentPhotocopier")
     def test_main_normal_execution(self, mock_photocopier_class):
         """Test main() normal execution path (line 163)."""
         from src.intelligent_photocopier.main import main
@@ -486,12 +510,12 @@ class TestIntelligentPhotocopier:
 
         # Run the module as a script with --help to avoid hanging
         result = subprocess.run(
-            [sys.executable, '-m', 'src.intelligent_photocopier.main', '--help'],
+            [sys.executable, "-m", "src.intelligent_photocopier.main", "--help"],
             capture_output=True,
             text=True,
             timeout=5,
-            cwd='/home/chengxin199/myproject/code_quality_calc'
+            cwd="/home/chengxin199/myproject/code_quality_calc",
         )
 
         # Should execute successfully
-        assert result.returncode == 0 or 'Intelligent Photocopier' in result.stdout
+        assert result.returncode == 0 or "Intelligent Photocopier" in result.stdout
