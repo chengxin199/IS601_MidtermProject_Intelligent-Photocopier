@@ -27,14 +27,11 @@ class FileManager:
         # Create subdirectories
         self._create_directory_structure(course_path)
 
-        # Create main content files
+        # Create main content files (includes AI-generated reference and solutions)
         self._create_content_files(course_path, generated_content)
 
         # Create placeholder files for practice modules
         self._create_practice_files(course_path, course_id)
-
-        # Create reference files
-        self._create_reference_files(course_path)
 
         return course_path
 
@@ -53,6 +50,10 @@ class FileManager:
         """Create main content files with generated content."""
         for filename, file_content in content.items():
             file_path = course_path / filename
+            
+            # Create parent directories if they don't exist
+            file_path.parent.mkdir(parents=True, exist_ok=True)
+            
             with open(file_path, 'w', encoding='utf-8') as f:
                 f.write(file_content)
 

@@ -1,5 +1,5 @@
 """
-Tests for B2 practice exercises.
+Tests for D1-docker-containerization-best-practices practice exercises.
 
 This file contains tests to validate the practice exercises
 and guide students through the learning process.

@@ -1,5 +1,5 @@
 """
-Practice module for B2 course.
+Practice module for D1-docker-containerization-best-practices course.
 
 This module contains exercises and practice code for the lesson.
 Students will enhance this code by applying the concepts learned.
@@ -30,6 +30,6 @@ class ExampleClass:
 
 if __name__ == "__main__":
     # Example usage
-    print(f"Practice module for B2 course")
+    print(f"Practice module for D1-docker-containerization-best-practices course")
     example = ExampleClass()
     example.example_method()

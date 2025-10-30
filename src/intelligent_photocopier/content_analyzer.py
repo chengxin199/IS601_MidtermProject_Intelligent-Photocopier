@@ -51,14 +51,39 @@ class ContentAnalyzer:
         return course_info
 
     def _extract_course_id(self, content: str) -> str:
-        """Extract or generate course ID."""
-        # Look for patterns like "B1:", "C2:", etc.
+        """Extract or generate course ID with title."""
+        # First try to find existing course ID
         course_id_match = re.search(r'([A-Z]\d+):', content)
         if course_id_match:
-            return course_id_match.group(1)
+            course_id_prefix = course_id_match.group(1)
+        else:
+            # Generate next available ID
+            course_id_prefix = self.course_counter
 
-        # Generate next available ID
-        return self.course_counter
+        # Extract title and create slugified version
+        title = self._extract_title(content)
+        if title and title != "Generated Course":
+            # Convert title to URL-safe slug
+            title_slug = self._title_to_slug(title)
+            return f"{course_id_prefix}-{title_slug}"
+
+        return course_id_prefix
+
+    def _title_to_slug(self, title: str) -> str:
+        """Convert title to URL-safe slug."""
+        import re
+
+        # Remove course ID prefix if present
+        title = re.sub(r'^[A-Z]\d+:?\s*', '', title, flags=re.IGNORECASE)
+
+        # Convert to lowercase and replace spaces/special chars with hyphens
+        slug = re.sub(r'[^\w\s-]', '', title.lower())
+        slug = re.sub(r'[-\s]+', '-', slug)
+
+        # Remove leading/trailing hyphens and limit length
+        slug = slug.strip('-')[:50]
+
+        return slug if slug else "course"
 
     def _extract_title(self, content: str) -> str:
         """Extract course title from content."""

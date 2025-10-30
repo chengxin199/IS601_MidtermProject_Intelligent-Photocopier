@@ -76,6 +76,14 @@ class CourseGenerator:
             # Generate summary.md
             content["summary.md"] = self._generate_ai_summary(course_info, template_structure)
 
+            # Generate reference materials
+            content["reference/quick_reference.md"] = self._generate_ai_quick_reference(course_info)
+            content["reference/best_practices.md"] = self._generate_ai_best_practices(course_info)
+            content["reference/exercise_instructions.md"] = self._generate_ai_exercise_instructions(course_info)
+
+            # Generate solutions
+            content["solutions/practice_solution.py"] = self._generate_ai_practice_solution(course_info)
+
             logger.info("AI content generation completed successfully")
             return content
 
@@ -368,3 +376,228 @@ Mark your understanding level for each concept:
 
 **Congratulations!** You've completed the {course_info['title']} lesson.
 """
+
+    def _generate_ai_quick_reference(self, course_info: Dict[str, Any]) -> str:
+        """Generate quick reference using AI."""
+        if not self.client:
+            return f"# {course_info['title']} - Quick Reference\n\n// TODO: Add quick reference content"
+
+        prompt = f"""Create a comprehensive quick reference guide for "{course_info['title']}".
+
+Course Overview:
+- Duration: {course_info['duration']}
+- Level: {course_info['level']}
+- Topics: {', '.join(course_info.get('topics', []))}
+
+Requirements:
+1. Key concepts with brief explanations
+2. Common patterns and syntax examples
+3. Code snippets where relevant
+4. Troubleshooting quick fixes
+5. Use clear formatting with headers and bullet points
+
+Generate a practical quick reference that students can use during coding."""
+
+        try:
+            if not self.client:
+                raise ValueError("OpenAI client not initialized")
+                
+            response = self.client.chat.completions.create(
+                model=config.model,
+                messages=[
+                    {"role": "system", "content": "You are an expert technical writer creating practical reference materials. Focus on actionable, concise information."},
+                    {"role": "user", "content": prompt}
+                ],
+                max_tokens=1500,
+                temperature=0.5
+            )
+
+            content = response.choices[0].message.content
+            return content.strip() if content else self._generate_placeholder_quick_reference(course_info)
+
+        except Exception as e:
+            logger.error(f"Failed to generate AI quick reference: {e}")
+            return self._generate_placeholder_quick_reference(course_info)
+
+    def _generate_ai_best_practices(self, course_info: Dict[str, Any]) -> str:
+        """Generate best practices using AI."""
+        if not self.client:
+            return f"# {course_info['title']} - Best Practices\n\n// TODO: Add best practices content"
+
+        prompt = f"""Create a comprehensive best practices guide for "{course_info['title']}".
+
+Generate best practices covering:
+1. Core principles and guidelines
+2. Common pitfalls to avoid
+3. Performance considerations
+4. Security considerations (if applicable)
+5. Testing strategies
+6. Code organization tips
+
+Make it practical and actionable for {course_info['level'].lower()} level developers."""
+
+        try:
+            if not self.client:
+                raise ValueError("OpenAI client not initialized")
+                
+            response = self.client.chat.completions.create(
+                model=config.model,
+                messages=[
+                    {"role": "system", "content": "You are an expert software architect providing practical guidance. Focus on actionable best practices."},
+                    {"role": "user", "content": prompt}
+                ],
+                max_tokens=2000,
+                temperature=0.6
+            )
+
+            content = response.choices[0].message.content
+            return content.strip() if content else self._generate_placeholder_best_practices(course_info)
+
+        except Exception as e:
+            logger.error(f"Failed to generate AI best practices: {e}")
+            return self._generate_placeholder_best_practices(course_info)
+
+    def _generate_ai_exercise_instructions(self, course_info: Dict[str, Any]) -> str:
+        """Generate exercise instructions using AI."""
+        if not self.client:
+            return f"# {course_info['title']} - Exercise Instructions\n\n// TODO: Add exercise instructions"
+
+        prompt = f"""Create detailed exercise instructions for "{course_info['title']}".
+
+Learning Objectives:
+{chr(10).join([f"- {obj}" for obj in course_info['objectives']])}
+
+Create exercises that:
+1. Practice each learning objective
+2. Build incrementally in difficulty
+3. Include clear step-by-step instructions
+4. Provide acceptance criteria
+5. Include hints for common challenges
+
+Generate 3-5 practical exercises suitable for {course_info['level'].lower()} level."""
+
+        try:
+            if not self.client:
+                raise ValueError("OpenAI client not initialized")
+                
+            response = self.client.chat.completions.create(
+                model=config.model,
+                messages=[
+                    {"role": "system", "content": "You are an expert educational designer creating hands-on programming exercises. Make them practical and engaging."},
+                    {"role": "user", "content": prompt}
+                ],
+                max_tokens=2500,
+                temperature=0.7
+            )
+
+            content = response.choices[0].message.content
+            return content.strip() if content else self._generate_placeholder_exercise_instructions(course_info)
+
+        except Exception as e:
+            logger.error(f"Failed to generate AI exercise instructions: {e}")
+            return self._generate_placeholder_exercise_instructions(course_info)
+
+    def _generate_ai_practice_solution(self, course_info: Dict[str, Any]) -> str:
+        """Generate practice solution using AI."""
+        if not self.client:
+            return f"# {course_info['title']} - Practice Solution\n\n# TODO: Add practice solution code"
+
+        prompt = f"""Create a complete Python code solution that demonstrates "{course_info['title']}".
+
+Learning Objectives to demonstrate:
+{chr(10).join([f"- {obj}" for obj in course_info['objectives']])}
+
+Requirements:
+1. Complete, working Python code
+2. Clear comments explaining key concepts
+3. Demonstrates best practices
+4. Includes error handling where appropriate
+5. Modular, well-structured code
+
+Generate practical code that students can study and learn from."""
+
+        try:
+            if not self.client:
+                raise ValueError("OpenAI client not initialized")
+                
+            response = self.client.chat.completions.create(
+                model=config.model,
+                messages=[
+                    {"role": "system", "content": "You are an expert Python developer creating educational code examples. Write clean, well-commented code that demonstrates best practices."},
+                    {"role": "user", "content": prompt}
+                ],
+                max_tokens=2000,
+                temperature=0.5
+            )
+
+            content = response.choices[0].message.content
+            return content.strip() if content else self._generate_placeholder_practice_solution(course_info)
+
+        except Exception as e:
+            logger.error(f"Failed to generate AI practice solution: {e}")
+            return self._generate_placeholder_practice_solution(course_info)
+
+    def _generate_placeholder_quick_reference(self, course_info: Dict[str, Any]) -> str:
+        """Generate placeholder quick reference."""
+        return f"""# {course_info['title']} - Quick Reference
+
+## Key Concepts
+// TODO: Add key concepts for {course_info['title']}
+
+## Common Patterns  
+// TODO: Add common implementation patterns
+
+## Best Practices
+// TODO: Add best practices
+
+## Troubleshooting
+// TODO: Add troubleshooting tips
+"""
+
+    def _generate_placeholder_best_practices(self, course_info: Dict[str, Any]) -> str:
+        """Generate placeholder best practices."""
+        return f"""# {course_info['title']} - Best Practices
+
+## Core Principles
+// TODO: Add core principles for {course_info['title']}
+
+## Common Pitfalls
+// TODO: Add common pitfalls to avoid
+
+## Performance Tips
+// TODO: Add performance considerations
+"""
+
+    def _generate_placeholder_exercise_instructions(self, course_info: Dict[str, Any]) -> str:
+        """Generate placeholder exercise instructions."""
+        return f"""# {course_info['title']} - Exercise Instructions
+
+## Exercise 1: Basic Implementation
+// TODO: Add detailed exercise instructions
+
+## Exercise 2: Intermediate Practice
+// TODO: Add intermediate exercise
+
+## Exercise 3: Advanced Challenge
+// TODO: Add advanced exercise
+"""
+
+    def _generate_placeholder_practice_solution(self, course_info: Dict[str, Any]) -> str:
+        """Generate placeholder practice solution."""
+        return f'''"""
+{course_info['title']} - Practice Solution
+
+This module demonstrates the key concepts covered in the lesson.
+"""
+
+# TODO: Add complete implementation demonstrating:
+{chr(10).join([f"# - {obj}" for obj in course_info['objectives']])}
+
+def main():
+    """Main function demonstrating key concepts."""
+    print("Practice solution for {course_info['title']}")
+    # TODO: Add implementation
+
+if __name__ == "__main__":
+    main()
+'''
