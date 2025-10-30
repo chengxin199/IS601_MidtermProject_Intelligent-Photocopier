@@ -13,3 +13,6 @@ flake8-bugbear>=24.2
 flake8-comprehensions>=3.14
 bandit>=1.7
 pip-audit>=2.7
+# AI Integration
+openai>=1.0.0
+python-dotenv>=1.0.0

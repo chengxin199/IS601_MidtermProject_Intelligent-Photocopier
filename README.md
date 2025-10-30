@@ -41,6 +41,31 @@ Learn to write resilient code that fails fast, communicates intent, and recovers
 
 **🚀 Quick Start**: Follow the complete [**Defensive Programming Learning Guide**](DEFENSIVE_PROGRAMMING_GUIDE.md) for step-by-step instructions!
 
+### 🔮 **Intelligent Photocopier: AI Course Generator**
+**NEW**: AI-powered course creation system that generates new programming courses using the A1 template as a foundation.
+
+**Features:**
+- 🤖 **OpenAI GPT-4 Integration** — Intelligent content generation
+- 📋 **Template-Based Structure** — Uses A1-Defensive-Programming as a blueprint
+- 🎯 **Context-Aware Content** — Generates relevant exercises and examples
+- 📁 **Complete Course Creation** — README, lessons, tests, and reference materials
+- ⚡ **Quick Start Scripts** — Easy setup and testing
+
+**Quick Start:**
+```bash
+# 1. Set up OpenAI API key
+cp .env.example .env
+# Edit .env and add your OpenAI API key
+
+# 2. Run the quick start script
+python quickstart.py
+
+# 3. Or use interactive mode
+python -m src.intelligent_photocopier.main
+```
+
+**Location**: [`src/intelligent_photocopier/`](src/intelligent_photocopier/)
+
 ### 🔮 **Coming Soon: Additional Modules**
 - **B1: Code Quality & Static Analysis** — Automated quality enforcement
 - **C1: Performance Optimization** — Profiling and optimization techniques

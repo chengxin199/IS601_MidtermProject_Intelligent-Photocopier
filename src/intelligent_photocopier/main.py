@@ -14,12 +14,13 @@ from .content_analyzer import ContentAnalyzer
 from .template_extractor import TemplateExtractor
 from .course_generator import CourseGenerator
 from .file_manager import FileManager
+from .config import config
 
 
 class IntelligentPhotocopier:
     """Main class for the Intelligent Photocopier course generation system."""
 
-    def __init__(self, base_path: str = None):
+    def __init__(self, base_path: str | None = None):
         """Initialize the photocopier with the base project path."""
         self.base_path = Path(base_path) if base_path else Path.cwd()
         self.lessons_path = self.base_path / "Lessons"
@@ -35,7 +36,37 @@ class IntelligentPhotocopier:
         """Run the interactive course generation process."""
         print("🤖 Intelligent Photocopier - AI Course Generator")
         print("=" * 50)
-        print()
+
+        # Check configuration
+        if not config.is_configured():
+            print("⚠️  Configuration Required")
+            print()
+            missing = config.get_missing_config()
+            for item in missing:
+                print(f"❌ {item}")
+            print()
+            print("📋 To set up:")
+            print("1. Copy .env.example to .env")
+            print("2. Add your OpenAI API key to the .env file")
+            print("3. Get API key from: https://platform.openai.com/api-keys")
+            print()
+
+            # Create sample .env file
+            sample_path = config.create_sample_env_file()
+            print(f"📄 Sample configuration created: {sample_path}")
+            print()
+
+            use_placeholder = input("Continue with placeholder content? (y/N): ").lower().strip()
+            if use_placeholder != 'y':
+                print("Exiting. Please configure API key and try again.")
+                return False
+            else:
+                print("⚠️  Using placeholder content (limited functionality)")
+                print()
+        else:
+            print("✅ OpenAI API configured")
+            print()
+
         print("Please paste your complete course README content below.")
         print("(Press Ctrl+D when finished, or type 'END' on a new line)")
         print("-" * 50)
