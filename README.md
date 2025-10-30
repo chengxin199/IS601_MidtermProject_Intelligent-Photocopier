@@ -13,6 +13,38 @@ This isn't just another coding tutorial. You'll build a **real production system
 - **Complete CI/CD pipeline** with automated testing, security scanning, and deployment
 - **Professional codebase** that passes enterprise-grade quality checks
 - **VS Code workspace** optimized for Python development
+- **Defensive programming skills** through hands-on exercises and real implementations
+
+## 📚 Integrated Course Content
+
+This project includes **comprehensive learning modules** that teach professional software development through practical application:
+
+### 🛡️ **A1: Defensive Programming, Errors, and Contracts**
+**Duration**: 3-4 hours | **Level**: Intermediate
+
+Learn to write resilient code that fails fast, communicates intent, and recovers gracefully:
+
+- ✅ **EAFP vs LBYL** — Choose the right approach with clear justification
+- ✅ **Custom Exception Hierarchies** — Design meaningful error handling systems
+- ✅ **Design by Contract** — Implement preconditions, postconditions, and invariants
+- ✅ **Guard Clauses** — Simplify complex conditional logic
+- ✅ **Secure Logging** — Handle sensitive data safely in error messages
+- ✅ **Error Path Testing** — Comprehensive testing strategies for edge cases
+
+**Hands-on Components:**
+- 🧮 **Calculator Module** — Practice defensive programming with mathematical operations
+- ⚙️ **Configuration Loader** — Harden file loading and parsing logic
+- 🧪 **Complete Test Suite** — Learn to test error scenarios effectively
+- 📋 **Reference Implementations** — Study production-ready defensive patterns
+
+**Location**: [`Lessons/A1-Defensive-Programming/`](Lessons/A1-Defensive-Programming/)
+
+**🚀 Quick Start**: Follow the complete [**Defensive Programming Learning Guide**](DEFENSIVE_PROGRAMMING_GUIDE.md) for step-by-step instructions!
+
+### 🔮 **Coming Soon: Additional Modules**
+- **B1: Code Quality & Static Analysis** — Automated quality enforcement
+- **C1: Performance Optimization** — Profiling and optimization techniques
+- **D1: Security Best Practices** — Building secure Python applications
 
 ## 🚀 Platform Setup — Start Here First!
 
@@ -46,8 +78,8 @@ Your terminal already supports all commands. Proceed to [Quick Start](#quick-sta
 
 ```bash
 # 1. Clone and enter the project
-git clone <your-repo-url>
-cd calc_start_f25
+git clone https://github.com/chengxin199/IS601_MidtermProject_Intelligent-Photocopier.git
+cd code_quality_calc
 
 # 2. Set up Python environment
 python3 -m venv .venv
@@ -78,6 +110,21 @@ calc add 2 3                      # Output: 5.0
 calc subtract 10 3                # Output: 7.0
 ```
 
+**Explore defensive programming lessons:**
+```bash
+# Navigate to the course content
+cd Lessons/A1-Defensive-Programming/
+
+# Try the practice modules (intentionally vulnerable)
+python tests/calculator.py
+
+# Study the hardened implementations
+python tests/test_calculator_hardened.py
+
+# Run comprehensive tests
+pytest tests/test_calculator_hardened.py -v
+```
+
 **Run the complete quality suite:**
 ```bash
 # Option 1: Individual commands
@@ -96,9 +143,9 @@ make qa
 
 ## 🎯 Learning Path
 
-This project includes a **comprehensive learning system** with three tracks:
+This project includes a **comprehensive learning system** with multiple tracks designed for professional development:
 
-### 📚 **Detailed Learning Guide**
+### 📚 **Core Development Guide**
 **Start here:** [`docs/index.md`](docs/index.md) — Complete textbook with 15+ chapters
 
 **Quick navigation:**
@@ -108,9 +155,25 @@ This project includes a **comprehensive learning system** with three tracks:
 - 💻 [VS Code Setup](docs/09-vscode.md) — Professional IDE configuration
 - 🔄 [CI/CD](docs/08-ci.md) — Automated quality checks
 
+### 🛡️ **Defensive Programming Course**
+**Master professional coding practices:** [`Lessons/A1-Defensive-Programming/`](Lessons/A1-Defensive-Programming/)
+
+**Complete hands-on curriculum:**
+- 📖 [Lesson Content](Lessons/A1-Defensive-Programming/lesson-content.md) — Theory and concepts
+- 💻 [Practice Exercises](Lessons/A1-Defensive-Programming/tests/) — Real coding challenges
+- ✅ [Reference Solutions](Lessons/A1-Defensive-Programming/tests/test_calculator_hardened.py) — Production-ready implementations
+- 📋 [Exercise Instructions](Lessons/A1-Defensive-Programming/reference/exercise_instructions.md) — Step-by-step guidance
+- 🎯 [Summary & Assessment](Lessons/A1-Defensive-Programming/summary.md) — Learning validation
+
+**What makes this special:**
+- **Real Implementation** — Not just theory, but working code you can run and test
+- **Industry Patterns** — Learn the same defensive programming techniques used at top tech companies
+- **Security Focus** — Understand how to handle sensitive data safely
+- **Complete Testing** — Master error path testing and edge case validation
+
 ### 🏗️ **Project Structure**
 ```
-calc_start_f25/
+code_quality_calc/
 ├── src/                          # Calculator implementation
 │   ├── main.py                   # CLI entry point
 │   └── operations/               # Mathematical operations
@@ -118,6 +181,8 @@ calc_start_f25/
 ├── .vscode/                      # VS Code configuration
 ├── .github/workflows/            # CI/CD automation
 ├── docs/                         # Complete learning guide
+├── Lessons/                      # Course content and exercises
+│   └── A1-Defensive-Programming/ # Defensive programming lesson
 └── pyproject.toml               # Modern Python packaging
 ```
 
@@ -137,6 +202,15 @@ calc_start_f25/
 - ✅ Test-driven development with 100% coverage
 - ✅ Code formatting and quality standards (PEP 8)
 - ✅ Static type checking for reliability
+
+### **Defensive Programming Mastery**
+- ✅ **EAFP vs LBYL** — Choose the right error handling approach
+- ✅ **Custom Exception Design** — Build meaningful error hierarchies
+- ✅ **Input Validation** — Secure and robust data handling
+- ✅ **Contract Programming** — Implement preconditions and postconditions
+- ✅ **Guard Clauses** — Write clean, readable error handling code
+- ✅ **Secure Logging** — Protect sensitive data in error messages
+- ✅ **Error Path Testing** — Comprehensive edge case validation
 
 ### **Professional Practices**
 - ✅ Continuous Integration and automated testing
@@ -161,7 +235,7 @@ calc_start_f25/
 # Issue: ModuleNotFoundError
 # Solution: Activate virtual environment and run from project root
 source .venv/bin/activate
-cd /path/to/calc_start_f25
+cd /path/to/code_quality_calc
 
 # Issue: Import errors in VS Code
 # Solution: Select correct Python interpreter
@@ -199,63 +273,9 @@ The patterns you learn here scale from simple calculators to complex distributed
 ## 📈 Next Steps
 
 1. **Start Learning**: Open [`docs/index.md`](docs/index.md) for the complete guide
-2. **Try Exercises**: Each chapter includes hands-on activities
-3. **Build Your Version**: Fork this repo and customize it
-4. **Join the Community**: Share your progress and get help
+2. **Master Defensive Programming**: Follow the [**Defensive Programming Learning Guide**](DEFENSIVE_PROGRAMMING_GUIDE.md) 🛡️
+3. **Try Exercises**: Each chapter includes hands-on activities
+4. **Build Your Version**: Fork this repo and customize it
+5. **Join the Community**: Share your progress and get help
 
 **Ready to build professional-grade Python software?** [Start your journey here →](docs/index.md)
-
-# Basic Calculator — Professional Python Project Template
-
-This repo is a tiny calculator used to teach professional Python practices: clean structure, tests with coverage, linting/formatting, typing, security checks, CI, and VS Code workflows.
-
-Looking for the full student guide? Read the textbook in [docs](docs/index.md):
-
-- Start here: docs/index.md
-- Or jump to: Setup (docs/02-setup.md), Testing (docs/05-testing.md), VS Code (docs/09-vscode.md), CI (docs/08-ci.md)
-
-## Quickstart (macOS + zsh)
-
-```zsh
-python3 -m venv .venv
-. .venv/bin/activate
-python -m pip install --upgrade pip
-pip install -r requirements-dev.txt
-```
-
-Run the quality suite:
-
-```zsh
-pytest --cov=src --cov-report=term-missing -q
-flake8 $(git ls-files '*.py' | tr '\n' ' ')
-pylint -j 0 $(git ls-files '*.py' | tr '\n' ' ')
-mypy src
-make security
-```
-
-## CLI usage
-
-Install in editable mode to use the `calc` command:
-
-```zsh
-. .venv/bin/activate
-pip install -e .
-calc add 2 3
-```
-
-Or run without installing:
-
-```zsh
-python -m src.main add 2 3
-```
-
-## What’s inside
-
-- `src/` — calculator code and CLI
-- `tests/` — pytest suite with 100% coverage on `src/`
-- `pyproject.toml` — tool configs (Black, isort, Flake8, Pylint, mypy) and console script
-- `.vscode/` — tasks, settings, and debug configs
-- `.github/workflows/quality.yml` — CI for format/lint/typecheck/security
-- `docs/` — the full student textbook for this project
-
-For details, see the textbook: `docs/index.md`.
