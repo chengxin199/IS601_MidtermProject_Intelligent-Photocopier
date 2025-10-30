@@ -5,16 +5,15 @@ Quick Start script for Intelligent Photocopier.
 This script provides a simple way to get started with the AI course generator.
 """
 
-import os
 import sys
 from pathlib import Path
+
+from src.intelligent_photocopier.config import config
+from src.intelligent_photocopier.test_api import test_api_connection
 
 # Add src to path
 project_root = Path(__file__).parent
 sys.path.insert(0, str(project_root / "src"))
-
-from src.intelligent_photocopier.config import config
-from src.intelligent_photocopier.test_api import test_api_connection
 
 
 def print_banner():
