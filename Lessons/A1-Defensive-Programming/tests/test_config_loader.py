@@ -43,19 +43,25 @@ often contain sensitive data that should never appear in logs.
    - Secure logging of configuration operations
 """
 
-import pytest
 import json
 import os
-import tempfile
 import sys
-from unittest.mock import patch, mock_open
+import tempfile
+from unittest.mock import mock_open, patch
+
+import pytest
 
 # Add the tests directory to path so we can import config_loader
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from config_loader import (
-    load_config, validate_config, get_database_config, get_api_config,
-    merge_configs, ConfigManager, create_sample_config
+    ConfigManager,
+    create_sample_config,
+    get_api_config,
+    get_database_config,
+    load_config,
+    merge_configs,
+    validate_config,
 )
 
 
@@ -66,7 +72,7 @@ class TestLoadConfig:
         """Test loading a valid JSON configuration file."""
         valid_config = {"key": "value", "number": 42}
 
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
             json.dump(valid_config, f)
             temp_filename = f.name
 
@@ -95,7 +101,7 @@ class TestValidateConfig:
         valid_config = {
             "database": {"host": "localhost"},
             "api": {"base_url": "http://api.example.com"},
-            "logging": {"level": "INFO"}
+            "logging": {"level": "INFO"},
         }
         assert validate_config(valid_config) is True
 
@@ -123,7 +129,7 @@ class TestConfigExtraction:
                 "port": 5432,
                 "name": "testdb",
                 "user": "testuser",
-                "password": "testpass"
+                "password": "testpass",
             }
         }
 
@@ -138,7 +144,7 @@ class TestConfigExtraction:
                 "base_url": "https://api.example.com",
                 "timeout": 30,
                 "retry_attempts": 3,
-                "api_key": "secret"
+                "api_key": "secret",
             }
         }
 
@@ -179,12 +185,18 @@ class TestConfigManager:
     def test_load_existing_file(self):
         """Test loading existing configuration file."""
         config_data = {
-            "database": {"host": "localhost", "port": 5432, "name": "test", "user": "user", "password": "pass"},
+            "database": {
+                "host": "localhost",
+                "port": 5432,
+                "name": "test",
+                "user": "user",
+                "password": "pass",
+            },
             "api": {"base_url": "http://api.test.com", "timeout": 30, "retry_attempts": 3},
-            "logging": {"level": "DEBUG"}
+            "logging": {"level": "DEBUG"},
         }
 
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
             json.dump(config_data, f)
             temp_filename = f.name
 
@@ -222,7 +234,7 @@ class TestConfigManager:
                 "port": 5432,
                 "name": "testdb",
                 "user": "testuser",
-                "password": "testpass"
+                "password": "testpass",
             }
         }
 
@@ -240,14 +252,14 @@ class TestCreateSampleConfig:
 
     def test_create_sample_config_file(self):
         """Test creating sample configuration file."""
-        with tempfile.NamedTemporaryFile(suffix='.json', delete=False) as f:
+        with tempfile.NamedTemporaryFile(suffix=".json", delete=False) as f:
             temp_filename = f.name
 
         try:
             create_sample_config(temp_filename)
 
             # Verify file was created and contains expected structure
-            with open(temp_filename, 'r') as f:
+            with open(temp_filename, "r") as f:
                 config = json.load(f)
 
             assert "database" in config

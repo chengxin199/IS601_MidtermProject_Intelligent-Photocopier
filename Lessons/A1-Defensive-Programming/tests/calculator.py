@@ -7,6 +7,7 @@ error handling, contracts, and defensive programming patterns.
 Your task: Harden this module by applying defensive programming principles.
 """
 
+
 def add(a, b):
     """Add two numbers."""
     return a + b
@@ -31,14 +32,14 @@ def divide(a, b):
 
 def power(base, exponent):
     """Raise base to the power of exponent."""
-    return base ** exponent
+    return base**exponent
 
 
 def square_root(number):
     """Calculate square root of a number."""
     if number < 0:
         return -1  # TODO: Replace with proper exception
-    return number ** 0.5
+    return number**0.5
 
 
 def factorial(n):

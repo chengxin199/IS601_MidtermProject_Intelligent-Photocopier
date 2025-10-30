@@ -9,13 +9,14 @@ This file demonstrates the implementation of defensive programming principles:
 5. Comprehensive error path testing
 """
 
-import pytest
 import json
+import logging
 import os
 import tempfile
-import logging
-from typing import Dict, Any, Optional
 from pathlib import Path
+from typing import Any, Dict, Optional
+
+import pytest
 
 # Set up logging for demonstration
 logging.basicConfig(level=logging.INFO)
@@ -26,13 +27,16 @@ logger = logging.getLogger(__name__)
 # DEFENSIVE PROGRAMMING IMPLEMENTATION: Custom Exception Hierarchy
 # =============================================================================
 
+
 class ConfigError(Exception):
     """Base exception for configuration operations."""
+
     pass
 
 
 class ConfigFileError(ConfigError):
     """Raised when configuration file operations fail."""
+
     def __init__(self, message, filename=None, operation=None):
         super().__init__(message)
         self.filename = filename
@@ -41,6 +45,7 @@ class ConfigFileError(ConfigError):
 
 class ConfigValidationError(ConfigError):
     """Raised when configuration validation fails."""
+
     def __init__(self, message, config_key=None, config_value=None):
         super().__init__(message)
         self.config_key = config_key
@@ -49,6 +54,7 @@ class ConfigValidationError(ConfigError):
 
 class ConfigParsingError(ConfigError):
     """Raised when configuration parsing fails."""
+
     def __init__(self, message, filename=None, line_number=None):
         super().__init__(message)
         self.filename = filename
@@ -57,6 +63,7 @@ class ConfigParsingError(ConfigError):
 
 class ConfigSecurityError(ConfigError):
     """Raised when security constraints are violated."""
+
     pass
 
 
@@ -64,11 +71,19 @@ class ConfigSecurityError(ConfigError):
 # DEFENSIVE PROGRAMMING IMPLEMENTATION: Safe Logging Utilities
 # =============================================================================
 
+
 def create_safe_log_context(**kwargs):
     """Create logging context with sensitive data redacted."""
     sensitive_keywords = {
-        'password', 'token', 'secret', 'key', 'auth',
-        'credential', 'private', 'session', 'api_key'
+        "password",
+        "token",
+        "secret",
+        "key",
+        "auth",
+        "credential",
+        "private",
+        "session",
+        "api_key",
     }
 
     safe_context = {}
@@ -77,14 +92,14 @@ def create_safe_log_context(**kwargs):
 
         # Check if key contains sensitive information
         if any(sensitive in key_lower for sensitive in sensitive_keywords):
-            safe_context[key] = '[REDACTED]'
+            safe_context[key] = "[REDACTED]"
         # Check if value looks like a file path
-        elif isinstance(value, str) and ('/' in value or '\\' in value):
+        elif isinstance(value, str) and ("/" in value or "\\" in value):
             # Only show filename, not full path
             safe_context[key] = Path(value).name
         # Truncate very long values
         elif isinstance(value, str) and len(value) > 100:
-            safe_context[key] = value[:97] + '...'
+            safe_context[key] = value[:97] + "..."
         else:
             safe_context[key] = value
 
@@ -94,6 +109,7 @@ def create_safe_log_context(**kwargs):
 # =============================================================================
 # DEFENSIVE PROGRAMMING IMPLEMENTATION: Hardened Configuration Functions
 # =============================================================================
+
 
 def hardened_load_config(filename: str) -> Dict[str, Any]:
     """Load configuration from a JSON file with comprehensive error handling.
@@ -111,22 +127,18 @@ def hardened_load_config(filename: str) -> Dict[str, Any]:
         raise ConfigFileError(
             f"Filename must be a string, got {type(filename).__name__}",
             filename=filename,
-            operation="load"
+            operation="load",
         )
 
     if not filename.strip():
         raise ConfigFileError(
-            "Filename cannot be empty or whitespace",
-            filename=filename,
-            operation="load"
+            "Filename cannot be empty or whitespace", filename=filename, operation="load"
         )
 
     # Guard clause: File existence check
     if not os.path.exists(filename):
         raise ConfigFileError(
-            f"Configuration file not found: {filename}",
-            filename=filename,
-            operation="load"
+            f"Configuration file not found: {filename}", filename=filename, operation="load"
         )
 
     # Guard clause: File readability check
@@ -134,7 +146,7 @@ def hardened_load_config(filename: str) -> Dict[str, Any]:
         raise ConfigFileError(
             f"No permission to read configuration file: {filename}",
             filename=filename,
-            operation="load"
+            operation="load",
         )
 
     # Log operation with safe context
@@ -142,17 +154,19 @@ def hardened_load_config(filename: str) -> Dict[str, Any]:
     logger.info("Loading configuration file", extra=context)
 
     try:
-        with open(filename, 'r', encoding='utf-8') as f:
+        with open(filename, "r", encoding="utf-8") as f:
             config = json.load(f)
 
         # Postcondition: Validate return type
         if not isinstance(config, dict):
             raise ConfigParsingError(
                 f"Configuration must be a JSON object, got {type(config).__name__}",
-                filename=filename
+                filename=filename,
             )
 
-        logger.info("Configuration loaded successfully", extra={**context, "keys_count": len(config)})
+        logger.info(
+            "Configuration loaded successfully", extra={**context, "keys_count": len(config)}
+        )
         return config
 
     except json.JSONDecodeError as e:
@@ -184,15 +198,14 @@ def hardened_validate_config(config: Dict[str, Any]) -> None:
     # Guard clause: Type validation
     if not isinstance(config, dict):
         raise ConfigValidationError(
-            f"Configuration must be a dictionary, got {type(config).__name__}",
-            config_value=config
+            f"Configuration must be a dictionary, got {type(config).__name__}", config_value=config
         )
 
     # Guard clause: Empty configuration check
     if not config:
         raise ConfigValidationError("Configuration cannot be empty")
 
-    required_sections = ['database', 'api', 'logging']
+    required_sections = ["database", "api", "logging"]
     missing_sections = []
 
     # Check for required sections
@@ -203,99 +216,97 @@ def hardened_validate_config(config: Dict[str, Any]) -> None:
     if missing_sections:
         raise ConfigValidationError(
             f"Missing required configuration sections: {', '.join(missing_sections)}",
-            config_key='required_sections'
+            config_key="required_sections",
         )
 
     # Validate each section
-    _validate_database_config(config.get('database', {}))
-    _validate_api_config(config.get('api', {}))
-    _validate_logging_config(config.get('logging', {}))
+    _validate_database_config(config.get("database", {}))
+    _validate_api_config(config.get("api", {}))
+    _validate_logging_config(config.get("logging", {}))
 
-    logger.info("Configuration validation passed",
-                extra=create_safe_log_context(sections=list(config.keys())))
+    logger.info(
+        "Configuration validation passed",
+        extra=create_safe_log_context(sections=list(config.keys())),
+    )
 
 
 def _validate_database_config(db_config: Dict[str, Any]) -> None:
     """Validate database configuration section."""
-    required_fields = ['host', 'port', 'name', 'user']
+    required_fields = ["host", "port", "name", "user"]
 
     for field in required_fields:
         if field not in db_config:
             raise ConfigValidationError(
                 f"Database configuration missing required field: {field}",
-                config_key=f"database.{field}"
+                config_key=f"database.{field}",
             )
 
     # Validate port is numeric and in valid range
-    port = db_config.get('port')
+    port = db_config.get("port")
     if not isinstance(port, int) or not (1 <= port <= 65535):
         raise ConfigValidationError(
             f"Database port must be an integer between 1-65535, got: {port}",
             config_key="database.port",
-            config_value=port
+            config_value=port,
         )
 
     # Validate host is not empty
-    host = db_config.get('host', '').strip()
+    host = db_config.get("host", "").strip()
     if not host:
-        raise ConfigValidationError(
-            "Database host cannot be empty",
-            config_key="database.host"
-        )
+        raise ConfigValidationError("Database host cannot be empty", config_key="database.host")
 
 
 def _validate_api_config(api_config: Dict[str, Any]) -> None:
     """Validate API configuration section."""
-    required_fields = ['base_url', 'timeout', 'retry_attempts']
+    required_fields = ["base_url", "timeout", "retry_attempts"]
 
     for field in required_fields:
         if field not in api_config:
             raise ConfigValidationError(
-                f"API configuration missing required field: {field}",
-                config_key=f"api.{field}"
+                f"API configuration missing required field: {field}", config_key=f"api.{field}"
             )
 
     # Validate timeout
-    timeout = api_config.get('timeout')
+    timeout = api_config.get("timeout")
     if not isinstance(timeout, (int, float)) or timeout <= 0:
         raise ConfigValidationError(
             f"API timeout must be a positive number, got: {timeout}",
             config_key="api.timeout",
-            config_value=timeout
+            config_value=timeout,
         )
 
     # Validate retry attempts
-    retry_attempts = api_config.get('retry_attempts')
+    retry_attempts = api_config.get("retry_attempts")
     if not isinstance(retry_attempts, int) or not (0 <= retry_attempts <= 10):
         raise ConfigValidationError(
             f"API retry_attempts must be an integer between 0-10, got: {retry_attempts}",
             config_key="api.retry_attempts",
-            config_value=retry_attempts
+            config_value=retry_attempts,
         )
 
 
 def _validate_logging_config(log_config: Dict[str, Any]) -> None:
     """Validate logging configuration section."""
-    valid_levels = {'DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'}
+    valid_levels = {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
 
-    level = log_config.get('level', '').upper()
+    level = log_config.get("level", "").upper()
     if level and level not in valid_levels:
         raise ConfigValidationError(
             f"Invalid logging level: {level}. Must be one of: {', '.join(valid_levels)}",
             config_key="logging.level",
-            config_value=level
+            config_value=level,
         )
 
 
 class HardenedConfigManager:
     """Configuration manager with comprehensive defensive programming."""
 
-    def __init__(self, config_file: str = 'config.json'):
+    def __init__(self, config_file: str = "config.json"):
         # Input validation for constructor
         if not isinstance(config_file, str):
             raise ConfigFileError(
                 f"Config file must be a string, got {type(config_file).__name__}",
-                filename=config_file
+                filename=config_file,
             )
 
         if not config_file.strip():
@@ -307,27 +318,27 @@ class HardenedConfigManager:
 
         # Default configuration with comprehensive settings
         self.default_config = {
-            'database': {
-                'host': 'localhost',
-                'port': 5432,
-                'name': 'myapp',
-                'user': 'user',
-                'password': '',
-                'connection_timeout': 30,
-                'max_connections': 10
+            "database": {
+                "host": "localhost",
+                "port": 5432,
+                "name": "myapp",
+                "user": "user",
+                "password": "",
+                "connection_timeout": 30,
+                "max_connections": 10,
             },
-            'api': {
-                'base_url': 'https://api.example.com',
-                'timeout': 30,
-                'retry_attempts': 3,
-                'rate_limit': 100
+            "api": {
+                "base_url": "https://api.example.com",
+                "timeout": 30,
+                "retry_attempts": 3,
+                "rate_limit": 100,
             },
-            'logging': {
-                'level': 'INFO',
-                'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                'max_file_size': '10MB',
-                'backup_count': 5
-            }
+            "logging": {
+                "level": "INFO",
+                "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+                "max_file_size": "10MB",
+                "backup_count": 5,
+            },
         }
 
     def load(self) -> None:
@@ -367,8 +378,9 @@ class HardenedConfigManager:
 
         except Exception as e:
             # Unexpected errors - log and re-raise
-            logger.error(f"Unexpected error loading configuration: {e}",
-                        extra=context, exc_info=True)
+            logger.error(
+                f"Unexpected error loading configuration: {e}", extra=context, exc_info=True
+            )
             raise ConfigError(f"Failed to load configuration: {e}") from e
 
     def _deep_merge_configs(self, default: Dict[str, Any], user: Dict[str, Any]) -> Dict[str, Any]:
@@ -397,15 +409,14 @@ class HardenedConfigManager:
         # Guard clause: Validate key
         if not isinstance(key, str):
             raise ConfigValidationError(
-                f"Configuration key must be a string, got {type(key).__name__}",
-                config_key=key
+                f"Configuration key must be a string, got {type(key).__name__}", config_key=key
             )
 
         if not key.strip():
             raise ConfigValidationError("Configuration key cannot be empty")
 
         # Support nested keys (e.g., 'database.host')
-        keys = key.split('.')
+        keys = key.split(".")
         value = self.config
 
         try:
@@ -415,10 +426,7 @@ class HardenedConfigManager:
         except (KeyError, TypeError):
             if default is not None:
                 return default
-            raise ConfigValidationError(
-                f"Configuration key not found: {key}",
-                config_key=key
-            )
+            raise ConfigValidationError(f"Configuration key not found: {key}", config_key=key)
 
     def get_database_url(self) -> str:
         """Get database connection URL with validation.
@@ -430,23 +438,22 @@ class HardenedConfigManager:
             raise ConfigError("Configuration not loaded. Call load() first.")
 
         try:
-            db_config = self.get('database')
+            db_config = self.get("database")
 
             # Validate required fields exist
-            required_fields = ['user', 'password', 'host', 'port', 'name']
+            required_fields = ["user", "password", "host", "port", "name"]
             for field in required_fields:
                 if field not in db_config:
                     raise ConfigValidationError(
-                        f"Database configuration missing {field}",
-                        config_key=f"database.{field}"
+                        f"Database configuration missing {field}", config_key=f"database.{field}"
                     )
 
             # Build URL with proper escaping
-            user = db_config['user']
-            password = db_config['password']
-            host = db_config['host']
-            port = db_config['port']
-            name = db_config['name']
+            user = db_config["user"]
+            password = db_config["password"]
+            host = db_config["host"]
+            port = db_config["port"]
+            name = db_config["name"]
 
             url = f"postgresql://{user}:{password}@{host}:{port}/{name}"
 
@@ -467,6 +474,7 @@ class HardenedConfigManager:
 # =============================================================================
 # DEFENSIVE PROGRAMMING TESTS: Error Path and Validation Testing
 # =============================================================================
+
 
 class TestHardenedConfigLoader:
     """Comprehensive tests for defensive configuration loading."""
@@ -491,7 +499,7 @@ class TestHardenedConfigLoader:
 
     def test_load_invalid_json(self):
         """Test loading invalid JSON raises parsing error."""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
             f.write('{"invalid": json content}')  # Invalid JSON
             temp_filename = f.name
 
@@ -519,7 +527,7 @@ class TestHardenedConfigLoader:
         invalid_config = {
             "database": {"host": "localhost", "port": "invalid", "name": "test", "user": "user"},
             "api": {"base_url": "http://test.com", "timeout": 30, "retry_attempts": 3},
-            "logging": {"level": "INFO"}
+            "logging": {"level": "INFO"},
         }
         with pytest.raises(ConfigValidationError, match="port must be an integer"):
             hardened_validate_config(invalid_config)
@@ -597,19 +605,13 @@ class TestHardenedConfigLoader:
                 "port": 5432,
                 "name": "testdb",
                 "user": "testuser",
-                "password": "testpass"
+                "password": "testpass",
             },
-            "api": {
-                "base_url": "https://api.test.com",
-                "timeout": 60,
-                "retry_attempts": 5
-            },
-            "logging": {
-                "level": "DEBUG"
-            }
+            "api": {"base_url": "https://api.test.com", "timeout": 60, "retry_attempts": 5},
+            "logging": {"level": "DEBUG"},
         }
 
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
             json.dump(valid_config, f)
             temp_filename = f.name
 

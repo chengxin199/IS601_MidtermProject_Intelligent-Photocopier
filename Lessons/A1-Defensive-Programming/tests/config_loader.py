@@ -9,13 +9,13 @@ Your task: Harden this module by applying defensive programming principles.
 
 import json
 import os
-from typing import Dict, Any, Optional
+from typing import Any, Dict, Optional
 
 
 def load_config(filename: str) -> Dict[str, Any]:
     """Load configuration from a JSON file."""
     # TODO: Add proper error handling
-    with open(filename, 'r') as f:
+    with open(filename, "r") as f:
         config = json.load(f)
     return config
 
@@ -23,7 +23,7 @@ def load_config(filename: str) -> Dict[str, Any]:
 def validate_config(config: Dict[str, Any]) -> bool:
     """Validate configuration structure and values."""
     # TODO: Add comprehensive validation
-    required_keys = ['database', 'api', 'logging']
+    required_keys = ["database", "api", "logging"]
 
     for key in required_keys:
         if key not in config:
@@ -35,25 +35,25 @@ def validate_config(config: Dict[str, Any]) -> bool:
 def get_database_config(config: Dict[str, Any]) -> Dict[str, str]:
     """Extract database configuration."""
     # TODO: Add validation and error handling
-    db_config = config['database']
+    db_config = config["database"]
     return {
-        'host': db_config['host'],
-        'port': db_config['port'],
-        'name': db_config['name'],
-        'user': db_config['user'],
-        'password': db_config['password']
+        "host": db_config["host"],
+        "port": db_config["port"],
+        "name": db_config["name"],
+        "user": db_config["user"],
+        "password": db_config["password"],
     }
 
 
 def get_api_config(config: Dict[str, Any]) -> Dict[str, Any]:
     """Extract API configuration."""
     # TODO: Add validation and error handling
-    api_config = config['api']
+    api_config = config["api"]
     return {
-        'base_url': api_config['base_url'],
-        'timeout': api_config['timeout'],
-        'retry_attempts': api_config['retry_attempts'],
-        'api_key': api_config.get('api_key', '')
+        "base_url": api_config["base_url"],
+        "timeout": api_config["timeout"],
+        "retry_attempts": api_config["retry_attempts"],
+        "api_key": api_config.get("api_key", ""),
     }
 
 
@@ -68,26 +68,22 @@ def merge_configs(default_config: Dict[str, Any], user_config: Dict[str, Any]) -
 class ConfigManager:
     """Manages application configuration."""
 
-    def __init__(self, config_file: str = 'config.json'):
+    def __init__(self, config_file: str = "config.json"):
         self.config_file = config_file
         self.config = {}
         self.default_config = {
-            'database': {
-                'host': 'localhost',
-                'port': 5432,
-                'name': 'myapp',
-                'user': 'user',
-                'password': ''
+            "database": {
+                "host": "localhost",
+                "port": 5432,
+                "name": "myapp",
+                "user": "user",
+                "password": "",
             },
-            'api': {
-                'base_url': 'https://api.example.com',
-                'timeout': 30,
-                'retry_attempts': 3
+            "api": {"base_url": "https://api.example.com", "timeout": 30, "retry_attempts": 3},
+            "logging": {
+                "level": "INFO",
+                "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
             },
-            'logging': {
-                'level': 'INFO',
-                'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-            }
         }
 
     def load(self) -> None:
@@ -112,14 +108,14 @@ class ConfigManager:
     def get_database_url(self) -> str:
         """Get database connection URL."""
         # TODO: Add validation and error handling
-        db_config = self.config['database']
+        db_config = self.config["database"]
         return f"postgresql://{db_config['user']}:{db_config['password']}@{db_config['host']}:{db_config['port']}/{db_config['name']}"
 
     def save(self, filename: Optional[str] = None) -> None:
         """Save current configuration to file."""
         # TODO: Add error handling
         target_file = filename or self.config_file
-        with open(target_file, 'w') as f:
+        with open(target_file, "w") as f:
             json.dump(self.config, f, indent=2)
 
     def reload(self) -> None:
@@ -128,7 +124,7 @@ class ConfigManager:
         self.load()
 
 
-def create_sample_config(filename: str = 'sample_config.json') -> None:
+def create_sample_config(filename: str = "sample_config.json") -> None:
     """Create a sample configuration file."""
     # TODO: Add error handling
     sample_config = {
@@ -137,27 +133,23 @@ def create_sample_config(filename: str = 'sample_config.json') -> None:
             "port": 5432,
             "name": "myapp_prod",
             "user": "admin",
-            "password": "secret123"
+            "password": "secret123",
         },
         "api": {
             "base_url": "https://api.production.com",
             "timeout": 60,
             "retry_attempts": 5,
-            "api_key": "your-api-key-here"
+            "api_key": "your-api-key-here",
         },
         "logging": {
             "level": "WARNING",
             "format": "%(asctime)s - %(levelname)s - %(message)s",
-            "file": "/var/log/myapp.log"
+            "file": "/var/log/myapp.log",
         },
-        "features": {
-            "enable_caching": True,
-            "cache_ttl": 3600,
-            "enable_monitoring": True
-        }
+        "features": {"enable_caching": True, "cache_ttl": 3600, "enable_monitoring": True},
     }
 
-    with open(filename, 'w') as f:
+    with open(filename, "w") as f:
         json.dump(sample_config, f, indent=2)
 
 
@@ -169,7 +161,7 @@ if __name__ == "__main__":
     create_sample_config()
 
     # Test configuration manager
-    config_manager = ConfigManager('sample_config.json')
+    config_manager = ConfigManager("sample_config.json")
     config_manager.load()
 
     print(f"Database URL: {config_manager.get_database_url()}")
@@ -177,6 +169,6 @@ if __name__ == "__main__":
     print(f"Logging level: {config_manager.get('logging', {}).get('level', 'N/A')}")
 
     # Test with non-existent file
-    config_manager2 = ConfigManager('nonexistent.json')
+    config_manager2 = ConfigManager("nonexistent.json")
     config_manager2.load()
     print(f"\\nFallback config loaded successfully")

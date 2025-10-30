@@ -36,21 +36,31 @@ how each defensive programming principle is applied in practice.
 programming principles before moving to the next function.
 """
 
-import pytest
-import sys
 import os
+import sys
+
+import pytest
 
 # Add the tests directory to path so we can import calculator
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from calculator import (
-    add, subtract, multiply, divide, power, square_root, factorial,
-    percentage, Calculator, safe_divide, calculate_compound_interest
-)
-
-import pytest
 import logging
 from typing import Union
+
+import pytest
+from calculator import (
+    Calculator,
+    add,
+    calculate_compound_interest,
+    divide,
+    factorial,
+    multiply,
+    percentage,
+    power,
+    safe_divide,
+    square_root,
+    subtract,
+)
 
 # Set up logging for demonstration
 logging.basicConfig(level=logging.INFO)
@@ -61,13 +71,16 @@ logger = logging.getLogger(__name__)
 # DEFENSIVE PROGRAMMING IMPLEMENTATION: Custom Exception Hierarchy
 # =============================================================================
 
+
 class CalculatorError(Exception):
     """Base exception for calculator operations."""
+
     pass
 
 
 class InvalidInputError(CalculatorError):
     """Raised when input validation fails."""
+
     def __init__(self, message, input_value=None):
         super().__init__(message)
         self.input_value = input_value
@@ -75,16 +88,19 @@ class InvalidInputError(CalculatorError):
 
 class DivisionByZeroError(CalculatorError):
     """Raised when division by zero is attempted."""
+
     pass
 
 
 class MathematicalError(CalculatorError):
     """Raised when mathematical constraints are violated."""
+
     pass
 
 
 class BusinessRuleError(CalculatorError):
     """Raised when business rules are violated."""
+
     pass
 
 
@@ -120,14 +136,12 @@ def hardened_add(a: Number, b: Number) -> Number:
     # Guard clause: Type validation
     if not isinstance(a, (int, float)):
         raise InvalidInputError(
-            f"First operand must be a number, got {type(a).__name__}",
-            input_value=a
+            f"First operand must be a number, got {type(a).__name__}", input_value=a
         )
 
     if not isinstance(b, (int, float)):
         raise InvalidInputError(
-            f"Second operand must be a number, got {type(b).__name__}",
-            input_value=b
+            f"Second operand must be a number, got {type(b).__name__}", input_value=b
         )
 
     # Log operation with safe context
@@ -166,16 +180,10 @@ def hardened_divide(a: Number, b: Number) -> Number:
     """
     # Guard clauses for input validation
     if not isinstance(a, (int, float)):
-        raise InvalidInputError(
-            f"Dividend must be a number, got {type(a).__name__}",
-            input_value=a
-        )
+        raise InvalidInputError(f"Dividend must be a number, got {type(a).__name__}", input_value=a)
 
     if not isinstance(b, (int, float)):
-        raise InvalidInputError(
-            f"Divisor must be a number, got {type(b).__name__}",
-            input_value=b
-        )
+        raise InvalidInputError(f"Divisor must be a number, got {type(b).__name__}", input_value=b)
 
     if b == 0:
         raise DivisionByZeroError(f"Cannot divide {a} by zero")
@@ -218,8 +226,7 @@ def hardened_factorial(n: int) -> int:
     # Guard clause: Type validation
     if not isinstance(n, int):
         raise InvalidInputError(
-            f"Factorial input must be an integer, got {type(n).__name__}",
-            input_value=n
+            f"Factorial input must be an integer, got {type(n).__name__}", input_value=n
         )
 
     # Guard clause: Range validation
@@ -267,11 +274,11 @@ class HardenedCalculator:
 
         # Operation mapping with validation
         self._operations = {
-            'add': (hardened_add, 2, "addition"),
-            'subtract': (self._subtract, 2, "subtraction"),
-            'multiply': (self._multiply, 2, "multiplication"),
-            'divide': (hardened_divide, 2, "division"),
-            'factorial': (hardened_factorial, 1, "factorial"),
+            "add": (hardened_add, 2, "addition"),
+            "subtract": (self._subtract, 2, "subtraction"),
+            "multiply": (self._multiply, 2, "multiplication"),
+            "divide": (hardened_divide, 2, "division"),
+            "factorial": (hardened_factorial, 1, "factorial"),
         }
 
     def _subtract(self, a: Number, b: Number) -> Number:
@@ -304,15 +311,14 @@ class HardenedCalculator:
         # Guard clause: Operation validation
         if not isinstance(operation, str):
             raise InvalidInputError(
-                f"Operation must be a string, got {type(operation).__name__}",
-                input_value=operation
+                f"Operation must be a string, got {type(operation).__name__}", input_value=operation
             )
 
         if operation not in self._operations:
             available_ops = ", ".join(self._operations.keys())
             raise InvalidInputError(
                 f"Unknown operation '{operation}'. Available: {available_ops}",
-                input_value=operation
+                input_value=operation,
             )
 
         func, expected_args, operation_name = self._operations[operation]
@@ -321,15 +327,11 @@ class HardenedCalculator:
         if len(args) != expected_args:
             raise InvalidInputError(
                 f"Operation '{operation}' requires {expected_args} arguments, got {len(args)}",
-                input_value=args
+                input_value=args,
             )
 
         # Log calculation attempt
-        context = safe_log_context(
-            operation=operation,
-            args=args,
-            history_size=len(self.history)
-        )
+        context = safe_log_context(operation=operation, args=args, history_size=len(self.history))
         logger.info(f"Starting {operation_name} calculation", extra=context)
 
         try:
@@ -344,7 +346,9 @@ class HardenedCalculator:
 
             self._add_to_history(history_entry)
 
-            logger.info(f"{operation_name} calculation successful", extra={**context, "result": result})
+            logger.info(
+                f"{operation_name} calculation successful", extra={**context, "result": result}
+            )
             return result
 
         except CalculatorError:
@@ -362,7 +366,7 @@ class HardenedCalculator:
 
         # Enforce maximum history size
         if len(self.history) > self._max_history:
-            self.history = self.history[-self._max_history:]
+            self.history = self.history[-self._max_history :]
 
     def get_history(self) -> list:
         """Get calculation history."""
@@ -377,6 +381,7 @@ class HardenedCalculator:
 # =============================================================================
 # DEFENSIVE PROGRAMMING TESTS: Error Path and Contract Testing
 # =============================================================================
+
 
 class TestHardenedCalculator:
     """Comprehensive tests for defensive programming implementation."""
@@ -472,7 +477,7 @@ class TestHardenedCalculator:
         # Test factorial postconditions
         result = hardened_factorial(5)
         assert result >= 1  # Must be >= 1
-        assert result > 5   # Must be > n for n > 1
+        assert result > 5  # Must be > n for n > 1
 
 
 class TestContractViolations:
@@ -684,7 +689,7 @@ class TestCompoundInterest:
     def test_compound_interest_monthly(self):
         """Test compound interest with monthly compounding."""
         result = calculate_compound_interest(1000, 0.12, 1, 12)
-        expected = 1000 * (1 + 0.12/12) ** 12
+        expected = 1000 * (1 + 0.12 / 12) ** 12
         assert abs(result - expected) < 0.01
 
     # TODO: Add tests for invalid inputs (negative values, etc.)

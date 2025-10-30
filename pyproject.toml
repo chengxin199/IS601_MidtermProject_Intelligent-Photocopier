@@ -20,11 +20,17 @@ packages = ["src", "src.operations"]
 line-length = 100
 target-version = ["py311"]
 preview = true
+extend-exclude = '''
+/(
+    Lessons
+)/
+'''
 
 [tool.isort]
 profile = "black"
 line_length = 100
 combine_as_imports = true
+extend_skip = ["Lessons"]
 
 [tool.flake8]
 max-line-length = 100
@@ -35,6 +41,7 @@ exclude = [
   "__pycache__",
   "build",
   "dist",
+  "Lessons/",
 ]
 extend-ignore = [
   "E203",  # Black compatibility (whitespace before :)
@@ -47,7 +54,7 @@ per-file-ignores = [
 
 [tool.pylint.main]
 py-version = "3.11"
-ignore-paths = ["tests/", ".venv", "venv"]
+ignore-paths = ["tests/", ".venv", "venv", "Lessons/"]
 jobs = 0
 
 [tool.pylint.format]
@@ -105,4 +112,5 @@ check_untyped_defs = true
 namespace_packages = true
 exclude = [
   "tests/",
+  "Lessons/",
 ]
