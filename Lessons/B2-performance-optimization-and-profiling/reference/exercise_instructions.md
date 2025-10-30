@@ -1,137 +1,162 @@
-# Exercise Series: Performance Optimization and Profiling in Python
+# Performance Optimization and Profiling Exercises
 
-## Overview
-This set of exercises is designed to help you practice and master various techniques for optimizing Python applications. Each exercise targets a specific learning objective and builds upon the previous one, allowing you to develop a comprehensive understanding of performance optimization.
+## Exercise 1: Profiling a Python Application
 
-### Exercise 1: Profiling Python Applications
-**Learning Objective:** Profile Python applications to identify performance bottlenecks.
+### Objective:
+Profile a simple Python application to identify performance bottlenecks.
 
-**Instructions:**
-1. **Setup:**
-   - Download a sample Python application (e.g., a script that calculates Fibonacci numbers recursively).
-   - Ensure you have `cProfile` and `pstats` modules available.
+### Instructions:
+1. **Download the Sample Application**:
+   Clone the following GitHub repository containing a sample Python application that performs matrix multiplication:
+   ```bash
+   git clone https://github.com/example/matrix-multiplication.git
+   cd matrix-multiplication
+   ```
 
-2. **Profile the Application:**
-   - Run the application through `cProfile` to generate a profiling report.
-   - Use the command:
+2. **Install Required Libraries**:
+   If not already installed, set up a virtual environment and install `line_profiler`:
+   ```bash
+   python -m venv env
+   source env/bin/activate
+   pip install line_profiler numpy
+   ```
+
+3. **Profile the Application**:
+   - Open `matrix_multiply.py` and identify the function that performs multiplication.
+   - Decorate the multiplication function with the `@profile` decorator from `line_profiler`.
+   - Run the profiler using:
      ```bash
-     python -m cProfile -o profile_output.prof your_script.py
+     kernprof -l -v matrix_multiply.py
      ```
 
-3. **Analyze the Output:**
-   - Load the profiling data using `pstats` and analyze the function call counts and execution times.
-   - Identify at least two functions that are potential bottlenecks.
+4. **Analyze the Output**:
+   - Review the profiling output to identify which lines of code are the slowest.
+   - Note down the function execution times.
 
-**Acceptance Criteria:**
-- You should have a profiling report saved in `profile_output.prof`.
-- A summary of at least two bottlenecks with execution times and call counts should be documented.
+### Acceptance Criteria:
+- The profiler runs without errors.
+- You can identify at least one performance bottleneck in the code.
 
-**Hints:**
-- Pay attention to functions with high cumulative time and those that are called frequently.
-- Consider visualizing the output using tools such as `SnakeViz` for better insights.
-
----
-
-### Exercise 2: Algorithm Optimization
-**Learning Objective:** Optimize algorithms and choose efficient data structures.
-
-**Instructions:**
-1. **Identify an Inefficient Algorithm:**
-   - Use the Fibonacci calculation script from Exercise 1. Replace the recursive function with an inefficient iterative approach (e.g., using a list to store all Fibonacci numbers).
-
-2. **Optimize the Algorithm:**
-   - Implement a more efficient algorithm using the formula or memoization.
-   - Replace the inefficient function with the optimized version.
-
-3. **Profile and Compare:**
-   - Profile both the original and optimized implementations.
-   - Compare the execution times and document the results.
-
-**Acceptance Criteria:**
-- The optimized function should produce the same results as the original.
-- Document the performance improvement in execution time.
-
-**Hints:**
-- Remember that memoization can significantly reduce the number of calculations by storing previously computed values.
-- Use a simple timer (e.g., `time.time()`) to measure execution duration.
+### Hints:
+- Look for functions that take a long time relative to others.
+- Ensure `line_profiler` is correctly installed and imported.
 
 ---
 
-### Exercise 3: Memory Management and Garbage Collection
-**Learning Objective:** Implement memory management and garbage collection strategies.
+## Exercise 2: Optimize Algorithms and Data Structures
 
-**Instructions:**
-1. **Create a Memory-Intensive Application:**
-   - Write a script that creates a large list of random numbers (e.g., 1 million integers).
-   - Perform operations that require significant memory usage (e.g., sorting or filtering).
+### Objective:
+Optimize a sorting algorithm using more efficient data structures.
 
-2. **Monitor Memory Usage:**
-   - Use the `memory_profiler` library to track memory usage over time.
-   - Annotate your script with `@profile` decorator to monitor memory usage of specific functions.
+### Instructions:
+1. **Implement a Sorting Algorithm**:
+   - In a new Python file named `sorter.py`, implement a basic bubble sort algorithm.
 
-3. **Implement Garbage Collection:**
-   - Explicitly call the garbage collector using the `gc` module after memory-intensive operations.
-   - Profile the memory usage before and after garbage collection.
+2. **Profile the Sorting Algorithm**:
+   - Use the profiling steps from Exercise 1 to profile your bubble sort implementation.
 
-**Acceptance Criteria:**
-- Document the memory usage before and after garbage collection.
-- Show a reduction in memory footprint after implementing garbage collection.
+3. **Optimize the Sorting Algorithm**:
+   - Replace the bubble sort with a more efficient sorting algorithm such as quicksort or mergesort.
+   - Implement your optimized sorting algorithm in the same file.
 
-**Hints:**
-- Install the `memory_profiler` library using pip if you haven’t already.
-- Use `gc.collect()` to invoke garbage collection manually.
+4. **Compare Performance**:
+   - Profile the optimized algorithm and compare the execution time with the bubble sort.
 
----
+### Acceptance Criteria:
+- You must have both the inefficient and efficient sorting algorithms in your code.
+- The optimized sorting algorithm should show a significant performance improvement.
 
-### Exercise 4: Caching and Memoization
-**Learning Objective:** Apply caching and memoization techniques effectively.
-
-**Instructions:**
-1. **Use the `functools.lru_cache`:**
-   - Modify your optimized Fibonacci function from Exercise 2 to utilize `lru_cache`.
-   - Test the performance difference by calculating Fibonacci numbers for both small and large inputs.
-
-2. **Create a Caching Decorator:**
-   - If you have time, implement your own caching decorator using a dictionary to store results of function calls.
-   - Compare the performance of your decorator with `lru_cache`.
-
-3. **Profile and Validate:**
-   - Profile the performance again and document the differences in execution time.
-
-**Acceptance Criteria:**
-- The function using `lru_cache` should show performance improvement over the unoptimized version.
-- Document the speedup achieved with caching techniques.
-
-**Hints:**
-- Pay attention to how caching works with repeated function calls.
-- Use different input sizes to see how caching performs under various conditions.
+### Hints:
+- Revisit sorting algorithm complexities if unsure about their performance.
+- Make sure to test your sorting algorithms with large datasets.
 
 ---
 
-### Exercise 5: Parallel Processing and Async Programming
-**Learning Objective:** Use parallel processing and async programming patterns.
+## Exercise 3: Memory Management and Garbage Collection
 
-**Instructions:**
-1. **Implement Parallel Processing:**
-   - Modify the Fibonacci script to calculate Fibonacci numbers in parallel using the `concurrent.futures` module.
-   - Create a pool of workers and distribute the calculation of Fibonacci numbers across them.
+### Objective:
+Understand and implement memory management strategies.
 
-2. **Test Async Programming:**
-   - Create an asynchronous function that fetches data from a public API (like JSONPlaceholder) and processes it.
-   - Use `asyncio` and `aiohttp` to implement non-blocking I/O.
+### Instructions:
+1. **Create a Memory-Intensive Application**:
+   - Write a Python script that creates a large list of objects (e.g., a list of dictionaries with random data).
 
-3. **Profile and Validate:**
-   - Profile both the parallel and async implementations, comparing their performance to the sequential version.
+2. **Monitor Memory Usage**:
+   - Use the `memory_profiler` library to monitor memory usage. Install it with:
+     ```bash
+     pip install memory-profiler
+     ```
+   - Decorate the main function with `@profile` and run the script.
 
-**Acceptance Criteria:**
-- Both implementations should complete and return the correct results.
-- Document the performance improvements in execution time for both parallel and async approaches.
+3. **Implement Manual Garbage Collection**:
+   - Use the `gc` module to manually delete objects that are no longer required.
+   - Run the script again and observe any changes in memory usage.
 
-**Hints:**
-- Ensure you handle exceptions in async functions properly.
-- When using `concurrent.futures`, remember to use the `as_completed()` method to handle results as they are completed.
+### Acceptance Criteria:
+- The memory profile is generated, showing memory consumption over time.
+- You can demonstrate a decrease in memory usage after implementing garbage collection.
+
+### Hints:
+- Check which objects are consuming the most memory.
+- Use the `gc.collect()` function to trigger garbage collection.
 
 ---
 
-### Conclusion
-These exercises aim to provide you with practical experience in profiling and optimizing Python applications. By completing these tasks, you should gain a solid foundation in performance optimization techniques.
+## Exercise 4: Caching and Memoization Techniques
+
+### Objective:
+Apply caching and memoization techniques to optimize a Fibonacci sequence calculation.
+
+### Instructions:
+1. **Create a Fibonacci Function**:
+   - Write a simple recursive function to calculate Fibonacci numbers in a new file named `fibonacci.py`.
+
+2. **Profile the Recursive Fibonacci**:
+   - Profile the initial recursive implementation to measure its performance.
+
+3. **Implement Memoization**:
+   - Modify your Fibonacci function to use memoization. You can use a dictionary to store previously computed values.
+
+4. **Profile the Memoized Function**:
+   - Profile the new implementation and compare the execution times of both versions.
+
+### Acceptance Criteria:
+- You can demonstrate a significant performance improvement in the memoized version.
+- The profiler output must clearly show reduced execution time.
+
+### Hints:
+- Use decorators like `functools.lru_cache` for easier memoization.
+- Ensure input values are large enough to see the difference in performance.
+
+---
+
+## Exercise 5: Parallel Processing and Async Programming
+
+### Objective:
+Use parallel processing and asynchronous programming patterns to enhance performance.
+
+### Instructions:
+1. **Create a CPU-bound Task**:
+   - Write a Python script named `cpu_intensive.py` that performs a CPU-intensive calculation (like calculating prime numbers).
+
+2. **Implement Multiprocessing**:
+   - Use Python's `multiprocessing` module to divide the task into multiple processes.
+   - Create a function to manage the distribution of tasks across processes.
+
+3. **Implement Async Programming**:
+   - Modify your script to implement async programming using `asyncio` to handle I/O-bound tasks (like fetching data from an API).
+
+4. **Measure Performance**:
+   - Use `time` module to measure and compare the execution times of both multiprocessing and async implementations.
+
+### Acceptance Criteria:
+- Both multiprocessing and async implementations are functional.
+- Performance metrics indicate improved execution time for both methods.
+
+### Hints:
+- Look into `asyncio.gather()` for managing multiple async calls.
+- Be aware of the difference between CPU-bound and I/O-bound tasks when choosing the method of optimization.
+
+---
+
+These exercises will help learners understand and apply performance optimization techniques in Python, providing a hands-on approach to tackling performance challenges.
