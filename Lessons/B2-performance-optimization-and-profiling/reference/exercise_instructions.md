@@ -13,7 +13,7 @@ This set of exercises is designed to help you practice and master various techni
 
 2. **Profile the Application:**
    - Run the application through `cProfile` to generate a profiling report.
-   - Use the command: 
+   - Use the command:
      ```bash
      python -m cProfile -o profile_output.prof your_script.py
      ```

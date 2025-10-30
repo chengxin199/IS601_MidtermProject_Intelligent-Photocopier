@@ -2,8 +2,8 @@
 
 ## Course Overview
 
-**Duration:** 4 hours  
-**Level:** Intermediate  
+**Duration:** 4 hours
+**Level:** Intermediate
 **Description:** Learn to containerize applications effectively using Docker with security and performance optimization.
 
 ### Learning Objectives:
@@ -135,7 +135,7 @@ CMD ["python", "app.py"]
 - Understand container orchestration basics with Docker Compose.
 
 ### Theoretical Explanations
-- **Security Best Practices**: 
+- **Security Best Practices**:
   - Use official base images.
   - Run containers as non-root users.
   - Regularly update base images.

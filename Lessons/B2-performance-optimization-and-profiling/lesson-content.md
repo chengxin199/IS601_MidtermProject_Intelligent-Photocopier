@@ -147,7 +147,7 @@ Caching is widely used in web applications to speed up database queries and API 
 - Implement techniques for concurrent execution.
 
 ### Theoretical Explanations
-Parallel processing allows multiple computations to occur simultaneously, while asynchronous programming enables non-blocking operations. 
+Parallel processing allows multiple computations to occur simultaneously, while asynchronous programming enables non-blocking operations.
 
 - **Threading**: Useful for I/O-bound tasks.
 - **Multiprocessing**: Useful for CPU-bound tasks.

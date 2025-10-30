@@ -36,7 +36,7 @@
           for j in range(0, len(arr)-i-1):
               if arr[j] > arr[j+1]:
                   arr[j], arr[j+1] = arr[j+1], arr[j]
-  
+
   # Efficient: Built-in Sort
   sorted_arr = sorted(arr)
   ```
@@ -56,7 +56,7 @@
 - **Example**: Use memoization in recursive functions.
   ```python
   cache = {}
-  
+
   def fibonacci(n):
       if n in cache:
           return cache[n]
@@ -76,7 +76,7 @@
 - **Use Asynchronous I/O**: Implement async calls to avoid blocking.
   ```python
   import asyncio
-  
+
   async def fetch_data():
       await asyncio.sleep(1)  # Simulate I/O operation
   ```

@@ -3,7 +3,7 @@
 ## Course Overview
 - **Duration**: 4 hours
 - **Level**: Intermediate
-- **Topics Covered**: 
+- **Topics Covered**:
   - D1: Docker Containerization Best Practices
 
 ---

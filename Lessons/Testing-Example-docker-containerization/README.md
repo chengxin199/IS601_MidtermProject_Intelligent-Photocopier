@@ -1,8 +1,8 @@
 # Docker Containerization Best Practices 🚀
 
 ## Course Overview
-**Duration:** 4 hours  
-**Level:** Intermediate  
+**Duration:** 4 hours
+**Level:** Intermediate
 
 Dive into the world of Docker and learn how to containerize applications efficiently while optimizing for security and performance. This course is designed to elevate your skills and help you master Docker containerization best practices.
 

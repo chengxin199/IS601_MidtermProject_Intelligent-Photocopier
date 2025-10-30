@@ -9,7 +9,7 @@ Create an efficient Dockerfile for a simple Node.js application.
 1. **Set Up Your Project**:
    - Create a new directory called `node-app` and navigate into it.
    - Inside this directory, create a simple Node.js application. You can use the following files:
-     - `package.json`: 
+     - `package.json`:
        ```json
        {
          "name": "node-app",
@@ -23,7 +23,7 @@ Create an efficient Dockerfile for a simple Node.js application.
          }
        }
        ```
-     - `index.js`: 
+     - `index.js`:
        ```javascript
        const express = require('express');
        const app = express();
@@ -69,7 +69,7 @@ Create an efficient Dockerfile for a simple Node.js application.
 ### Acceptance Criteria:
 - A Dockerfile that follows best practices for a Node.js application.
 - The application should be accessible at `http://localhost:3000` and return "Hello World!".
-  
+
 ### Hints:
 - Ensure you are using the appropriate base image for your application.
 - Pay attention to the order of commands in your Dockerfile to optimize caching.

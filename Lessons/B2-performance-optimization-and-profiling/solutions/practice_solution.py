@@ -17,13 +17,13 @@ def slow_function(n: int) -> int:
 def memoize(func):
     """Caching decorator to store results of expensive function calls."""
     cache: Dict[int, int] = {}
-    
+
     @functools.wraps(func)
     def wrapper(n: int) -> int:
         if n not in cache:
             cache[n] = func(n)
         return cache[n]
-    
+
     return wrapper
 
 @memoize
@@ -43,11 +43,11 @@ def main() -> None:
     """Main function to demonstrate performance optimization techniques."""
     # Profiling the Fibonacci function
     start_time = time.time()
-    
+
     print("Calculating Fibonacci numbers:")
     fib_numbers = [fibonacci(i) for i in range(10)]
     print(f"Fibonacci numbers: {fib_numbers}")
-    
+
     print(f"Time taken for Fibonacci calculation: {time.time() - start_time:.2f} seconds")
 
     # Simulating slow computations in parallel
@@ -57,7 +57,7 @@ def main() -> None:
     start_time = time.time()
     processed_data = parallel_process(random_data)
     print(f"Processed data: {processed_data}")
-    
+
     print(f"Time taken for parallel processing: {time.time() - start_time:.2f} seconds")
 
 if __name__ == "__main__":
@@ -86,6 +86,6 @@ if __name__ == "__main__":
 
 ### Performance Measurement:
 
-- You can measure the time taken for Fibonacci calculations and parallel processing, providing a clear comparison of the optimizations made. 
+- You can measure the time taken for Fibonacci calculations and parallel processing, providing a clear comparison of the optimizations made.
 
 This code serves as a practical example for students to learn about performance optimization techniques in Python.

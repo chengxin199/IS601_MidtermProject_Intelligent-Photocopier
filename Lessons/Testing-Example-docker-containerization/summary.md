@@ -9,7 +9,7 @@
 
 ## 📚 Key Concepts Mastered
 1. **Efficient Dockerfile Configurations**: Students learned how to write Dockerfiles that minimize layers, use appropriate base images, and leverage build arguments effectively. The importance of ordering commands to maximize cache utilization was emphasized.
-   
+
 2. **Multi-Stage Builds**: The concept of multi-stage builds allows for creating a smaller production image by separating the build process into different stages. This helps keep the final image lightweight by only including necessary artifacts.
 
 3. **Container Security Best Practices**: Students explored various security measures, including using the least privileged user, scanning images for vulnerabilities, and keeping images up to date. They also learned about network isolation and secrets management.
