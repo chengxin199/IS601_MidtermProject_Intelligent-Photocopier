@@ -11,9 +11,10 @@ from pathlib import Path
 # Add the src directory to Python path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from intelligent_photocopier.main import IntelligentPhotocopier
-from intelligent_photocopier.config import config
-from intelligent_photocopier.test_api import test_api_connection
+# Import modules after path setup
+from intelligent_photocopier.config import config  # noqa: E402
+from intelligent_photocopier.main import IntelligentPhotocopier  # noqa: E402
+from intelligent_photocopier.test_api import test_api_connection  # noqa: E402
 
 
 def check_prerequisites():
@@ -92,7 +93,11 @@ Prerequisites:
     print()
     print("Sample course content:")
     print("-" * 30)
-    print(sample_course_content[:200] + "..." if len(sample_course_content) > 200 else sample_course_content)
+    print(
+        sample_course_content[:200] + "..."
+        if len(sample_course_content) > 200
+        else sample_course_content
+    )
     print("-" * 30)
     print()
 

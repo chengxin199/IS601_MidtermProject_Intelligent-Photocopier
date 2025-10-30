@@ -6,13 +6,14 @@ key information like course title, objectives, and requirements.
 """
 
 import re
-from typing import Dict, List, Any
 from dataclasses import dataclass
+from typing import Any, Dict, List
 
 
 @dataclass
 class CourseInfo:
     """Structured information about a course."""
+
     course_id: str
     title: str
     description: str
@@ -45,18 +46,28 @@ class ContentAnalyzer:
             "duration": self._extract_duration(content),
             "level": self._extract_level(content),
             "topics": self._extract_topics(content),
-            "prerequisites": self._extract_prerequisites(content)
+            "prerequisites": self._extract_prerequisites(content),
         }
 
         return course_info
 
     def _extract_course_id(self, content: str) -> str:
         """Extract or generate course ID with title."""
-        # First try to find existing course ID
-        course_id_match = re.search(r'([A-Z]\d+):', content)
-        if course_id_match:
-            course_id_prefix = course_id_match.group(1)
-        else:
+        # Try to find existing course ID in various formats
+        course_id_patterns = [
+            r"([A-Z]\d+):",  # A2: Title
+            r"^([A-Z]\d+)\s+",  # A2 Title (first line)
+            r"#\s*([A-Z]\d+)",  # # A2 Title
+        ]
+
+        course_id_prefix = None
+        for pattern in course_id_patterns:
+            match = re.search(pattern, content, re.MULTILINE)
+            if match:
+                course_id_prefix = match.group(1)
+                break
+
+        if not course_id_prefix:
             # Generate next available ID
             course_id_prefix = self.course_counter
 
@@ -74,33 +85,43 @@ class ContentAnalyzer:
         import re
 
         # Remove course ID prefix if present
-        title = re.sub(r'^[A-Z]\d+:?\s*', '', title, flags=re.IGNORECASE)
+        title = re.sub(r"^[A-Z]\d+:?\s*", "", title, flags=re.IGNORECASE)
 
         # Convert to lowercase and replace spaces/special chars with hyphens
-        slug = re.sub(r'[^\w\s-]', '', title.lower())
-        slug = re.sub(r'[-\s]+', '-', slug)
+        slug = re.sub(r"[^\w\s-]", "", title.lower())
+        slug = re.sub(r"[-\s]+", "-", slug)
 
         # Remove leading/trailing hyphens and limit length
-        slug = slug.strip('-')[:50]
+        slug = slug.strip("-")[:50]
 
         return slug if slug else "course"
 
     def _extract_title(self, content: str) -> str:
         """Extract course title from content."""
-        # Look for main heading patterns
+        # Look for main heading patterns (in order of preference)
         title_patterns = [
-            r'#\s*([A-Z]\d+:?\s*)?(.+?)(?:\n|$)',  # # B1: Title
-            r'##?\s*(.+?)(?:\n|$)',                # ## Title
-            r'Course:\s*(.+?)(?:\n|$)',            # Course: Title
-            r'Topic:\s*(.+?)(?:\n|$)',             # Topic: Title
+            r"#\s*([A-Z]\d+):?\s*(.+?)(?:\n|$)",  # # A2: Title
+            r"^([A-Z]\d+)\s+(.+?)(?:\[.*?\])?\s*(?:\n|$)",  # A2 Title [Core] (first line)
+            r"#\s*(.+?)(?:\n|$)",  # # Title (any heading)
+            r"##?\s*(.+?)(?:\n|$)",  # ## Title
+            r"Course:\s*(.+?)(?:\n|$)",  # Course: Title
+            r"Topic:\s*(.+?)(?:\n|$)",  # Topic: Title
         ]
 
-        for pattern in title_patterns:
-            match = re.search(pattern, content, re.IGNORECASE)
+        for i, pattern in enumerate(title_patterns):
+            match = re.search(pattern, content, re.IGNORECASE | re.MULTILINE)
             if match:
-                # Get the last group (title without course ID)
-                title = match.groups()[-1].strip()
+                groups = match.groups()
+                if i == 1:  # Special handling for "A2 Title [Core]" format
+                    # Combine course ID and title: "A2 Title [Core]" -> "Title"
+                    title = groups[1].strip()
+                else:
+                    # Get the last group (title without course ID)
+                    title = groups[-1].strip()
+
                 if title and len(title) > 3:  # Ensure meaningful title
+                    # Clean up title - remove brackets and extra whitespace
+                    title = re.sub(r"\[.*?\]", "", title).strip()
                     return title
 
         return "Generated Course"
@@ -108,7 +129,7 @@ class ContentAnalyzer:
     def _extract_description(self, content: str) -> str:
         """Extract course description."""
         # Look for description patterns
-        lines = content.split('\n')
+        lines = content.split("\n")
         description_lines = []
 
         in_description = False
@@ -116,13 +137,13 @@ class ContentAnalyzer:
             line = line.strip()
 
             # Skip headers and empty lines for description start
-            if not line or line.startswith('#'):
+            if not line or line.startswith("#"):
                 if description_lines:  # Stop if we've started collecting
                     break
                 continue
 
             # Stop at learning objectives or other sections
-            if re.match(r'##?\s*(learning objectives|objectives|goals)', line, re.IGNORECASE):
+            if re.match(r"##?\s*(learning objectives|objectives|goals)", line, re.IGNORECASE):
                 break
 
             # Collect description lines
@@ -132,7 +153,7 @@ class ContentAnalyzer:
             if in_description:
                 description_lines.append(line)
 
-        return ' '.join(description_lines[:3])  # First few sentences
+        return " ".join(description_lines[:3])  # First few sentences
 
     def _extract_objectives(self, content: str) -> List[str]:
         """Extract learning objectives from content."""
@@ -140,9 +161,9 @@ class ContentAnalyzer:
 
         # Find objectives section
         obj_section_match = re.search(
-            r'##?\s*(?:learning )?objectives?:?\s*\n(.*?)(?=\n##|\n#|\Z)',
+            r"##?\s*(?:learning )?objectives?:?\s*\n(.*?)(?=\n##|\n#|\Z)",
             content,
-            re.IGNORECASE | re.DOTALL
+            re.IGNORECASE | re.DOTALL,
         )
 
         if obj_section_match:
@@ -150,10 +171,10 @@ class ContentAnalyzer:
 
             # Extract bullet points or numbered items
             bullet_patterns = [
-                r'[-*+]\s*(.+)',      # - objective
-                r'\d+\.\s*(.+)',      # 1. objective
-                r'✅\s*(.+)',         # ✅ objective
-                r'•\s*(.+)',          # • objective
+                r"[-*+]\s*(.+)",  # - objective
+                r"\d+\.\s*(.+)",  # 1. objective
+                r"✅\s*(.+)",  # ✅ objective
+                r"•\s*(.+)",  # • objective
             ]
 
             for pattern in bullet_patterns:
@@ -164,7 +185,7 @@ class ContentAnalyzer:
 
         # Fallback: look for any bullet points in content
         if not objectives:
-            bullet_matches = re.findall(r'[-*]\s*(.+)', content)
+            bullet_matches = re.findall(r"[-*]\s*(.+)", content)
             objectives = [obj.strip() for obj in bullet_matches[:5]]  # Max 5
 
         return objectives or ["Master the core concepts", "Apply practical skills"]
@@ -172,10 +193,10 @@ class ContentAnalyzer:
     def _extract_duration(self, content: str) -> str:
         """Extract course duration."""
         duration_patterns = [
-            r'Duration:?\s*(\d+[-–]\d+\s*hours?)',
-            r'Time:?\s*(\d+[-–]\d+\s*hours?)',
-            r'(\d+[-–]\d+\s*hours?)',
-            r'Duration:?\s*(\d+\s*hours?)',
+            r"Duration:?\s*(\d+[-–]\d+\s*hours?)",
+            r"Time:?\s*(\d+[-–]\d+\s*hours?)",
+            r"(\d+[-–]\d+\s*hours?)",
+            r"Duration:?\s*(\d+\s*hours?)",
         ]
 
         for pattern in duration_patterns:
@@ -188,9 +209,9 @@ class ContentAnalyzer:
     def _extract_level(self, content: str) -> str:
         """Extract difficulty level."""
         level_patterns = [
-            r'Level:?\s*(Beginner|Intermediate|Advanced)',
-            r'Difficulty:?\s*(Beginner|Intermediate|Advanced)',
-            r'\b(Beginner|Intermediate|Advanced)\b',
+            r"Level:?\s*(Beginner|Intermediate|Advanced)",
+            r"Difficulty:?\s*(Beginner|Intermediate|Advanced)",
+            r"\b(Beginner|Intermediate|Advanced)\b",
         ]
 
         for pattern in level_patterns:
@@ -207,9 +228,9 @@ class ContentAnalyzer:
         topics = []
 
         # Look for topics in headers
-        header_matches = re.findall(r'##?\s*(.+)', content)
+        header_matches = re.findall(r"##?\s*(.+)", content)
         for header in header_matches:
-            if not re.match(r'(objectives?|goals?|description)', header, re.IGNORECASE):
+            if not re.match(r"(objectives?|goals?|description)", header, re.IGNORECASE):
                 topics.append(header.strip())
 
         return topics[:5]  # Limit to 5 main topics
@@ -217,8 +238,8 @@ class ContentAnalyzer:
     def _extract_prerequisites(self, content: str) -> List[str]:
         """Extract prerequisites from content."""
         prereq_patterns = [
-            r'Prerequisites?:?\s*\n(.*?)(?=\n##|\n#|\Z)',
-            r'Requirements?:?\s*\n(.*?)(?=\n##|\n#|\Z)',
+            r"Prerequisites?:?\s*\n(.*?)(?=\n##|\n#|\Z)",
+            r"Requirements?:?\s*\n(.*?)(?=\n##|\n#|\Z)",
         ]
 
         for pattern in prereq_patterns:
@@ -226,7 +247,7 @@ class ContentAnalyzer:
             if match:
                 prereq_content = match.group(1)
                 # Extract bullet points
-                prereqs = re.findall(r'[-*]\s*(.+)', prereq_content)
+                prereqs = re.findall(r"[-*]\s*(.+)", prereq_content)
                 return [p.strip() for p in prereqs]
 
         return ["Python programming fundamentals", "Basic software development experience"]

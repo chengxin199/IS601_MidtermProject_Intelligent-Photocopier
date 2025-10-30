@@ -8,8 +8,9 @@ from pathlib import Path
 # Add the src directory to Python path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from intelligent_photocopier.content_analyzer import ContentAnalyzer
-from intelligent_photocopier.template_extractor import TemplateExtractor
+# Import modules after path setup
+from intelligent_photocopier.content_analyzer import ContentAnalyzer  # noqa: E402
+from intelligent_photocopier.template_extractor import TemplateExtractor  # noqa: E402
 
 
 def test_content_analyzer():

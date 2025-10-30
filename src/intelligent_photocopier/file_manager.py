@@ -5,9 +5,8 @@ This module manages the file system operations for creating
 new course directories and files.
 """
 
-import os
 from pathlib import Path
-from typing import Dict, Any
+from typing import Dict
 
 
 class FileManager:
@@ -37,11 +36,7 @@ class FileManager:
 
     def _create_directory_structure(self, course_path: Path):
         """Create the standard directory structure."""
-        directories = [
-            "tests",
-            "solutions",
-            "reference"
-        ]
+        directories = ["tests", "solutions", "reference"]
 
         for directory in directories:
             (course_path / directory).mkdir(exist_ok=True)
@@ -50,11 +45,11 @@ class FileManager:
         """Create main content files with generated content."""
         for filename, file_content in content.items():
             file_path = course_path / filename
-            
+
             # Create parent directories if they don't exist
             file_path.parent.mkdir(parents=True, exist_ok=True)
-            
-            with open(file_path, 'w', encoding='utf-8') as f:
+
+            with open(file_path, "w", encoding="utf-8") as f:
                 f.write(file_content)
 
     def _create_practice_files(self, course_path: Path, course_id: str):
@@ -99,7 +94,7 @@ if __name__ == "__main__":
     example.example_method()
 """
 
-        with open(tests_dir / "practice_module.py", 'w') as f:
+        with open(tests_dir / "practice_module.py", "w") as f:
             f.write(practice_module)
 
         # Create basic test file
@@ -135,7 +130,7 @@ class TestPracticeModule:
 # TODO: AI will generate course-specific test cases
 """
 
-        with open(tests_dir / "test_practice.py", 'w') as f:
+        with open(tests_dir / "test_practice.py", "w") as f:
             f.write(test_file)
 
     def _create_reference_files(self, course_path: Path):
@@ -181,7 +176,7 @@ Your implementation is complete when:
 After completing this exercise, review the solutions and consider how to apply these concepts to your own projects.
 """
 
-        with open(reference_dir / "exercise_instructions.md", 'w') as f:
+        with open(reference_dir / "exercise_instructions.md", "w") as f:
             f.write(exercise_instructions)
 
         # Quick reference
@@ -200,7 +195,7 @@ After completing this exercise, review the solutions and consider how to apply t
 // TODO: AI will generate common issues and solutions
 """
 
-        with open(reference_dir / "quick_reference.md", 'w') as f:
+        with open(reference_dir / "quick_reference.md", "w") as f:
             f.write(quick_reference)
 
         # Best practices
@@ -219,7 +214,7 @@ After completing this exercise, review the solutions and consider how to apply t
 // TODO: AI will generate security considerations if applicable
 """
 
-        with open(reference_dir / "best_practices.md", 'w') as f:
+        with open(reference_dir / "best_practices.md", "w") as f:
             f.write(best_practices)
 
     def update_main_readme(self, course_id: str, course_title: str):

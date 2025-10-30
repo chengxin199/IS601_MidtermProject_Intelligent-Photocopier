@@ -11,8 +11,9 @@ from pathlib import Path
 # Add the src directory to Python path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from intelligent_photocopier.config import config
-from intelligent_photocopier.course_generator import CourseGenerator
+# Import modules after path setup
+from intelligent_photocopier.config import config  # noqa: E402
+from intelligent_photocopier.course_generator import CourseGenerator  # noqa: E402
 
 
 def test_api_connection():
@@ -51,10 +52,10 @@ def test_api_connection():
             model=config.model,
             messages=[
                 {"role": "system", "content": "You are a helpful assistant."},
-                {"role": "user", "content": "Say hello and confirm you're working!"}
+                {"role": "user", "content": "Say hello and confirm you're working!"},
             ],
             max_tokens=50,
-            temperature=0.7
+            temperature=0.7,
         )
 
         content = test_response.choices[0].message.content
@@ -83,14 +84,11 @@ def test_course_generation():
         "course_id": "TEST",
         "title": "API Testing Basics",
         "description": "Learn how to test APIs effectively",
-        "objectives": [
-            "Understand API testing principles",
-            "Write effective test cases"
-        ],
+        "objectives": ["Understand API testing principles", "Write effective test cases"],
         "duration": "2 hours",
         "level": "Beginner",
         "topics": ["API Testing", "Test Cases"],
-        "prerequisites": ["Basic programming knowledge"]
+        "prerequisites": ["Basic programming knowledge"],
     }
 
     try:

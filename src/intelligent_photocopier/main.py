@@ -5,16 +5,14 @@ This module provides the primary interface for generating new courses
 based on user input and existing templates.
 """
 
-import os
 import sys
-from typing import Dict, Any
 from pathlib import Path
 
+from .config import config
 from .content_analyzer import ContentAnalyzer
-from .template_extractor import TemplateExtractor
 from .course_generator import CourseGenerator
 from .file_manager import FileManager
-from .config import config
+from .template_extractor import TemplateExtractor
 
 
 class IntelligentPhotocopier:
@@ -24,7 +22,7 @@ class IntelligentPhotocopier:
         """Initialize the photocopier with the base project path."""
         self.base_path = Path(base_path) if base_path else Path.cwd()
         self.lessons_path = self.base_path / "Lessons"
-        self.template_source = self.lessons_path / "A1-Defensive-Programming"
+        self.template_source = self.lessons_path / "A1-Defensive-Programming-Template"
 
         # Initialize components
         self.analyzer = ContentAnalyzer()
@@ -57,7 +55,7 @@ class IntelligentPhotocopier:
             print()
 
             use_placeholder = input("Continue with placeholder content? (y/N): ").lower().strip()
-            if use_placeholder != 'y':
+            if use_placeholder != "y":
                 print("Exiting. Please configure API key and try again.")
                 return False
             else:
@@ -116,7 +114,7 @@ class IntelligentPhotocopier:
             # Step 4: Create files
             print("📁 Creating course files...")
             course_path = self.file_manager.create_course(
-                course_info['course_id'], generated_content
+                course_info["course_id"], generated_content
             )
 
             print(f"✅ Course '{course_info['title']}' generated successfully!")
@@ -133,7 +131,8 @@ class IntelligentPhotocopier:
 def main():
     """CLI entry point for the Intelligent Photocopier."""
     if len(sys.argv) > 1 and sys.argv[1] in ["-h", "--help"]:
-        print("""
+        print(
+            """
 🤖 Intelligent Photocopier - AI Course Generator
 
 Usage:
@@ -152,7 +151,8 @@ Example input:
     - Optimize algorithms and data structures
     - Memory management techniques
     ...
-        """)
+        """
+        )
         return
 
     photocopier = IntelligentPhotocopier()

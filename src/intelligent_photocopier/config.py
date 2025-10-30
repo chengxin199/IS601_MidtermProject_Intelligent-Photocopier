@@ -6,8 +6,9 @@ This module handles API keys, settings, and environment configuration.
 
 import os
 from pathlib import Path
-from dotenv import load_dotenv
 from typing import Optional
+
+from dotenv import load_dotenv
 
 
 class Config:
@@ -16,20 +17,20 @@ class Config:
     def __init__(self):
         """Initialize configuration by loading environment variables."""
         # Load .env file if it exists
-        env_path = Path.cwd() / '.env'
+        env_path = Path.cwd() / ".env"
         if env_path.exists():
             load_dotenv(env_path)
 
         # Load configuration
         self.openai_api_key = self._get_openai_api_key()
-        self.model = os.getenv('OPENAI_MODEL', 'gpt-4o-mini')
-        self.max_tokens = int(os.getenv('MAX_TOKENS', '2000'))
-        self.temperature = float(os.getenv('TEMPERATURE', '0.7'))
+        self.model = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+        self.max_tokens = int(os.getenv("MAX_TOKENS", "2000"))
+        self.temperature = float(os.getenv("TEMPERATURE", "0.7"))
 
     def _get_openai_api_key(self) -> Optional[str]:
         """Get OpenAI API key from environment variables."""
         # Try multiple environment variable names
-        key_names = ['OPENAI_API_KEY', 'OPENAI_KEY', 'API_KEY']
+        key_names = ["OPENAI_API_KEY", "OPENAI_KEY", "API_KEY"]
 
         for key_name in key_names:
             api_key = os.getenv(key_name)
@@ -70,8 +71,8 @@ TEMPERATURE=0.7
 # 3. Save this file as '.env' in the project root directory
 """
 
-        env_file_path = Path.cwd() / '.env.example'
-        with open(env_file_path, 'w') as f:
+        env_file_path = Path.cwd() / ".env.example"
+        with open(env_file_path, "w") as f:
             f.write(sample_content)
 
         return str(env_file_path)

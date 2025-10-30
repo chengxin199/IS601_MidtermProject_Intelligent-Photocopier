@@ -9,8 +9,8 @@ __version__ = "0.1.0"
 __author__ = "Course Generator Team"
 
 from .content_analyzer import ContentAnalyzer
-from .template_extractor import TemplateExtractor
 from .course_generator import CourseGenerator
 from .file_manager import FileManager
+from .template_extractor import TemplateExtractor
 
 __all__ = ["ContentAnalyzer", "TemplateExtractor", "CourseGenerator", "FileManager"]

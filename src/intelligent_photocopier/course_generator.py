@@ -5,19 +5,17 @@ This module handles the generation of course content using AI or fallback templa
 """
 
 import logging
-from typing import Dict, Any, Optional, TYPE_CHECKING
-from pathlib import Path
+from typing import Any, Dict
 
 from .config import config
 
-if TYPE_CHECKING:
-    from openai import OpenAI
-
 try:
     from openai import OpenAI
+
     OPENAI_AVAILABLE = True
 except ImportError:
     OPENAI_AVAILABLE = False
+    OpenAI = type(None)  # Type placeholder for when OpenAI is not available
 
 
 # Set up logging
@@ -32,11 +30,11 @@ class CourseGenerator:
         """Initialize the course generator with optional API key."""
         self.api_key = api_key or config.openai_api_key
         if OPENAI_AVAILABLE:
-            self.client: Optional["OpenAI"] = self._initialize_client() if self.api_key else None
+            self.client = self._initialize_client() if self.api_key else None
         else:
             self.client = None
 
-    def _initialize_client(self) -> Optional["OpenAI"]:
+    def _initialize_client(self):
         """Initialize OpenAI client."""
         if not OPENAI_AVAILABLE:
             logger.warning("OpenAI library not available")
@@ -48,6 +46,7 @@ class CourseGenerator:
 
         try:
             from openai import OpenAI
+
             client = OpenAI(api_key=self.api_key)
             logger.info("OpenAI client initialized successfully")
             return client
@@ -55,7 +54,9 @@ class CourseGenerator:
             logger.error(f"Failed to initialize OpenAI client: {e}")
             return None
 
-    def generate_course_content(self, course_info: Dict[str, Any], template_structure: Dict[str, Any]) -> Dict[str, str]:
+    def generate_course_content(
+        self, course_info: Dict[str, Any], template_structure: Dict[str, Any]
+    ) -> Dict[str, str]:
         """Generate complete course content based on info and template."""
         if not self.client:
             logger.warning("No OpenAI client available - generating placeholder content")
@@ -71,7 +72,9 @@ class CourseGenerator:
             content["README.md"] = self._generate_ai_readme(course_info, template_structure)
 
             # Generate lesson-content.md
-            content["lesson-content.md"] = self._generate_ai_lesson_content(course_info, template_structure)
+            content["lesson-content.md"] = self._generate_ai_lesson_content(
+                course_info, template_structure
+            )
 
             # Generate summary.md
             content["summary.md"] = self._generate_ai_summary(course_info, template_structure)
@@ -79,10 +82,14 @@ class CourseGenerator:
             # Generate reference materials
             content["reference/quick_reference.md"] = self._generate_ai_quick_reference(course_info)
             content["reference/best_practices.md"] = self._generate_ai_best_practices(course_info)
-            content["reference/exercise_instructions.md"] = self._generate_ai_exercise_instructions(course_info)
+            content["reference/exercise_instructions.md"] = self._generate_ai_exercise_instructions(
+                course_info
+            )
 
             # Generate solutions
-            content["solutions/practice_solution.py"] = self._generate_ai_practice_solution(course_info)
+            content["solutions/practice_solution.py"] = self._generate_ai_practice_solution(
+                course_info
+            )
 
             logger.info("AI content generation completed successfully")
             return content
@@ -92,7 +99,9 @@ class CourseGenerator:
             logger.info("Falling back to placeholder content")
             return self._generate_placeholder_content(course_info)
 
-    def _generate_ai_readme(self, course_info: Dict[str, Any], template_structure: Dict[str, Any]) -> str:
+    def _generate_ai_readme(
+        self, course_info: Dict[str, Any], template_structure: Dict[str, Any]
+    ) -> str:
         """Generate README.md using AI."""
 
         prompt = f"""Create a comprehensive course README.md for a programming lesson about "{course_info['title']}".
@@ -132,11 +141,14 @@ Generate a complete, professional README that matches the style of high-quality 
             response = self.client.chat.completions.create(
                 model=config.model,
                 messages=[
-                    {"role": "system", "content": "You are an expert educational content creator specializing in programming courses. Create clear, engaging, and professionally structured course materials."},
-                    {"role": "user", "content": prompt}
+                    {
+                        "role": "system",
+                        "content": "You are an expert educational content creator specializing in programming courses. Create clear, engaging, and professionally structured course materials.",
+                    },
+                    {"role": "user", "content": prompt},
                 ],
                 max_tokens=config.max_tokens,
-                temperature=config.temperature
+                temperature=config.temperature,
             )
 
             content = response.choices[0].message.content
@@ -146,7 +158,9 @@ Generate a complete, professional README that matches the style of high-quality 
             logger.error(f"Failed to generate AI README: {e}")
             return self._generate_readme(course_info)
 
-    def _generate_ai_lesson_content(self, course_info: Dict[str, Any], template_structure: Dict[str, Any]) -> str:
+    def _generate_ai_lesson_content(
+        self, course_info: Dict[str, Any], template_structure: Dict[str, Any]
+    ) -> str:
         """Generate lesson-content.md using AI."""
 
         prompt = f"""Create comprehensive lesson content for a programming course about "{course_info['title']}".
@@ -197,11 +211,14 @@ Generate professional, technical content that teaches the subject thoroughly."""
             response = self.client.chat.completions.create(
                 model=config.model,
                 messages=[
-                    {"role": "system", "content": "You are an expert programming instructor with deep knowledge of software development best practices. Create detailed, technical educational content with practical examples."},
-                    {"role": "user", "content": prompt}
+                    {
+                        "role": "system",
+                        "content": "You are an expert programming instructor with deep knowledge of software development best practices. Create detailed, technical educational content with practical examples.",
+                    },
+                    {"role": "user", "content": prompt},
                 ],
                 max_tokens=3000,  # Longer content for lesson material
-                temperature=0.6   # Slightly more focused for technical content
+                temperature=0.6,  # Slightly more focused for technical content
             )
 
             content = response.choices[0].message.content
@@ -211,7 +228,9 @@ Generate professional, technical content that teaches the subject thoroughly."""
             logger.error(f"Failed to generate AI lesson content: {e}")
             return self._generate_lesson_content(course_info)
 
-    def _generate_ai_summary(self, course_info: Dict[str, Any], template_structure: Dict[str, Any]) -> str:
+    def _generate_ai_summary(
+        self, course_info: Dict[str, Any], template_structure: Dict[str, Any]
+    ) -> str:
         """Generate summary.md using AI."""
 
         prompt = f"""Create a comprehensive lesson summary for a programming course about "{course_info['title']}".
@@ -247,11 +266,14 @@ Generate a comprehensive summary that helps students consolidate their learning 
             response = self.client.chat.completions.create(
                 model=config.model,
                 messages=[
-                    {"role": "system", "content": "You are an expert educational designer who creates effective learning summaries and assessments. Focus on concrete outcomes and practical applications."},
-                    {"role": "user", "content": prompt}
+                    {
+                        "role": "system",
+                        "content": "You are an expert educational designer who creates effective learning summaries and assessments. Focus on concrete outcomes and practical applications.",
+                    },
+                    {"role": "user", "content": prompt},
                 ],
                 max_tokens=config.max_tokens,
-                temperature=config.temperature
+                temperature=config.temperature,
             )
 
             content = response.choices[0].message.content
@@ -401,19 +423,26 @@ Generate a practical quick reference that students can use during coding."""
         try:
             if not self.client:
                 raise ValueError("OpenAI client not initialized")
-                
+
             response = self.client.chat.completions.create(
                 model=config.model,
                 messages=[
-                    {"role": "system", "content": "You are an expert technical writer creating practical reference materials. Focus on actionable, concise information."},
-                    {"role": "user", "content": prompt}
+                    {
+                        "role": "system",
+                        "content": "You are an expert technical writer creating practical reference materials. Focus on actionable, concise information.",
+                    },
+                    {"role": "user", "content": prompt},
                 ],
                 max_tokens=1500,
-                temperature=0.5
+                temperature=0.5,
             )
 
             content = response.choices[0].message.content
-            return content.strip() if content else self._generate_placeholder_quick_reference(course_info)
+            return (
+                content.strip()
+                if content
+                else self._generate_placeholder_quick_reference(course_info)
+            )
 
         except Exception as e:
             logger.error(f"Failed to generate AI quick reference: {e}")
@@ -422,7 +451,9 @@ Generate a practical quick reference that students can use during coding."""
     def _generate_ai_best_practices(self, course_info: Dict[str, Any]) -> str:
         """Generate best practices using AI."""
         if not self.client:
-            return f"# {course_info['title']} - Best Practices\n\n// TODO: Add best practices content"
+            return (
+                f"# {course_info['title']} - Best Practices\n\n// TODO: Add best practices content"
+            )
 
         prompt = f"""Create a comprehensive best practices guide for "{course_info['title']}".
 
@@ -439,19 +470,26 @@ Make it practical and actionable for {course_info['level'].lower()} level develo
         try:
             if not self.client:
                 raise ValueError("OpenAI client not initialized")
-                
+
             response = self.client.chat.completions.create(
                 model=config.model,
                 messages=[
-                    {"role": "system", "content": "You are an expert software architect providing practical guidance. Focus on actionable best practices."},
-                    {"role": "user", "content": prompt}
+                    {
+                        "role": "system",
+                        "content": "You are an expert software architect providing practical guidance. Focus on actionable best practices.",
+                    },
+                    {"role": "user", "content": prompt},
                 ],
                 max_tokens=2000,
-                temperature=0.6
+                temperature=0.6,
             )
 
             content = response.choices[0].message.content
-            return content.strip() if content else self._generate_placeholder_best_practices(course_info)
+            return (
+                content.strip()
+                if content
+                else self._generate_placeholder_best_practices(course_info)
+            )
 
         except Exception as e:
             logger.error(f"Failed to generate AI best practices: {e}")
@@ -479,19 +517,26 @@ Generate 3-5 practical exercises suitable for {course_info['level'].lower()} lev
         try:
             if not self.client:
                 raise ValueError("OpenAI client not initialized")
-                
+
             response = self.client.chat.completions.create(
                 model=config.model,
                 messages=[
-                    {"role": "system", "content": "You are an expert educational designer creating hands-on programming exercises. Make them practical and engaging."},
-                    {"role": "user", "content": prompt}
+                    {
+                        "role": "system",
+                        "content": "You are an expert educational designer creating hands-on programming exercises. Make them practical and engaging.",
+                    },
+                    {"role": "user", "content": prompt},
                 ],
                 max_tokens=2500,
-                temperature=0.7
+                temperature=0.7,
             )
 
             content = response.choices[0].message.content
-            return content.strip() if content else self._generate_placeholder_exercise_instructions(course_info)
+            return (
+                content.strip()
+                if content
+                else self._generate_placeholder_exercise_instructions(course_info)
+            )
 
         except Exception as e:
             logger.error(f"Failed to generate AI exercise instructions: {e}")
@@ -519,19 +564,26 @@ Generate practical code that students can study and learn from."""
         try:
             if not self.client:
                 raise ValueError("OpenAI client not initialized")
-                
+
             response = self.client.chat.completions.create(
                 model=config.model,
                 messages=[
-                    {"role": "system", "content": "You are an expert Python developer creating educational code examples. Write clean, well-commented code that demonstrates best practices."},
-                    {"role": "user", "content": prompt}
+                    {
+                        "role": "system",
+                        "content": "You are an expert Python developer creating educational code examples. Write clean, well-commented code that demonstrates best practices.",
+                    },
+                    {"role": "user", "content": prompt},
                 ],
                 max_tokens=2000,
-                temperature=0.5
+                temperature=0.5,
             )
 
             content = response.choices[0].message.content
-            return content.strip() if content else self._generate_placeholder_practice_solution(course_info)
+            return (
+                content.strip()
+                if content
+                else self._generate_placeholder_practice_solution(course_info)
+            )
 
         except Exception as e:
             logger.error(f"Failed to generate AI practice solution: {e}")
@@ -544,7 +596,7 @@ Generate practical code that students can study and learn from."""
 ## Key Concepts
 // TODO: Add key concepts for {course_info['title']}
 
-## Common Patterns  
+## Common Patterns
 // TODO: Add common implementation patterns
 
 ## Best Practices
