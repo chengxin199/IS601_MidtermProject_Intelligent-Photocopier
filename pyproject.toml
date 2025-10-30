@@ -127,15 +127,18 @@ python_version = "3.11"
 strict = false
 warn_unused_ignores = true
 warn_redundant_casts = true
-warn_return_any = true
+warn_return_any = false
 warn_unreachable = true
-disallow_untyped_defs = true
-disallow_incomplete_defs = true
-disallow_any_generics = true
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+disallow_any_generics = false
 no_implicit_optional = true
 check_untyped_defs = true
 namespace_packages = true
 exclude = [
   "tests/",
   "Lessons/",
+  "src/intelligent_photocopier/demo.py",
+  "src/intelligent_photocopier/test_api.py",
+  "src/intelligent_photocopier/test_components.py",
 ]

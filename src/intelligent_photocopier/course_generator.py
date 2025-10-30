@@ -15,7 +15,7 @@ try:
     OPENAI_AVAILABLE = True
 except ImportError:
     OPENAI_AVAILABLE = False
-    OpenAI = type(None)  # Type placeholder for when OpenAI is not available
+    OpenAI = type(None)  # type: ignore  # Type placeholder for when OpenAI is not available
 
 
 # Set up logging

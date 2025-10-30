@@ -130,7 +130,7 @@ class ContentAnalyzer:
         """Extract course description."""
         # Look for description patterns
         lines = content.split("\n")
-        description_lines = []
+        description_lines: list[str] = []
 
         in_description = False
         for line in lines:

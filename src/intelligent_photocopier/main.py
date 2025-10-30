@@ -128,7 +128,7 @@ class IntelligentPhotocopier:
             return False
 
 
-def main():
+def main() -> None:
     """CLI entry point for the Intelligent Photocopier."""
     if len(sys.argv) > 1 and sys.argv[1] in ["-h", "--help"]:
         print(

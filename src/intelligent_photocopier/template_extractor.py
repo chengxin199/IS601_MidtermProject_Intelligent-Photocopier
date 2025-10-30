@@ -16,7 +16,7 @@ class TemplateExtractor:
     def __init__(self, template_path: Path):
         """Initialize with path to template course (A1-Defensive-Programming)."""
         self.template_path = Path(template_path)
-        self.structure = {}
+        self.structure: Dict[str, Any] = {}
 
     def extract_structure(self) -> Dict[str, Any]:
         """Extract the complete structure of the template course."""
@@ -35,7 +35,7 @@ class TemplateExtractor:
 
     def _extract_file_structure(self) -> Dict[str, Any]:
         """Extract the file and folder structure."""
-        structure = {"directories": [], "files": {}}
+        structure: Dict[str, Any] = {"directories": [], "files": {}}
 
         for root, _dirs, files in os.walk(self.template_path):
             rel_path = Path(root).relative_to(self.template_path)

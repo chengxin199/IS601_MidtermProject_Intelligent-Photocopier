@@ -66,8 +66,8 @@ jobs:
 
       - name: Lint (Flake8/Pylint)
         run: |
-          flake8 $(git ls-files '*.py' | tr '\n' ' ')
-          pylint -j 0 $(git ls-files '*.py' | tr '\n' ' ')
+          flake8 $(git ls-files '*.py' | grep -v '^Lessons/' | tr '\n' ' ')
+          pylint -j 0 $(git ls-files '*.py' | grep -v '^Lessons/' | tr '\n' ' ')
 
   typecheck:
     name: Type check

@@ -505,8 +505,12 @@ class TestIntelligentPhotocopier:
     def test_main_as_script(self):
         """Test running main.py as a script (line 163: if __name__ == '__main__')."""
         # This tests the __name__ == "__main__" block
+        import os
         import subprocess
         import sys
+
+        # Get the project root directory (parent of tests/)
+        project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
         # Run the module as a script with --help to avoid hanging
         result = subprocess.run(
@@ -514,7 +518,7 @@ class TestIntelligentPhotocopier:
             capture_output=True,
             text=True,
             timeout=5,
-            cwd="/home/chengxin199/myproject/code_quality_calc",
+            cwd=project_root,
         )
 
         # Should execute successfully
