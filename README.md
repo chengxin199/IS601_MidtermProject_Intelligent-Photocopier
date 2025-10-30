@@ -1,6 +1,6 @@
-![CI](https://github.com/kaw393939/code_quality_calc/actions/workflows/quality.yml/badge.svg?branch=main)
+![CI](https://github.com/chengxin199/IS601_MidtermProject_Intelligent-Photocopier/actions/workflows/quality.yml/badge.svg?branch=main)
 
-# � Intelligent Photocopier — AI-Powered Course Generator
+# 🤖 Intelligent Photocopier — AI-Powered Course Generator
 
 > **Transform programming education with AI-generated courses** that create comprehensive, professional-grade learning materials from simple course outlines.
 
