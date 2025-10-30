@@ -126,7 +126,7 @@ python src/intelligent_photocopier/demo.py
 - **Error Handling**: Comprehensive error recovery and logging
 - **Content Validation**: Ensures generated content meets quality standards
 - **Type Safety**: Full type annotations with mypy validation
-- **Code Quality**: Passes all lint checks and maintains 100% test coverage
+- **Code Quality**: Passes all lint checks and maintains 93%+ test coverage
 
 ## 📖 Complete Documentation
 
@@ -263,7 +263,7 @@ pip install -r requirements-dev.txt
 pytest --cov=src --cov-report=term-missing -q
 ```
 
-**✅ Success!** You should see all tests passing with 100% coverage.
+**✅ Success!** You should see all tests passing with 93%+ coverage.
 
 ## 🎮 Try It Out
 
