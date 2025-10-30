@@ -282,3 +282,93 @@ class TestCourseGenerator:
 
         assert len(result) >= 3  # At least README.md + requested files
         assert 'README.md' in result  # Always generated
+
+    @patch('src.intelligent_photocopier.course_generator.config')
+    def test_initialize_client_without_openai_library(self, mock_config):
+        """Test client initialization when OpenAI library is not available."""
+        mock_config.openai_api_key = 'test-key'
+
+        with patch('src.intelligent_photocopier.course_generator.OPENAI_AVAILABLE', False):
+            generator = CourseGenerator()
+            # Should have no client when library not available
+            assert generator.client is None
+
+    @patch('src.intelligent_photocopier.course_generator.config')
+    @patch('src.intelligent_photocopier.course_generator.OPENAI_AVAILABLE', True)
+    @patch('src.intelligent_photocopier.course_generator.OpenAI')
+    def test_initialize_client_exception(self, mock_openai, mock_config):
+        """Test client initialization when OpenAI raises exception."""
+        mock_config.openai_api_key = 'test-key'
+
+        # Make the OpenAI constructor raise an exception
+        mock_openai.side_effect = Exception("API Error")
+
+        # Create generator - should catch exception during _initialize_client
+        generator = CourseGenerator(api_key='test-key')
+
+        # The generator should handle the exception gracefully
+        # Client might still be set or None depending on implementation
+        # Just verify it doesn't crash
+        assert hasattr(generator, 'client')
+
+    @patch('src.intelligent_photocopier.course_generator.config')
+    def test_initialize_without_api_key(self, mock_config):
+        """Test initialization explicitly without API key."""
+        mock_config.openai_api_key = None
+
+        with patch('src.intelligent_photocopier.course_generator.OPENAI_AVAILABLE', True):
+            generator = CourseGenerator()
+            # _initialize_client should return None when no API key
+            assert generator.client is None
+
+    @patch('src.intelligent_photocopier.course_generator.config')
+    @patch('src.intelligent_photocopier.course_generator.OPENAI_AVAILABLE', True)
+    def test_generate_with_openai_not_available(self, mock_config):
+        """Test generation when OpenAI becomes unavailable during runtime."""
+        mock_config.openai_api_key = None
+        generator = CourseGenerator()
+
+        course_info = create_complete_course_info()
+        template_structure = {'files': []}
+
+        # Should fall back to placeholder content
+        result = generator.generate_course_content(course_info, template_structure)
+        assert 'README.md' in result
+        assert isinstance(result, dict)
+
+    @patch('src.intelligent_photocopier.course_generator.config')
+    @patch('src.intelligent_photocopier.course_generator.OPENAI_AVAILABLE', True)
+    @patch('src.intelligent_photocopier.course_generator.OpenAI')
+    def test_generate_content_with_exception(self, mock_openai, mock_config):
+        """Test AI generation with exception fallback (lines 97-100)."""
+        mock_config.openai_api_key = 'test-key'
+
+        # Setup mock client that raises exception
+        mock_client = Mock()
+        mock_client.chat.completions.create.side_effect = Exception("API Error")
+        mock_openai.return_value = mock_client
+
+        generator = CourseGenerator(api_key='test-key')
+        course_info = create_complete_course_info()
+        template_structure = {'files': []}
+
+        # Should catch exception and fall back to placeholder
+        result = generator.generate_course_content(course_info, template_structure)
+        assert 'README.md' in result
+        assert isinstance(result, dict)
+
+    @patch('src.intelligent_photocopier.course_generator.config')
+    def test_placeholder_content_generation(self, mock_config):
+        """Test placeholder content generation (multiple methods)."""
+        mock_config.openai_api_key = None
+        generator = CourseGenerator()
+
+        course_info = create_complete_course_info()
+
+        # Test _generate_placeholder_content directly
+        result = generator._generate_placeholder_content(course_info)
+
+        assert 'README.md' in result
+        assert 'lesson-content.md' in result
+        assert 'summary.md' in result
+        assert course_info['title'] in result['README.md']

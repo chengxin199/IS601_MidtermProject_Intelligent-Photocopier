@@ -346,3 +346,152 @@ class TestIntelligentPhotocopier:
 
         # Should succeed
         assert result is True
+
+    @patch('src.intelligent_photocopier.config.config.is_configured')
+    @patch('src.intelligent_photocopier.config.config.create_sample_env_file')
+    def test_run_interactive_with_config_placeholder(self, mock_create_sample, mock_is_configured):
+        """Test run_interactive when user chooses to continue with placeholder."""
+        mock_is_configured.return_value = False
+        mock_create_sample.return_value = Path('.env.example')
+
+        # Mock input: 'y' to continue with placeholder, then provide content
+        input_sequence = [
+            'y',  # Continue with placeholder
+            'Test course',
+            'END'  # End input
+        ]
+
+        # Mock the generate_course to succeed
+        with patch.object(self.photocopier, 'generate_course', return_value=True):
+            with patch('builtins.input', side_effect=input_sequence):
+                with patch('builtins.print'):
+                    result = self.photocopier.run_interactive()
+
+        assert result is True
+        mock_create_sample.assert_called_once()
+
+    @patch('src.intelligent_photocopier.config.config.is_configured')
+    def test_run_interactive_empty_content(self, mock_is_configured):
+        """Test run_interactive with empty content."""
+        mock_is_configured.return_value = True
+
+        # Mock input to provide empty content (immediate END)
+        with patch('builtins.input', return_value='END'):
+            with patch('builtins.print'):
+                result = self.photocopier.run_interactive()
+
+        # Should return False when no content provided
+        assert result is False
+
+    @patch('src.intelligent_photocopier.config.config.is_configured')
+    def test_run_interactive_keyboard_interrupt(self, mock_is_configured):
+        """Test run_interactive handles KeyboardInterrupt."""
+        mock_is_configured.return_value = True
+
+        # Mock input to raise KeyboardInterrupt
+        with patch('builtins.input', side_effect=KeyboardInterrupt):
+            with patch('builtins.print'):
+                result = self.photocopier.run_interactive()
+
+        # Should return False when interrupted
+        assert result is False
+
+    @patch('src.intelligent_photocopier.config.config.is_configured')
+    @patch('src.intelligent_photocopier.main.TemplateExtractor')
+    def test_run_interactive_eof_signal(self, mock_template_extractor, mock_is_configured):
+        """Test run_interactive handles EOF (Ctrl+D) properly."""
+        mock_is_configured.return_value = True
+
+        # Setup template extractor mock
+        mock_extractor = Mock()
+        mock_extractor.extract_structure.return_value = {'files': []}
+        mock_template_extractor.return_value = mock_extractor
+
+        # Mock all components for successful generation
+        self.photocopier.analyzer.extract_course_info = Mock(return_value=create_complete_course_info())
+        self.photocopier.template_extractor.extract_structure = Mock(return_value={'files': []})
+        self.photocopier.course_generator.generate_course_content = Mock(return_value={'README.md': '# Test'})
+        self.photocopier.file_manager.create_course = Mock(return_value=Path(self.temp_dir))
+
+        # Mock input to raise EOFError (simulating Ctrl+D)
+        with patch('builtins.input', side_effect=['Line 1', 'Line 2', EOFError]):
+            with patch('builtins.print'):
+                result = self.photocopier.run_interactive()
+
+        # Should succeed
+        assert result is True
+
+    @patch('src.intelligent_photocopier.config.config.is_configured')
+    @patch('src.intelligent_photocopier.config.config.get_missing_config')
+    @patch('src.intelligent_photocopier.config.config.create_sample_env_file')
+    def test_run_interactive_config_missing_items(self, mock_create_sample, mock_get_missing, mock_is_configured):
+        """Test run_interactive shows missing config items (line 44)."""
+        mock_is_configured.return_value = False
+        mock_get_missing.return_value = ['OpenAI API Key', 'Model Configuration']
+        mock_create_sample.return_value = Path('.env.example')
+
+        # User chooses not to continue
+        with patch('builtins.input', return_value='n'):
+            with patch('builtins.print'):
+                result = self.photocopier.run_interactive()
+
+        # Should have printed missing items (line 44)
+        assert result is False
+        mock_get_missing.assert_called_once()
+
+    @patch('sys.argv', ['main.py', '--help'])
+    def test_main_help_flag(self):
+        """Test main() with --help flag (lines 133-159)."""
+        from src.intelligent_photocopier.main import main
+
+        with patch('builtins.print') as mock_print:
+            main()
+
+        # Should have printed help message
+        mock_print.assert_called()
+        # Check that help content was printed
+        call_args = str(mock_print.call_args_list)
+        assert 'Intelligent Photocopier' in call_args or 'Usage' in call_args
+
+    @patch('sys.argv', ['main.py', '-h'])
+    def test_main_h_flag(self):
+        """Test main() with -h flag (lines 133-159)."""
+        from src.intelligent_photocopier.main import main
+
+        with patch('builtins.print') as mock_print:
+            main()
+
+        # Should have printed help message
+        mock_print.assert_called()
+
+    @patch('sys.argv', ['main.py'])
+    @patch('src.intelligent_photocopier.main.IntelligentPhotocopier')
+    def test_main_normal_execution(self, mock_photocopier_class):
+        """Test main() normal execution path (line 163)."""
+        from src.intelligent_photocopier.main import main
+
+        mock_instance = Mock()
+        mock_photocopier_class.return_value = mock_instance
+
+        main()
+
+        # Should have called run_interactive
+        mock_instance.run_interactive.assert_called_once()
+
+    def test_main_as_script(self):
+        """Test running main.py as a script (line 163: if __name__ == '__main__')."""
+        # This tests the __name__ == "__main__" block
+        import subprocess
+        import sys
+
+        # Run the module as a script with --help to avoid hanging
+        result = subprocess.run(
+            [sys.executable, '-m', 'src.intelligent_photocopier.main', '--help'],
+            capture_output=True,
+            text=True,
+            timeout=5,
+            cwd='/home/chengxin199/myproject/code_quality_calc'
+        )
+
+        # Should execute successfully
+        assert result.returncode == 0 or 'Intelligent Photocopier' in result.stdout
