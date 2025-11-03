@@ -65,33 +65,94 @@ class IntelligentPhotocopier:
             print("✅ OpenAI API configured")
             print()
 
-        print("Please paste your complete course README content below.")
-        print("(Press Ctrl+D when finished, or type 'END' on a new line)")
-        print("-" * 50)
+        # Choose input method
+        print("📝 Choose input method:")
+        print("1. 📋 Paste course content directly")
+        print("2. 📁 Select from material library")
+        print()
 
-        # Collect user input
-        content_lines = []
-        try:
-            while True:
-                try:
-                    line = input()
-                    if line.strip() == "END":
+        choice = input("Enter your choice (1 or 2): ").strip()
+
+        if choice == "2":
+            # Use material library
+            content = self._select_from_material_library()
+            if content is None:
+                return False
+        else:
+            # Original paste method
+            print()
+            print("Please paste your complete course README content below.")
+            print("(Press Ctrl+D when finished, or type 'END' on a new line)")
+            print("-" * 50)
+
+            # Collect user input
+            content_lines = []
+            try:
+                while True:
+                    try:
+                        line = input()
+                        if line.strip() == "END":
+                            break
+                        content_lines.append(line)
+                    except EOFError:
                         break
-                    content_lines.append(line)
-                except EOFError:
-                    break
-        except KeyboardInterrupt:
-            print("\n❌ Generation cancelled by user.")
-            return False
+            except KeyboardInterrupt:
+                print("\n❌ Generation cancelled by user.")
+                return False
 
-        if not content_lines:
-            print("❌ No content provided. Exiting.")
-            return False
+            if not content_lines:
+                print("❌ No content provided. Exiting.")
+                return False
 
-        user_content = "\n".join(content_lines)
+            user_content = "\n".join(content_lines)
 
         print("\n🔍 Analyzing course content...")
         return self.generate_course(user_content)
+
+    def _select_from_material_library(self):
+        """Display material library and let user select a file."""
+        print()
+        print("📚 Available Materials:")
+        print("-" * 50)
+
+        materials = self.analyzer.list_available_materials()
+
+        if not materials:
+            print("❌ No materials found in material_context/ directory")
+            print("💡 Add .md files to material_context/ to use this feature")
+            return None
+
+        for i, material in enumerate(materials, 1):
+            print(f"{i}. {material['name']}")
+
+        print()
+        print("0. Cancel and return")
+        print()
+
+        try:
+            choice = input("Select material number: ").strip()
+            choice_num = int(choice)
+
+            if choice_num == 0:
+                print("Cancelled.")
+                return None
+
+            if 1 <= choice_num <= len(materials):
+                selected = materials[choice_num - 1]
+                print(f"\n📖 Loading: {selected['filename']}")
+                content = self.analyzer.read_material_file(selected['path'])
+                print(f"✅ Loaded {len(content)} characters")
+                return content
+            else:
+                print("❌ Invalid selection")
+                return None
+
+        except (ValueError, IndexError):
+            print("❌ Invalid input")
+            return None
+        except KeyboardInterrupt:
+            print("\n❌ Cancelled by user")
+            return None
 
     def generate_course(self, user_content: str) -> bool:
         """Generate a course based on user content."""

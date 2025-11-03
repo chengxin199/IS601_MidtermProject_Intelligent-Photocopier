@@ -7,6 +7,7 @@ key information like course title, objectives, and requirements.
 
 import re
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any, Dict, List
 
 
@@ -29,12 +30,36 @@ class ContentAnalyzer:
 
     def __init__(self):
         self.course_counter = self._get_next_course_number()
+        self.material_context_dir = Path("material_context")
 
     def _get_next_course_number(self) -> str:
         """Determine the next available course number."""
         # TODO: Scan existing Lessons directory to find next available number
         # For now, default to B1
         return "B1"
+
+    def list_available_materials(self) -> List[Dict[str, str]]:
+        """List all available material files in material_context/ directory."""
+        materials = []
+        if not self.material_context_dir.exists():
+            return materials
+
+        for file_path in sorted(self.material_context_dir.glob("*.md")):
+            if file_path.name.lower() == "readme.md":
+                continue  # Skip README
+            materials.append(
+                {"name": file_path.stem, "path": str(file_path), "filename": file_path.name}
+            )
+        return materials
+
+    def read_material_file(self, file_path: str) -> str:
+        """Read content from a material file."""
+        path = Path(file_path)
+        if not path.exists():
+            raise FileNotFoundError(f"Material file not found: {file_path}")
+
+        with open(path, encoding="utf-8") as f:
+            return f.read()
 
     def extract_course_info(self, content: str) -> Dict[str, Any]:
         """Extract structured course information from user content."""
