@@ -30,7 +30,7 @@ class IntelligentPhotocopier:
         self.course_generator = CourseGenerator()
         self.file_manager = FileManager(self.lessons_path)
 
-    def run_interactive(self):
+    def run_interactive(self):  # pylint: disable=too-many-branches,too-many-statements
         """Run the interactive course generation process."""
         print("🤖 Intelligent Photocopier - AI Course Generator")
         print("=" * 50)
@@ -142,7 +142,7 @@ class IntelligentPhotocopier:
             if 1 <= choice_num <= len(materials):
                 selected = materials[choice_num - 1]
                 print(f"\n📖 Loading: {selected['filename']}")
-                content = self.analyzer.read_material_file(selected['path'])
+                content = self.analyzer.read_material_file(selected["path"])
                 print(f"✅ Loaded {len(content)} characters")
                 return content
             else:

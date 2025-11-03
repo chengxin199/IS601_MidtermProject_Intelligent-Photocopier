@@ -360,7 +360,12 @@ class TestIntelligentPhotocopier:
         self.photocopier.file_manager.create_course = Mock(return_value=Path(self.temp_dir))
 
         # Mock input to provide choice, content and end signal
-        input_sequence = ["1", "Test course content", "More content", "END"]  # Choose paste, content, end
+        input_sequence = [
+            "1",
+            "Test course content",
+            "More content",
+            "END",
+        ]  # Choose paste, content, end
 
         with patch("builtins.input", side_effect=input_sequence):
             with patch("builtins.print"):
@@ -377,7 +382,12 @@ class TestIntelligentPhotocopier:
         mock_create_sample.return_value = Path(".env.example")
 
         # Mock input: 'y' to continue with placeholder, '1' for paste method, then provide content
-        input_sequence = ["y", "1", "Test course", "END"]  # Continue with placeholder, choose paste, content, end
+        input_sequence = [
+            "y",
+            "1",
+            "Test course",
+            "END",
+        ]  # Continue with placeholder, choose paste, content, end
 
         # Mock the generate_course to succeed
         with patch.object(self.photocopier, "generate_course", return_value=True):
@@ -551,6 +561,7 @@ class TestMaterialLibraryFeature:
     def teardown_method(self):
         """Clean up test environment."""
         import shutil
+
         if Path(self.temp_dir).exists():
             shutil.rmtree(self.temp_dir)
 
@@ -615,6 +626,7 @@ class TestMaterialLibraryFeature:
             assert content is None
         finally:
             import shutil
+
             shutil.rmtree(empty_dir)
 
     @patch("builtins.input", return_value="1")
@@ -631,6 +643,7 @@ class TestMaterialLibraryFeature:
             assert content is None
         finally:
             import shutil
+
             shutil.rmtree(no_mat_dir)
 
     @patch("builtins.input", side_effect=["2", "1"])

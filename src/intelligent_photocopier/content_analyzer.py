@@ -40,7 +40,7 @@ class ContentAnalyzer:
 
     def list_available_materials(self) -> List[Dict[str, str]]:
         """List all available material files in material_context/ directory."""
-        materials = []
+        materials: List[Dict[str, str]] = []
         if not self.material_context_dir.exists():
             return materials
 
