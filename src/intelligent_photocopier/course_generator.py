@@ -527,8 +527,8 @@ Generate 3-5 practical exercises suitable for {course_info['level'].lower()} lev
                     },
                     {"role": "user", "content": prompt},
                 ],
-                max_tokens=2500,
-                temperature=0.7,
+                max_tokens=config.max_tokens,
+                temperature=config.temperature,
             )
 
             content = response.choices[0].message.content
@@ -599,8 +599,8 @@ Generate a well-structured Markdown document that students can learn from."""
                     },
                     {"role": "user", "content": prompt},
                 ],
-                max_tokens=2500,
-                temperature=0.5,
+                max_tokens=config.max_tokens,
+                temperature=config.temperature,
             )
 
             content = response.choices[0].message.content
