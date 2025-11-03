@@ -407,8 +407,8 @@ class TestIntelligentPhotocopier:
         """Test run_interactive handles KeyboardInterrupt."""
         mock_is_configured.return_value = True
 
-        # Mock input to raise KeyboardInterrupt
-        with patch("builtins.input", side_effect=KeyboardInterrupt):
+        # Mock input: first return "1" for paste method, then raise KeyboardInterrupt
+        with patch("builtins.input", side_effect=["1", KeyboardInterrupt]):
             with patch("builtins.print"):
                 result = self.photocopier.run_interactive()
 
@@ -436,8 +436,8 @@ class TestIntelligentPhotocopier:
         )
         self.photocopier.file_manager.create_course = Mock(return_value=Path(self.temp_dir))
 
-        # Mock input to raise EOFError (simulating Ctrl+D)
-        with patch("builtins.input", side_effect=["Line 1", "Line 2", EOFError]):
+        # Mock input: choose paste method (1), then provide content, then raise EOFError (simulating Ctrl+D)
+        with patch("builtins.input", side_effect=["1", "Line 1", "Line 2", EOFError]):
             with patch("builtins.print"):
                 result = self.photocopier.run_interactive()
 
