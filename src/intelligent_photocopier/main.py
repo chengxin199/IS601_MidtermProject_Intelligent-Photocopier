@@ -73,10 +73,12 @@ class IntelligentPhotocopier:
 
         choice = input("Enter your choice (1 or 2): ").strip()
 
+        user_content = None
+
         if choice == "2":
             # Use material library
-            content = self._select_from_material_library()
-            if content is None:
+            user_content = self._select_from_material_library()
+            if user_content is None:
                 return False
         else:
             # Original paste method

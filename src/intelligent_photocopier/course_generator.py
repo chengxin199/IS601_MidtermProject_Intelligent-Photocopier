@@ -86,8 +86,8 @@ class CourseGenerator:
                 course_info
             )
 
-            # Generate solutions
-            content["solutions/practice_solution.py"] = self._generate_ai_practice_solution(
+            # Generate solutions (Markdown format for better documentation)
+            content["solutions/practice_solution.md"] = self._generate_ai_practice_solution(
                 course_info
             )
 
@@ -543,23 +543,48 @@ Generate 3-5 practical exercises suitable for {course_info['level'].lower()} lev
             return self._generate_placeholder_exercise_instructions(course_info)
 
     def _generate_ai_practice_solution(self, course_info: Dict[str, Any]) -> str:
-        """Generate practice solution using AI."""
+        """Generate practice solution using AI in Markdown format."""
         if not self.client:
-            return f"# {course_info['title']} - Practice Solution\n\n# TODO: Add practice solution code"
+            return f"# {course_info['title']} - Practice Solution\n\n## TODO\nAdd practice solution code"
 
-        prompt = f"""Create a complete Python code solution that demonstrates "{course_info['title']}".
+        prompt = f"""Create a comprehensive practice solution document in Markdown format for "{course_info['title']}".
 
 Learning Objectives to demonstrate:
 {chr(10).join([f"- {obj}" for obj in course_info['objectives']])}
 
 Requirements:
-1. Complete, working Python code
-2. Clear comments explaining key concepts
-3. Demonstrates best practices
-4. Includes error handling where appropriate
-5. Modular, well-structured code
+1. Start with a brief introduction explaining the solution approach
+2. Include multiple solution examples (basic, intermediate, advanced if applicable)
+3. Use proper Markdown formatting with code blocks using ```python
+4. Add clear comments within code explaining key concepts
+5. Include explanations between code blocks
+6. Demonstrate best practices and error handling
+7. End with a "Key Takeaways" section
 
-Generate practical code that students can study and learn from."""
+Format structure:
+# Practice Solution - [Title]
+
+## Overview
+Brief explanation...
+
+## Solution 1: Basic Implementation
+```python
+# Well-commented code
+```
+
+## Solution 2: Enhanced Implementation (if applicable)
+```python
+# More advanced code
+```
+
+## Explanation
+Detailed explanation of the approach...
+
+## Key Takeaways
+- Important points learned
+- Best practices applied
+
+Generate a well-structured Markdown document that students can learn from."""
 
         try:
             if not self.client:
@@ -570,11 +595,11 @@ Generate practical code that students can study and learn from."""
                 messages=[
                     {
                         "role": "system",
-                        "content": "You are an expert Python developer creating educational code examples. Write clean, well-commented code that demonstrates best practices.",
+                        "content": "You are an expert Python developer creating educational documentation. Write well-structured Markdown documents with clear code examples and explanations.",
                     },
                     {"role": "user", "content": prompt},
                 ],
-                max_tokens=2000,
+                max_tokens=2500,
                 temperature=0.5,
             )
 
@@ -635,21 +660,40 @@ Generate practical code that students can study and learn from."""
 """
 
     def _generate_placeholder_practice_solution(self, course_info: Dict[str, Any]) -> str:
-        """Generate placeholder practice solution."""
-        return f'''"""
-{course_info['title']} - Practice Solution
+        """Generate placeholder practice solution in Markdown format."""
+        return f'''# Practice Solution - {course_info['title']}
 
-This module demonstrates the key concepts covered in the lesson.
+## Overview
+This document demonstrates the key concepts covered in the lesson.
+
+## Learning Objectives
+{chr(10).join([f"- {obj}" for obj in course_info['objectives']])}
+
+## Solution 1: Basic Implementation
+
+```python
 """
+{course_info['title']} - Basic Solution
 
-# TODO: Add complete implementation demonstrating:
-{chr(10).join([f"# - {obj}" for obj in course_info['objectives']])}
+This example demonstrates the core concepts.
+"""
 
 def main():
     """Main function demonstrating key concepts."""
     print("Practice solution for {course_info['title']}")
     # TODO: Add implementation
+    pass
 
 if __name__ == "__main__":
     main()
+```
+
+## Explanation
+// TODO: Add detailed explanation of the solution approach
+
+## Key Takeaways
+// TODO: Add important points learned from this solution
+
+## Next Steps
+// TODO: Suggest how to extend or improve this solution
 '''
