@@ -236,8 +236,7 @@ cp .env.example .env
 
 ### 1. Check Documentation
 - [User Guide](user-guide.md) - Usage instructions
-- [Technical Architecture](technical-architecture.md) - System details
-- [Implementation Journey](implementation-journey.md) - Development insights
+- [Setup Guide](INTELLIGENT_PHOTOCOPIER_GUIDE.md) - Installation and configuration
 
 ### 2. Review Examples
 - Generated courses in `Lessons/` directory

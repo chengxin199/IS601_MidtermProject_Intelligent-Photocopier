@@ -130,20 +130,10 @@ python src/intelligent_photocopier/demo.py
 
 ## 📖 Complete Documentation
 
-### **Setup and Configuration**
-- 📋 [**Setup Guide**](INTELLIGENT_PHOTOCOPIER_GUIDE.md) — Complete installation and configuration
-- 🔧 [**Implementation Details**](IMPLEMENTATION_SUMMARY.md) — Technical architecture and design decisions
-- 📚 [**API Documentation**](docs/index.md) — Detailed API reference and usage patterns
-
-### **Usage Examples**
-- 🎯 [**Course Creation Workflow**](docs/course-creation-workflow.md) — Step-by-step course generation process
-- 💡 [**Best Practices**](docs/best-practices.md) — Tips for creating effective course content
+### **Setup and Usage**
+- 📋 [**Setup Guide**](docs/INTELLIGENT_PHOTOCOPIER_GUIDE.md) — Complete installation and configuration
+- � [**User Guide**](docs/user-guide.md) — Detailed usage instructions and examples
 - 🔍 [**Troubleshooting**](docs/troubleshooting.md) — Common issues and solutions
-
-### **Advanced Features**
-- 🎨 [**Customizing AI Prompts**](docs/prompt-customization.md) — Tailor content generation to your needs
-- 🔧 [**Configuration Options**](docs/configuration.md) — Environment variables and settings
-- 🚀 [**Performance Optimization**](docs/performance.md) — Tips for efficient course generation
 
 ---
 
@@ -184,7 +174,7 @@ Learn to write resilient code that fails fast, communicates intent, and recovers
 
 **Location**: [`Lessons/A1-Defensive-Programming/`](Lessons/A1-Defensive-Programming/)
 
-**🚀 Quick Start**: Follow the complete [**Defensive Programming Learning Guide**](DEFENSIVE_PROGRAMMING_GUIDE.md) for step-by-step instructions!
+**🚀 Quick Start**: Review the [lesson content](Lessons/A1-Defensive-Programming/lesson-content.md) and explore the [practice exercises](Lessons/A1-Defensive-Programming/reference/exercise_instructions.md)!
 
 ### 🔮 **Intelligent Photocopier: AI Course Generator**
 **NEW**: AI-powered course creation system that generates new programming courses using the A1 template as a foundation.
@@ -311,19 +301,14 @@ make security
 make qa
 ```
 
-## 🎯 Learning Path
+## � Learning Path
 
 This project includes a **comprehensive learning system** with multiple tracks designed for professional development:
 
-### 📚 **Core Development Guide**
-**Start here:** [`docs/index.md`](docs/index.md) — Complete textbook with 15+ chapters
-
-**Quick navigation:**
-- 🚀 [Project Overview](docs/01-overview.md) — Understanding the goals
-- ⚙️ [Setup Guide](docs/02-setup.md) — Detailed environment setup
-- 🧪 [Testing](docs/05-testing.md) — Achieving 100% test coverage
-- 💻 [VS Code Setup](docs/09-vscode.md) — Professional IDE configuration
-- 🔄 [CI/CD](docs/08-ci.md) — Automated quality checks
+### 📚 **Documentation**
+- 📋 [**Setup Guide**](docs/INTELLIGENT_PHOTOCOPIER_GUIDE.md) — Get started quickly
+- � [**User Guide**](docs/user-guide.md) — Complete usage instructions
+- 🔍 [**Troubleshooting**](docs/troubleshooting.md) — Solve common issues
 
 ### 🛡️ **Defensive Programming Course**
 **Master professional coding practices:** [`Lessons/A1-Defensive-Programming/`](Lessons/A1-Defensive-Programming/)
@@ -418,10 +403,9 @@ pytest --cov=src --cov-report=term-missing
 ```
 
 ### **Comprehensive Support**
-- 📖 **Detailed troubleshooting**: [`docs/12-troubleshooting.md`](docs/12-troubleshooting.md)
-- 🔧 **Configuration guide**: [`docs/appendix-configs.md`](docs/appendix-configs.md)
-- 💼 **Career guidance**: [`docs/careers.md`](docs/careers.md)
-- 📝 **Glossary**: [`docs/glossary.md`](docs/glossary.md)
+- 📖 **User Guide**: [`docs/user-guide.md`](docs/user-guide.md)
+- 🔧 **Setup Instructions**: [`docs/INTELLIGENT_PHOTOCOPIER_GUIDE.md`](docs/INTELLIGENT_PHOTOCOPIER_GUIDE.md)
+- � **Troubleshooting**: [`docs/troubleshooting.md`](docs/troubleshooting.md)
 
 ## 🌟 Why This Approach Works
 
@@ -442,10 +426,10 @@ The patterns you learn here scale from simple calculators to complex distributed
 
 ## 📈 Next Steps
 
-1. **Start Learning**: Open [`docs/index.md`](docs/index.md) for the complete guide
-2. **Master Defensive Programming**: Follow the [**Defensive Programming Learning Guide**](DEFENSIVE_PROGRAMMING_GUIDE.md) 🛡️
-3. **Try Exercises**: Each chapter includes hands-on activities
+1. **Start Learning**: Review the [**Setup Guide**](docs/INTELLIGENT_PHOTOCOPIER_GUIDE.md) to get started
+2. **Master Defensive Programming**: Explore [A1 Lesson Content](Lessons/A1-Defensive-Programming/lesson-content.md) 🛡️
+3. **Try Exercises**: Each lesson includes hands-on activities
 4. **Build Your Version**: Fork this repo and customize it
-5. **Join the Community**: Share your progress and get help
+5. **Generate Courses**: Use the AI-powered course generator
 
-**Ready to build professional-grade Python software?** [Start your journey here →](docs/index.md)
+**Ready to build professional-grade Python software?** [Start your journey here →](docs/INTELLIGENT_PHOTOCOPIER_GUIDE.md)
