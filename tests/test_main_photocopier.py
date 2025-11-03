@@ -646,9 +646,12 @@ class TestMaterialLibraryFeature:
 
             shutil.rmtree(no_mat_dir)
 
+    @patch("src.intelligent_photocopier.config.config.is_configured", return_value=True)
     @patch("builtins.input", side_effect=["2", "1"])
     @patch("src.intelligent_photocopier.main.IntelligentPhotocopier.generate_course")
-    def test_run_interactive_with_material_library(self, mock_generate, mock_input):
+    def test_run_interactive_with_material_library(
+        self, mock_generate, mock_input, mock_is_configured
+    ):
         """Test run_interactive choosing material library option."""
         mock_generate.return_value = True
 
@@ -660,8 +663,9 @@ class TestMaterialLibraryFeature:
         call_args = mock_generate.call_args[0][0]
         assert "Course A" in call_args
 
+    @patch("src.intelligent_photocopier.config.config.is_configured", return_value=True)
     @patch("builtins.input", side_effect=["2", "0"])
-    def test_run_interactive_material_library_cancel(self, mock_input):
+    def test_run_interactive_material_library_cancel(self, mock_input, mock_is_configured):
         """Test run_interactive with material library selection cancelled."""
         result = self.photocopier.run_interactive()
 
