@@ -51,7 +51,7 @@ Lessons/A2-dry-cohesion-coupling-clean-structure/
 │   ├── best_practices.md       # Industry best practices
 │   └── exercise_instructions.md # Hands-on coding exercises
 ├── solutions/
-│   └── practice_solution.py    # Working code examples
+│   └── practice_solution.md    # Working code examples
 └── tests/
     ├── practice_module.py      # Practice exercises
     └── test_practice.py        # Test cases
@@ -87,52 +87,23 @@ python src/intelligent_photocopier/demo.py
 
 ## 🎓 Course Generation Examples
 
-### **Generated Course: Docker Containerization**
-**Input**: Basic Docker outline
-**Output**: [`Lessons/D1-docker-containerization-best-practices/`](Lessons/D1-docker-containerization-best-practices/)
+### **Generated Course: Regular Expressions and Text Processing**
+**Input**: B5 course material from library
+**Output**: [`Lessons/B5-regular-expressions-and-text-processing/`](Lessons/B5-regular-expressions-and-text-processing/)
 
 **What was generated**:
-- ✅ 85-line professional README with emojis and clear structure
-- ✅ 200+ lines of detailed lesson content with code examples
-- ✅ Comprehensive quick reference guide for Docker commands
-- ✅ Best practices document with security considerations
-- ✅ Step-by-step exercise instructions with acceptance criteria
-- ✅ Complete Python code demonstrating containerization concepts
+- ✅ Professional README with course overview and learning objectives
+- ✅ Comprehensive lesson content with regex patterns and examples
+- ✅ Quick reference guide for common regex operations
+- ✅ Best practices for text processing and validation
+- ✅ Hands-on exercise instructions with practical examples
+- ✅ Practice solutions with Markdown format documentation
 
-### **Generated Course: DRY Programming Principles**
-**Input**: Refactoring and code organization outline
-**Output**: [`Lessons/A2-dry-cohesion-coupling-clean-structure/`](Lessons/A2-dry-cohesion-coupling-clean-structure/)
-
-**What was generated**:
-- ✅ Professional course structure with learning objectives
-- ✅ In-depth content covering DRY principles and code organization
-- ✅ Practical refactoring examples and anti-patterns
-- ✅ Reference materials for industry-standard practices
-
-## 🛠️ Technical Architecture
-
-### **AI Integration**
-- **Model**: OpenAI GPT-4o-mini for optimal cost/quality balance
-- **Content Types**: 7 specialized AI prompts for different content types
-- **Fallback System**: Graceful degradation to placeholder content if API unavailable
-- **Smart Naming**: Automatic course directory naming with descriptive slugs
-
-### **Template Analysis**
-- **Source Template**: Uses A1-Defensive-Programming as structural blueprint
-- **Content Extraction**: Analyzes existing course structure and patterns
-- **Format Consistency**: Ensures all generated courses follow the same professional format
-
-### **Quality Assurance**
-- **Error Handling**: Comprehensive error recovery and logging
-- **Content Validation**: Ensures generated content meets quality standards
-- **Type Safety**: Full type annotations with mypy validation
-- **Code Quality**: Passes all lint checks and maintains 93%+ test coverage
-
-## 📖 Complete Documentation
+##  Complete Documentation
 
 ### **Setup and Usage**
 - 📋 [**Setup Guide**](docs/INTELLIGENT_PHOTOCOPIER_GUIDE.md) — Complete installation and configuration
-- � [**User Guide**](docs/user-guide.md) — Detailed usage instructions and examples
+- 📚 [**User Guide**](docs/user-guide.md) — Detailed usage instructions and examples
 - 🔍 [**Troubleshooting**](docs/troubleshooting.md) — Common issues and solutions
 
 ---
@@ -301,13 +272,13 @@ make security
 make qa
 ```
 
-## � Learning Path
+## 🎓 Learning Path
 
 This project includes a **comprehensive learning system** with multiple tracks designed for professional development:
 
 ### 📚 **Documentation**
 - 📋 [**Setup Guide**](docs/INTELLIGENT_PHOTOCOPIER_GUIDE.md) — Get started quickly
-- � [**User Guide**](docs/user-guide.md) — Complete usage instructions
+- 📚 [**User Guide**](docs/user-guide.md) — Complete usage instructions
 - 🔍 [**Troubleshooting**](docs/troubleshooting.md) — Solve common issues
 
 ### 🛡️ **Defensive Programming Course**
@@ -405,7 +376,7 @@ pytest --cov=src --cov-report=term-missing
 ### **Comprehensive Support**
 - 📖 **User Guide**: [`docs/user-guide.md`](docs/user-guide.md)
 - 🔧 **Setup Instructions**: [`docs/INTELLIGENT_PHOTOCOPIER_GUIDE.md`](docs/INTELLIGENT_PHOTOCOPIER_GUIDE.md)
-- � **Troubleshooting**: [`docs/troubleshooting.md`](docs/troubleshooting.md)
+- 🔍 **Troubleshooting**: [`docs/troubleshooting.md`](docs/troubleshooting.md)
 
 ## 🌟 Why This Approach Works
 
