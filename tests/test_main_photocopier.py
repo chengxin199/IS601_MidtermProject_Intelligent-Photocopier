@@ -524,3 +524,132 @@ class TestIntelligentPhotocopier:
 
         # Should execute successfully
         assert result.returncode == 0 or "Intelligent Photocopier" in result.stdout
+
+
+class TestMaterialLibraryFeature:
+    """Test the material library selection feature (_select_from_material_library)."""
+
+    def setup_method(self):
+        """Set up test environment with material files."""
+        self.temp_dir = tempfile.mkdtemp()
+
+        # Create material_context directory with test files
+        self.material_dir = Path(self.temp_dir) / "material_context"
+        self.material_dir.mkdir()
+
+        # Create test material files
+        (self.material_dir / "course_a.md").write_text("# Course A\nContent for course A")
+        (self.material_dir / "course_b.md").write_text("# Course B\nContent for course B")
+        (self.material_dir / "README.md").write_text("# README\nShould be skipped")
+
+        # Create photocopier pointing to temp_dir
+        self.photocopier = IntelligentPhotocopier(self.temp_dir)
+
+        # Mock the analyzer's material_context_dir to use our test directory
+        self.photocopier.analyzer.material_context_dir = self.material_dir
+
+    def teardown_method(self):
+        """Clean up test environment."""
+        import shutil
+        if Path(self.temp_dir).exists():
+            shutil.rmtree(self.temp_dir)
+
+    @patch("builtins.input", return_value="1")
+    def test_select_material_valid_choice(self, mock_input):
+        """Test selecting a valid material from library."""
+        content = self.photocopier._select_from_material_library()
+
+        assert content is not None
+        assert "Course A" in content
+        assert "Content for course A" in content
+
+    @patch("builtins.input", return_value="2")
+    def test_select_material_second_choice(self, mock_input):
+        """Test selecting the second material from library."""
+        content = self.photocopier._select_from_material_library()
+
+        assert content is not None
+        assert "Course B" in content
+
+    @patch("builtins.input", return_value="0")
+    def test_select_material_cancel(self, mock_input):
+        """Test cancelling material selection (choice 0)."""
+        content = self.photocopier._select_from_material_library()
+
+        assert content is None
+
+    @patch("builtins.input", return_value="99")
+    def test_select_material_invalid_number(self, mock_input):
+        """Test invalid material selection number."""
+        content = self.photocopier._select_from_material_library()
+
+        assert content is None
+
+    @patch("builtins.input", return_value="invalid")
+    def test_select_material_non_numeric(self, mock_input):
+        """Test non-numeric input for material selection."""
+        content = self.photocopier._select_from_material_library()
+
+        assert content is None
+
+    @patch("builtins.input", side_effect=KeyboardInterrupt)
+    def test_select_material_keyboard_interrupt(self, mock_input):
+        """Test KeyboardInterrupt during material selection."""
+        content = self.photocopier._select_from_material_library()
+
+        assert content is None
+
+    @patch("builtins.input", return_value="1")
+    def test_select_material_no_materials(self, mock_input):
+        """Test material selection when no materials are available."""
+        # Create photocopier with empty material directory
+        empty_dir = tempfile.mkdtemp()
+        try:
+            empty_material_dir = Path(empty_dir) / "material_context"
+            empty_material_dir.mkdir()
+
+            photocopier = IntelligentPhotocopier(empty_dir)
+            photocopier.analyzer.material_context_dir = empty_material_dir
+            content = photocopier._select_from_material_library()
+
+            assert content is None
+        finally:
+            import shutil
+            shutil.rmtree(empty_dir)
+
+    @patch("builtins.input", return_value="1")
+    def test_select_material_directory_missing(self, mock_input):
+        """Test material selection when material_context directory doesn't exist."""
+        # Create photocopier without material directory
+        no_mat_dir = tempfile.mkdtemp()
+        try:
+            photocopier = IntelligentPhotocopier(no_mat_dir)
+            # Point to non-existent directory
+            photocopier.analyzer.material_context_dir = Path(no_mat_dir) / "nonexistent"
+            content = photocopier._select_from_material_library()
+
+            assert content is None
+        finally:
+            import shutil
+            shutil.rmtree(no_mat_dir)
+
+    @patch("builtins.input", side_effect=["2", "1"])
+    @patch("src.intelligent_photocopier.main.IntelligentPhotocopier.generate_course")
+    def test_run_interactive_with_material_library(self, mock_generate, mock_input):
+        """Test run_interactive choosing material library option."""
+        mock_generate.return_value = True
+
+        result = self.photocopier.run_interactive()
+
+        assert result is True
+        mock_generate.assert_called_once()
+        # Check that content passed to generate_course contains material content
+        call_args = mock_generate.call_args[0][0]
+        assert "Course A" in call_args
+
+    @patch("builtins.input", side_effect=["2", "0"])
+    def test_run_interactive_material_library_cancel(self, mock_input):
+        """Test run_interactive with material library selection cancelled."""
+        result = self.photocopier.run_interactive()
+
+        assert result is False
