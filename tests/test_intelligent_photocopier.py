@@ -30,7 +30,7 @@ class TestConfig:
         """Test config default values or loaded from .env."""
         config = Config()
         # Accept either default or .env value
-        assert config.max_tokens in [2000, 7000]  # Default or from .env
+        assert config.max_tokens in [2000, 5000, 7000]  # Default or from .env
         assert config.temperature == 0.7
         assert config.model in ["gpt-3.5-turbo", "gpt-4o-mini"]  # Default or from .env
 

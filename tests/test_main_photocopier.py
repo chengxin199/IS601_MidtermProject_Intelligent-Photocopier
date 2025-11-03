@@ -359,8 +359,8 @@ class TestIntelligentPhotocopier:
         )
         self.photocopier.file_manager.create_course = Mock(return_value=Path(self.temp_dir))
 
-        # Mock input to provide content and end signal
-        input_sequence = ["Test course content", "More content", "END"]  # Signal to end input
+        # Mock input to provide choice, content and end signal
+        input_sequence = ["1", "Test course content", "More content", "END"]  # Choose paste, content, end
 
         with patch("builtins.input", side_effect=input_sequence):
             with patch("builtins.print"):
@@ -376,8 +376,8 @@ class TestIntelligentPhotocopier:
         mock_is_configured.return_value = False
         mock_create_sample.return_value = Path(".env.example")
 
-        # Mock input: 'y' to continue with placeholder, then provide content
-        input_sequence = ["y", "Test course", "END"]  # Continue with placeholder  # End input
+        # Mock input: 'y' to continue with placeholder, '1' for paste method, then provide content
+        input_sequence = ["y", "1", "Test course", "END"]  # Continue with placeholder, choose paste, content, end
 
         # Mock the generate_course to succeed
         with patch.object(self.photocopier, "generate_course", return_value=True):
@@ -393,8 +393,9 @@ class TestIntelligentPhotocopier:
         """Test run_interactive with empty content."""
         mock_is_configured.return_value = True
 
-        # Mock input to provide empty content (immediate END)
-        with patch("builtins.input", return_value="END"):
+        # Mock input to provide empty content (choose paste method, immediate END)
+        input_sequence = ["1", "END"]  # Choose paste, then immediate end
+        with patch("builtins.input", side_effect=input_sequence):
             with patch("builtins.print"):
                 result = self.photocopier.run_interactive()
 
