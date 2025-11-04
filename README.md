@@ -18,6 +18,32 @@ The **Intelligent Photocopier** is an advanced AI-powered system that generates 
 - 🧪 **Exercise instructions** with step-by-step guidance
 - 📝 **Course summaries** and assessment materials
 
+## ⚡ Quick Start Guide
+
+### **Method 1: Material Library (Fastest)**
+```bash
+python -m src.intelligent_photocopier.main
+# Select option 2 → Choose a course (1-6) → Done!
+```
+
+### **Method 2: Custom Content**
+```bash
+python -m src.intelligent_photocopier.main
+# Select option 1 → Paste your outline → Press Ctrl+D or type 'END'
+```
+
+### **Method 3: Quick Start Menu**
+```bash
+python quickstart.py
+# Interactive menu with API testing, demo, and documentation
+```
+
+### **Method 4: Pre-configured Demo**
+```bash
+python src/intelligent_photocopier/demo.py
+# Generates a sample course instantly
+```
+
 ## 🚀 Live Demo — See It in Action
 
 ### **Option 1: Use Material Library (Fastest)**
@@ -109,45 +135,6 @@ Lessons/A2-dry-cohesion-coupling-clean-structure/
 └── tests/
     ├── practice_module.py      # Practice exercises
     └── test_practice.py        # Test cases
-```
-
-## ⚡ Quick Start Guide
-
-### **Method 1: Material Library (Fastest - No Setup Required)**
-```bash
-# Start the interactive course generator
-python -m src.intelligent_photocopier.main
-
-# Choose option 2: "Select from material library"
-# Pick from 6 pre-loaded course outlines (A1, A2, B3, B4, B5, C6)
-# Generate a complete course in seconds!
-```
-
-### **Method 2: Custom Course via Interactive Mode**
-```bash
-# Start the interactive course generator
-python -m src.intelligent_photocopier.main
-
-# Choose option 1: "Paste course content directly"
-# Paste your course outline and press Ctrl+D or type 'END'
-```
-
-### **Method 3: Quick Start Menu**
-```bash
-# Launch the guided setup
-python quickstart.py
-
-# Choose from:
-# 1. API testing
-# 2. Demo generation
-# 3. Interactive mode
-# 4. Documentation
-```
-
-### **Method 3: Pre-configured Demo**
-```bash
-# Generate a sample course instantly
-python src/intelligent_photocopier/demo.py
 ```
 
 ## 🎓 Course Generation Examples
