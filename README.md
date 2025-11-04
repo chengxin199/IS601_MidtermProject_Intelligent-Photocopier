@@ -20,7 +20,61 @@ The **Intelligent Photocopier** is an advanced AI-powered system that generates 
 
 ## 🚀 Live Demo — See It in Action
 
-### **Step 1: Input Course Outline**
+### **Option 1: Use Material Library (Fastest)**
+The Intelligent Photocopier includes 6 pre-loaded course outlines in the `material_context/` directory:
+
+```bash
+# Run interactive mode
+python -m src.intelligent_photocopier.main
+
+# Choose option 2: "Select from material library"
+# Available materials:
+# 1. A1: Defensive Programming, Errors, and Contracts
+# 2. A2: DRY, Cohesion & Coupling, Clean Structure
+# 3. B3: Iterators & Generators
+# 4. B4: Performance Fundamentals
+# 5. B5: Regular Expressions and Text Processing
+# 6. C6: Third-Party Libraries and Package Management
+
+# Select any number (e.g., "5") to generate a complete course!
+```
+
+**Example: Generate B5 Regular Expressions Course**
+```bash
+$ python -m src.intelligent_photocopier.main
+
+🤖 Intelligent Photocopier - AI Course Generator
+==================================================
+✅ OpenAI API configured
+
+📝 Choose input method:
+1. 📋 Paste course content directly
+2. 📁 Select from material library
+
+Enter your choice (1 or 2): 2
+
+📚 Available Materials:
+--------------------------------------------------
+1. A1-defensive-programming
+2. A2-dry-cohesion-coupling
+3. B3-iterators-generators
+4. B4-performance-fundamentals
+5. B5-regular-expressions
+6. C6-third-party-libraries
+
+Select material number: 5
+
+📖 Loading: B5-regular-expressions.md
+✅ Loaded 1542 characters
+
+🔍 Analyzing course content...
+✨ Generated: B5-regular-expressions-and-text-processing
+```
+
+### **Option 2: Paste Your Own Content**
+You can also create custom courses by pasting your outline:
+
+**Step 1: Input Course Outline**
 ```
 A2 DRY, Cohesion & Coupling, Clean Structure
 Duration: 3-4h
@@ -33,14 +87,14 @@ Topics:
 - Dependency seams and adapters
 ```
 
-### **Step 2: AI Processing**
+**Step 2: AI Processing**
 The system automatically:
 1. 🔍 **Analyzes** your content to extract course information
 2. 🧠 **Generates** 7 different content types using AI
 3. 📁 **Creates** a complete course directory structure
 4. ✅ **Validates** content quality and consistency
 
-### **Step 3: Generated Output**
+**Step 3: Generated Output**
 ```
 Lessons/A2-dry-cohesion-coupling-clean-structure/
 ├── README.md                    # Professional course overview
@@ -59,15 +113,26 @@ Lessons/A2-dry-cohesion-coupling-clean-structure/
 
 ## ⚡ Quick Start Guide
 
-### **Method 1: Interactive Mode (Recommended)**
+### **Method 1: Material Library (Fastest - No Setup Required)**
 ```bash
 # Start the interactive course generator
 python -m src.intelligent_photocopier.main
 
-# Paste your course content and press Ctrl+D or type 'END'
+# Choose option 2: "Select from material library"
+# Pick from 6 pre-loaded course outlines (A1, A2, B3, B4, B5, C6)
+# Generate a complete course in seconds!
 ```
 
-### **Method 2: Quick Start Menu**
+### **Method 2: Custom Course via Interactive Mode**
+```bash
+# Start the interactive course generator
+python -m src.intelligent_photocopier.main
+
+# Choose option 1: "Paste course content directly"
+# Paste your course outline and press Ctrl+D or type 'END'
+```
+
+### **Method 3: Quick Start Menu**
 ```bash
 # Launch the guided setup
 python quickstart.py
@@ -151,11 +216,24 @@ Learn to write resilient code that fails fast, communicates intent, and recovers
 **NEW**: AI-powered course creation system that generates new programming courses using the A1 template as a foundation.
 
 **Features:**
-- 🤖 **OpenAI GPT-4 Integration** — Intelligent content generation
+- 🤖 **OpenAI GPT-4o-mini Integration** — Intelligent content generation
+- 📚 **Material Library** — 6 pre-loaded course outlines ready to generate (A1-A2, B3-B5, C6)
+- 🔄 **Dual Input Modes** — Select from material library or paste custom content
 - 📋 **Template-Based Structure** — Uses A1-Defensive-Programming as a blueprint
 - 🎯 **Context-Aware Content** — Generates relevant exercises and examples
 - 📁 **Complete Course Creation** — README, lessons, tests, and reference materials
 - ⚡ **Quick Start Scripts** — Easy setup and testing
+
+**Material Library Courses:**
+```
+material_context/
+├── A1-defensive-programming.md     # Errors, exceptions, contracts
+├── A2-dry-cohesion-coupling.md     # Code structure and refactoring
+├── B3-iterators-generators.md      # Python iterators and generators
+├── B4-performance-fundamentals.md  # Performance optimization
+├── B5-regular-expressions.md       # Text processing and regex
+└── C6-third-party-libraries.md     # Package management
+```
 
 **Quick Start:**
 ```bash
@@ -166,8 +244,10 @@ cp .env.example .env
 # 2. Run the quick start script
 python quickstart.py
 
-# 3. Or use interactive mode
+# 3. Or use interactive mode with material library
 python -m src.intelligent_photocopier.main
+# Choose option 2: "Select from material library"
+# Pick any course (1-6) and generate instantly!
 ```
 
 **Location**: [`src/intelligent_photocopier/`](src/intelligent_photocopier/)
