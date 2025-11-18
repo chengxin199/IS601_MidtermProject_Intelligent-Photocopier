@@ -366,6 +366,14 @@ Generate a comprehensive summary that helps students consolidate their learning 
 
     def _generate_readme(self, course_info: Dict[str, Any]) -> str:
         """Generate README.md content."""
+        topics_section = ""
+        if course_info.get("topics"):
+            topics_list = chr(10).join([f"- {topic}" for topic in course_info["topics"]])
+            topics_section = f"""## Topics Covered
+{topics_list}
+
+"""
+
         return f"""# {course_info['course_id']}: {course_info['title']}
 
 ## Course Overview
@@ -377,10 +385,7 @@ Generate a comprehensive summary that helps students consolidate their learning 
 By the end of this lesson, you will be able to:
 {chr(10).join([f"- {obj}" for obj in course_info['objectives']])}
 
-## Topics Covered
-{chr(10).join([f"- {topic}" for topic in course_info['topics']])}
-
-## Prerequisites
+{topics_section}## Prerequisites
 {chr(10).join([f"- {prereq}" for prereq in course_info['prerequisites']])}
 
 ## Folder Structure

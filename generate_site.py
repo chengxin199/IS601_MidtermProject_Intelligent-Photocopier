@@ -58,7 +58,7 @@ def serve_website() -> None:
     print("📡 Website will be available at: http://localhost:8080")
     print("Press Ctrl+C to stop the server\n")
     try:
-        subprocess.run(["npm", "run", "serve"], cwd=Path(__file__).parent)
+        subprocess.run(["npm", "run", "serve"], check=False, cwd=Path(__file__).parent)
     except KeyboardInterrupt:
         print("\n👋 Server stopped")
     except subprocess.CalledProcessError as e:
@@ -77,7 +77,7 @@ def clean_output() -> bool:
         return False
 
 
-def main() -> None:
+def main() -> None:  # pylint: disable=too-many-branches
     """Main function."""
     print("🌐 Intelligent Photocopier - Website Generator\n")
 
