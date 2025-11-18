@@ -1,3 +1,10 @@
+---
+title: Defensive Programming - Summary
+layout: layouts/base.njk
+tags:
+  - summary
+date: 2025-11-17T20:03:21.601328
+---
 # Lesson Summary: Defensive Programming, Errors, and Contracts
 
 ## 🎯 Learning Objectives Achieved

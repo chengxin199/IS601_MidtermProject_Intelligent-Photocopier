@@ -32,7 +32,7 @@ class TestConfig:
         # Accept either default or .env value
         assert config.max_tokens in [2000, 5000, 7000]  # Default or from .env
         assert config.temperature == 0.7
-        assert config.model in ["gpt-3.5-turbo", "gpt-4o-mini"]  # Default or from .env
+        assert config.model in ["gpt-3.5-turbo", "gpt-4o-mini", "gpt-4.1-mini", "gpt-4"]  # Default or from .env
 
     def test_config_environment_override(self):
         """Test environment variable override."""
@@ -682,3 +682,81 @@ class TestIntegration:
             import shutil
 
             shutil.rmtree(temp_dir)
+
+
+class TestCourseGeneratorFrontMatter:
+    """Test course generator front matter functionality."""
+
+    def test_create_front_matter_basic(self):
+        """Test basic front matter generation."""
+        from src.intelligent_photocopier.course_generator import CourseGenerator
+
+        front_matter = CourseGenerator._create_front_matter(
+            title="Test Course",
+            layout="layouts/course.njk"
+        )
+
+        assert "---" in front_matter
+        assert "title: Test Course" in front_matter
+        assert "layout: layouts/course.njk" in front_matter
+        assert "date:" in front_matter
+
+    def test_create_front_matter_with_metadata(self):
+        """Test front matter with full metadata."""
+        from src.intelligent_photocopier.course_generator import CourseGenerator
+
+        front_matter = CourseGenerator._create_front_matter(
+            title="Python Advanced",
+            layout="layouts/course.njk",
+            course_id="B5",
+            level="Advanced",
+            duration="3-4 hours",
+            description="Learn advanced Python concepts",
+            tags=["python", "advanced", "programming"]
+        )
+
+        assert "courseId: B5" in front_matter
+        assert "level: Advanced" in front_matter
+        assert "duration: 3-4 hours" in front_matter
+        assert 'description: "Learn advanced Python concepts"' in front_matter
+        assert "tags:" in front_matter
+        assert "  - python" in front_matter
+        assert "  - advanced" in front_matter
+
+    def test_create_front_matter_escapes_quotes(self):
+        """Test that quotes in description are properly escaped."""
+        from src.intelligent_photocopier.course_generator import CourseGenerator
+
+        front_matter = CourseGenerator._create_front_matter(
+            title="Test",
+            description='This is a "quoted" description'
+        )
+
+        assert 'description: "This is a \\"quoted\\" description"' in front_matter
+
+    def test_generate_content_with_front_matter(self):
+        """Test that generated content includes front matter."""
+        from src.intelligent_photocopier.course_generator import CourseGenerator
+
+        # Mock course info
+        course_info = {
+            "title": "Test Course",
+            "course_id": "T1",
+            "level": "Beginner",
+            "duration": "2 hours",
+            "description": "Test description",
+            "objectives": ["Learn basics", "Practice coding"],
+            "prerequisites": ["None"],
+        }
+
+        template_structure = {}
+
+        # Create generator without API key (will use placeholder content)
+        generator = CourseGenerator(api_key=None)
+        content = generator.generate_course_content(course_info, template_structure)
+
+        # Check that README has front matter
+        readme = content.get("README.md", "")
+        assert readme.startswith("---")
+        assert "title:" in readme
+        assert "layout:" in readme

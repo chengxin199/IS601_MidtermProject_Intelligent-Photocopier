@@ -1,3 +1,10 @@
+---
+title: Defensive Programming - Python Exceptions
+layout: layouts/base.njk
+tags:
+  - reference
+date: 2025-11-17T20:03:21.602519
+---
 # Python Exception Hierarchy Reference
 
 ## Built-in Exception Hierarchy

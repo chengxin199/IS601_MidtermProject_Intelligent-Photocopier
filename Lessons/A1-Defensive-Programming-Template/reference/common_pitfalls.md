@@ -1,3 +1,10 @@
+---
+title: Defensive Programming - Common Pitfalls
+layout: layouts/base.njk
+tags:
+  - reference
+date: 2025-11-17T20:03:21.601943
+---
 # Common Pitfalls in Defensive Programming
 
 ## 1. Exception Handling Anti-Patterns

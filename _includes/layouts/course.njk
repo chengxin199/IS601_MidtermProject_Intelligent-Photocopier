@@ -1,0 +1,58 @@
+---
+layout: layouts/base.njk
+---
+
+<a href="/" class="back-link">← Back to All Courses</a>
+
+{% if courseId or level or duration %}
+<div class="course-meta">
+  {% if courseId %}
+  <div class="course-meta-item">
+    <strong>📋 Course ID:</strong> {{ courseId }}
+  </div>
+  {% endif %}
+
+  {% if level %}
+  <div class="course-meta-item">
+    <strong>📊 Level:</strong> {{ level }}
+  </div>
+  {% endif %}
+
+  {% if duration %}
+  <div class="course-meta-item">
+    <strong>⏱️ Duration:</strong> {{ duration }}
+  </div>
+  {% endif %}
+
+  {% if date %}
+  <div class="course-meta-item">
+    <strong>📅 Generated:</strong> {{ date | dateFormat }}
+  </div>
+  {% endif %}
+</div>
+{% endif %}
+
+{{ content | safe }}
+
+{% if objectives %}
+<section style="margin-top: 3rem; padding: 2rem; background: #f8f9fa; border-radius: 8px;">
+  <h2>🎯 Learning Objectives</h2>
+  <ul>
+  {% for objective in objectives %}
+    <li>{{ objective }}</li>
+  {% endfor %}
+  </ul>
+</section>
+{% endif %}
+
+<div style="margin-top: 3rem; padding: 2rem; background: #e3f2fd; border-radius: 8px; border-left: 4px solid #2196f3;">
+  <h3>📁 Course Materials</h3>
+  <ul style="margin-left: 0; list-style: none;">
+    <li>📖 <a href="../lesson-content/">Detailed Lesson Content</a></li>
+    <li>📝 <a href="../summary/">Course Summary</a></li>
+    <li>🔍 <a href="../reference/quick_reference/">Quick Reference Guide</a></li>
+    <li>✅ <a href="../reference/best_practices/">Best Practices</a></li>
+    <li>💻 <a href="../reference/exercise_instructions/">Exercise Instructions</a></li>
+    <li>🎯 <a href="../solutions/practice_solution/">Practice Solutions</a></li>
+  </ul>
+</div>

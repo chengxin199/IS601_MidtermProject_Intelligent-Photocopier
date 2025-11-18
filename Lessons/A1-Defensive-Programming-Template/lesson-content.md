@@ -1,3 +1,11 @@
+---
+title: Defensive Programming - Detailed Lessons
+layout: layouts/base.njk
+tags:
+  - lesson
+  - content
+date: 2025-11-17T20:03:21.600688
+---
 # Lesson Content: Defensive Programming, Errors, and Contracts
 
 ## Module 1: EAFP vs LBYL (45 minutes)

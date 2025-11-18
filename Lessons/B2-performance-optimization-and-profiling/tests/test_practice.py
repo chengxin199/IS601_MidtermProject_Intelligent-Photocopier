@@ -1,5 +1,5 @@
 """
-Tests for B5-regular-expressions-and-text-processing practice exercises.
+Tests for B2-performance-optimization-and-profiling practice exercises.
 
 This file contains tests to validate the practice exercises
 and guide students through the learning process.

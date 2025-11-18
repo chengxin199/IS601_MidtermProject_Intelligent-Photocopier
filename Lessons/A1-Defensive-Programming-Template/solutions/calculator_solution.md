@@ -1,3 +1,11 @@
+---
+title: Defensive Programming - Solution
+layout: layouts/base.njk
+tags:
+  - solutions
+  - code
+date: 2025-11-17T20:03:21.603079
+---
 # Reference Solutions
 
 ## Calculator Module Solution

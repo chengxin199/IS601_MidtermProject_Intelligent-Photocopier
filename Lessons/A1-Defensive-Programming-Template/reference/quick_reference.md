@@ -1,3 +1,11 @@
+---
+title: Defensive Programming - Quick Reference
+layout: layouts/base.njk
+tags:
+  - reference
+  - quick-guide
+date: 2025-11-17T20:03:21.602798
+---
 # Quick Reference: Defensive Programming Patterns
 
 ## Exception Hierarchy Template

@@ -1,3 +1,10 @@
+---
+title: Defensive Programming - Exercise Instructions
+layout: layouts/base.njk
+tags:
+  - exercises
+date: 2025-11-17T20:03:21.602200
+---
 # Exercise Instructions: Defensive Programming
 
 ## Overview

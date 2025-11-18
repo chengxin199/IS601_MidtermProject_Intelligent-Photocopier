@@ -466,8 +466,37 @@ The patterns you learn here scale from simple calculators to complex distributed
 
 1. **Start Learning**: Review the [**Setup Guide**](docs/INTELLIGENT_PHOTOCOPIER_GUIDE.md) to get started
 2. **Master Defensive Programming**: Explore [A1 Lesson Content](Lessons/A1-Defensive-Programming/lesson-content.md) 🛡️
-3. **Try Exercises**: Each lesson includes hands-on activities
-4. **Build Your Version**: Fork this repo and customize it
-5. **Generate Courses**: Use the AI-powered course generator
+3. **Generate Static Website**: Create a beautiful course website with [Eleventy](docs/eleventy-integration.md) 🌐
+4. **Try Exercises**: Each lesson includes hands-on activities
+5. **Build Your Version**: Fork this repo and customize it
+6. **Generate Courses**: Use the AI-powered course generator
+
+### 🌐 Static Website Generation
+
+The Intelligent Photocopier now supports generating beautiful static websites from your courses using Eleventy!
+
+**Quick Start:**
+```bash
+# Generate courses as usual
+python -m src.intelligent_photocopier.main
+
+# Install Node.js dependencies
+npm install
+
+# Build and serve website
+npm run serve
+# Visit http://localhost:8080
+```
+
+**Features:**
+- ✨ Professional, responsive design
+- 🎨 Syntax highlighting for code
+- 📱 Mobile-friendly layouts
+- 🚀 Deploy to GitHub Pages, Netlify, Vercel
+- 🔍 SEO-friendly static HTML
+
+**Learn More:** [Eleventy Integration Guide](docs/eleventy-integration.md)
+
+---
 
 **Ready to build professional-grade Python software?** [Start your journey here →](docs/INTELLIGENT_PHOTOCOPIER_GUIDE.md)

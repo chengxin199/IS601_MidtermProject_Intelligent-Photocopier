@@ -1,3 +1,11 @@
+---
+title: Defensive Programming - Best Practices
+layout: layouts/base.njk
+tags:
+  - reference
+  - best-practices
+date: 2025-11-17T20:03:21.601596
+---
 # Defensive Programming Best Practices
 
 ## Core Principles

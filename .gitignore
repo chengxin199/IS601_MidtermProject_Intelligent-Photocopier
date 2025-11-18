@@ -142,3 +142,9 @@ cython_debug/
 student_python_dev_guide
 COURSE_OUTLINE_VISION.md
 ENHANCED_COURSE_VISION.md
+
+# Eleventy / Node.js
+node_modules/
+_site/
+package-lock.json
+.cache/

@@ -5,6 +5,7 @@ This module handles the generation of course content using AI or fallback templa
 """
 
 import logging
+from datetime import datetime
 from typing import Any, Dict
 
 from .config import config
@@ -33,6 +34,42 @@ class CourseGenerator:
             self.client = self._initialize_client() if self.api_key else None
         else:
             self.client = None
+
+    @staticmethod
+    def _create_front_matter(
+        title: str,
+        layout: str = "layouts/course.njk",
+        **metadata,
+    ) -> str:
+        """Create YAML front matter for Eleventy.
+
+        Args:
+            title: Page title
+            layout: Layout template path
+            **metadata: Additional metadata (course_id, level, duration, description, tags)
+        """
+        front_matter = ["---", f"title: {title}", f"layout: {layout}"]
+
+        if course_id := metadata.get("course_id"):
+            front_matter.append(f"courseId: {course_id}")
+        if level := metadata.get("level"):
+            front_matter.append(f"level: {level}")
+        if duration := metadata.get("duration"):
+            front_matter.append(f"duration: {duration}")
+        if description := metadata.get("description"):
+            # Escape quotes in description
+            clean_desc = description.replace('"', '\\"')
+            front_matter.append(f'description: "{clean_desc}"')
+        if tags := metadata.get("tags"):
+            front_matter.append("tags:")
+            for tag in tags:
+                front_matter.append(f"  - {tag}")
+
+        # Add date
+        front_matter.append(f"date: {datetime.now().isoformat()}")
+
+        front_matter.append("---\n")
+        return "\n".join(front_matter)
 
     def _initialize_client(self):
         """Initialize OpenAI client."""
@@ -152,7 +189,20 @@ Generate a complete, professional README that matches the style of high-quality 
             )
 
             content = response.choices[0].message.content
-            return content.strip() if content else ""
+            markdown_content = content.strip() if content else ""
+
+            # Add front matter for Eleventy
+            front_matter = self._create_front_matter(
+                title=course_info["title"],
+                layout="layouts/course.njk",
+                course_id=course_info.get("course_id"),
+                level=course_info.get("level"),
+                duration=course_info.get("duration"),
+                description=course_info.get("description"),
+                tags=["course", "programming", course_info.get("level", "").lower()],
+            )
+
+            return front_matter + markdown_content
 
         except Exception as e:
             logger.error(f"Failed to generate AI README: {e}")
@@ -222,7 +272,19 @@ Generate professional, technical content that teaches the subject thoroughly."""
             )
 
             content = response.choices[0].message.content
-            return content.strip() if content else ""
+            markdown_content = content.strip() if content else ""
+
+            # Add front matter for Eleventy
+            front_matter = self._create_front_matter(
+                title=f"{course_info['title']} - Detailed Lessons",
+                layout="layouts/base.njk",
+                course_id=course_info.get("course_id"),
+                level=course_info.get("level"),
+                duration=course_info.get("duration"),
+                tags=["lesson", "content", course_info.get("level", "").lower()],
+            )
+
+            return front_matter + markdown_content
 
         except Exception as e:
             logger.error(f"Failed to generate AI lesson content: {e}")
@@ -277,7 +339,18 @@ Generate a comprehensive summary that helps students consolidate their learning 
             )
 
             content = response.choices[0].message.content
-            return content.strip() if content else ""
+            markdown_content = content.strip() if content else ""
+
+            # Add front matter for Eleventy
+            front_matter = self._create_front_matter(
+                title=f"{course_info['title']} - Summary",
+                layout="layouts/base.njk",
+                course_id=course_info.get("course_id"),
+                level=course_info.get("level"),
+                tags=["summary", "assessment", course_info.get("level", "").lower()],
+            )
+
+            return front_matter + markdown_content
 
         except Exception as e:
             logger.error(f"Failed to generate AI summary: {e}")
@@ -438,11 +511,18 @@ Generate a practical quick reference that students can use during coding."""
             )
 
             content = response.choices[0].message.content
-            return (
-                content.strip()
-                if content
-                else self._generate_placeholder_quick_reference(course_info)
-            )
+
+            # Add front matter
+            if content:
+                markdown_content = content.strip()
+                front_matter = self._create_front_matter(
+                    title=f"{course_info['title']} - Quick Reference",
+                    layout="layouts/base.njk",
+                    course_id=course_info.get("course_id"),
+                    tags=["reference", "quick-guide"],
+                )
+                return front_matter + markdown_content
+            return self._generate_placeholder_quick_reference(course_info)
 
         except Exception as e:
             logger.error(f"Failed to generate AI quick reference: {e}")
@@ -485,11 +565,18 @@ Make it practical and actionable for {course_info['level'].lower()} level develo
             )
 
             content = response.choices[0].message.content
-            return (
-                content.strip()
-                if content
-                else self._generate_placeholder_best_practices(course_info)
-            )
+
+            # Add front matter
+            if content:
+                markdown_content = content.strip()
+                front_matter = self._create_front_matter(
+                    title=f"{course_info['title']} - Best Practices",
+                    layout="layouts/base.njk",
+                    course_id=course_info.get("course_id"),
+                    tags=["best-practices", "guidelines"],
+                )
+                return front_matter + markdown_content
+            return self._generate_placeholder_best_practices(course_info)
 
         except Exception as e:
             logger.error(f"Failed to generate AI best practices: {e}")
@@ -532,11 +619,18 @@ Generate 3-5 practical exercises suitable for {course_info['level'].lower()} lev
             )
 
             content = response.choices[0].message.content
-            return (
-                content.strip()
-                if content
-                else self._generate_placeholder_exercise_instructions(course_info)
-            )
+
+            # Add front matter
+            if content:
+                markdown_content = content.strip()
+                front_matter = self._create_front_matter(
+                    title=f"{course_info['title']} - Exercise Instructions",
+                    layout="layouts/base.njk",
+                    course_id=course_info.get("course_id"),
+                    tags=["exercises", "practice"],
+                )
+                return front_matter + markdown_content
+            return self._generate_placeholder_exercise_instructions(course_info)
 
         except Exception as e:
             logger.error(f"Failed to generate AI exercise instructions: {e}")
@@ -604,11 +698,18 @@ Generate a well-structured Markdown document that students can learn from."""
             )
 
             content = response.choices[0].message.content
-            return (
-                content.strip()
-                if content
-                else self._generate_placeholder_practice_solution(course_info)
-            )
+
+            # Add front matter
+            if content:
+                markdown_content = content.strip()
+                front_matter = self._create_front_matter(
+                    title=f"{course_info['title']} - Practice Solution",
+                    layout="layouts/base.njk",
+                    course_id=course_info.get("course_id"),
+                    tags=["solutions", "code"],
+                )
+                return front_matter + markdown_content
+            return self._generate_placeholder_practice_solution(course_info)
 
         except Exception as e:
             logger.error(f"Failed to generate AI practice solution: {e}")
