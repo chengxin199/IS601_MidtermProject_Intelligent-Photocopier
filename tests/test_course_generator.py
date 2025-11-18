@@ -372,3 +372,43 @@ class TestCourseGenerator:
         assert "lesson-content.md" in result
         assert "summary.md" in result
         assert course_info["title"] in result["README.md"]
+
+    @patch("src.intelligent_photocopier.course_generator.config")
+    def test_generate_readme_without_topics(self, mock_config):
+        """Test README generation when topics field is missing."""
+        mock_config.openai_api_key = None
+        generator = CourseGenerator()
+
+        course_info = create_complete_course_info()
+        del course_info["topics"]  # Remove topics field
+
+        readme = generator._generate_readme(course_info)
+
+        assert course_info["title"] in readme
+        assert course_info["course_id"] in readme
+        assert "Topics Covered" not in readme  # Should skip topics section
+
+    @patch("src.intelligent_photocopier.course_generator.config")
+    def test_placeholder_lesson_content_details(self, mock_config):
+        """Test detailed lesson content generation."""
+        mock_config.openai_api_key = None
+        generator = CourseGenerator()
+
+        course_info = create_complete_course_info()
+        lesson = generator._generate_lesson_content(course_info)
+
+        assert course_info["title"] in lesson
+        assert "Module 1" in lesson
+        assert "code" in lesson.lower()
+
+    @patch("src.intelligent_photocopier.course_generator.config")
+    def test_placeholder_summary_details(self, mock_config):
+        """Test detailed summary generation."""
+        mock_config.openai_api_key = None
+        generator = CourseGenerator()
+
+        course_info = create_complete_course_info()
+        summary = generator._generate_summary(course_info)
+
+        assert course_info["title"] in summary
+        assert "Key Concepts" in summary or "Summary" in summary
