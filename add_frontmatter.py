@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Add front matter to old course markdown files."""
 
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
 
 files_to_update = [
     # A1 files
