@@ -12,12 +12,7 @@ from pathlib import Path
 def check_node_installed() -> bool:
     """Check if Node.js is installed."""
     try:
-        subprocess.run(
-            ["node", "--version"],
-            check=True,
-            capture_output=True,
-            text=True
-        )
+        subprocess.run(["node", "--version"], check=True, capture_output=True, text=True)
         return True
     except (subprocess.CalledProcessError, FileNotFoundError):
         return False
@@ -26,12 +21,7 @@ def check_node_installed() -> bool:
 def check_npm_installed() -> bool:
     """Check if npm is installed."""
     try:
-        subprocess.run(
-            ["npm", "--version"],
-            check=True,
-            capture_output=True,
-            text=True
-        )
+        subprocess.run(["npm", "--version"], check=True, capture_output=True, text=True)
         return True
     except (subprocess.CalledProcessError, FileNotFoundError):
         return False
@@ -41,11 +31,7 @@ def install_dependencies() -> bool:
     """Install npm dependencies."""
     print("📦 Installing dependencies...")
     try:
-        subprocess.run(
-            ["npm", "install"],
-            check=True,
-            cwd=Path(__file__).parent
-        )
+        subprocess.run(["npm", "install"], check=True, cwd=Path(__file__).parent)
         print("✅ Dependencies installed successfully")
         return True
     except subprocess.CalledProcessError as e:
@@ -57,11 +43,7 @@ def build_website() -> bool:
     """Build the static website using Eleventy."""
     print("🔨 Building website...")
     try:
-        subprocess.run(
-            ["npm", "run", "build"],
-            check=True,
-            cwd=Path(__file__).parent
-        )
+        subprocess.run(["npm", "run", "build"], check=True, cwd=Path(__file__).parent)
         print("✅ Website built successfully")
         print("📁 Output directory: _site/")
         return True
@@ -76,10 +58,7 @@ def serve_website() -> None:
     print("📡 Website will be available at: http://localhost:8080")
     print("Press Ctrl+C to stop the server\n")
     try:
-        subprocess.run(
-            ["npm", "run", "serve"],
-            cwd=Path(__file__).parent
-        )
+        subprocess.run(["npm", "run", "serve"], cwd=Path(__file__).parent)
     except KeyboardInterrupt:
         print("\n👋 Server stopped")
     except subprocess.CalledProcessError as e:
@@ -90,11 +69,7 @@ def clean_output() -> bool:
     """Clean the output directory."""
     print("🧹 Cleaning output directory...")
     try:
-        subprocess.run(
-            ["npm", "run", "clean"],
-            check=True,
-            cwd=Path(__file__).parent
-        )
+        subprocess.run(["npm", "run", "clean"], check=True, cwd=Path(__file__).parent)
         print("✅ Output directory cleaned")
         return True
     except subprocess.CalledProcessError as e:

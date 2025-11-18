@@ -32,7 +32,12 @@ class TestConfig:
         # Accept either default or .env value
         assert config.max_tokens in [2000, 5000, 7000]  # Default or from .env
         assert config.temperature == 0.7
-        assert config.model in ["gpt-3.5-turbo", "gpt-4o-mini", "gpt-4.1-mini", "gpt-4"]  # Default or from .env
+        assert config.model in [
+            "gpt-3.5-turbo",
+            "gpt-4o-mini",
+            "gpt-4.1-mini",
+            "gpt-4",
+        ]  # Default or from .env
 
     def test_config_environment_override(self):
         """Test environment variable override."""
@@ -692,8 +697,7 @@ class TestCourseGeneratorFrontMatter:
         from src.intelligent_photocopier.course_generator import CourseGenerator
 
         front_matter = CourseGenerator._create_front_matter(
-            title="Test Course",
-            layout="layouts/course.njk"
+            title="Test Course", layout="layouts/course.njk"
         )
 
         assert "---" in front_matter
@@ -712,7 +716,7 @@ class TestCourseGeneratorFrontMatter:
             level="Advanced",
             duration="3-4 hours",
             description="Learn advanced Python concepts",
-            tags=["python", "advanced", "programming"]
+            tags=["python", "advanced", "programming"],
         )
 
         assert "courseId: B5" in front_matter
@@ -728,8 +732,7 @@ class TestCourseGeneratorFrontMatter:
         from src.intelligent_photocopier.course_generator import CourseGenerator
 
         front_matter = CourseGenerator._create_front_matter(
-            title="Test",
-            description='This is a "quoted" description'
+            title="Test", description='This is a "quoted" description'
         )
 
         assert 'description: "This is a \\"quoted\\" description"' in front_matter
