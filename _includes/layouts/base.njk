@@ -9,7 +9,7 @@
   <!-- Syntax Highlighting -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
 
-  <!-- Custom Styles -->
+  <!-- Custom Styles - Modern EduTech Design -->
   <style>
     * {
       margin: 0;
@@ -17,130 +17,404 @@
       box-sizing: border-box;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
-      line-height: 1.6;
-      color: #333;
-      background: #f5f5f5;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      line-height: 1.7;
+      color: #1a202c;
+      background: linear-gradient(135deg, #667eea15 0%, #764ba215 50%, #f093fb15 100%);
+      min-height: 100vh;
     }
 
     .container {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 0 20px;
+      padding: 0 2rem;
     }
 
     header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 2rem 0;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      background: linear-gradient(135deg, #0F172A 0%, #1e3a8a 50%, #3B3C98 100%);
+      padding: 5rem 0;
+      margin-bottom: 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Grid background pattern */
+    header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image:
+        linear-gradient(rgba(99, 102, 241, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(99, 102, 241, 0.1) 1px, transparent 1px);
+      background-size: 50px 50px;
+      pointer-events: none;
+      opacity: 0.3;
+    }
+
+    /* Animated light streaks */
+    header::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 50%);
+      animation: rotate 20s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Scattered particles */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) translateX(0px); }
+      33% { transform: translateY(-20px) translateX(10px); }
+      66% { transform: translateY(-10px) translateX(-10px); }
+    }
+
+    header .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: rgba(167, 139, 250, 0.6);
+      border-radius: 50%;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    header .particle:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
+    header .particle:nth-child(2) { top: 60%; left: 20%; animation-delay: 1s; }
+    header .particle:nth-child(3) { top: 40%; left: 80%; animation-delay: 2s; }
+    header .particle:nth-child(4) { top: 70%; left: 70%; animation-delay: 0.5s; }
+    header .particle:nth-child(5) { top: 30%; left: 50%; animation-delay: 1.5s; }
+    header .particle:nth-child(6) { top: 80%; left: 30%; animation-delay: 2.5s; }
+
+    header .container {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4rem;
+    }
+
+    header .header-content {
+      flex: 1;
+      max-width: 700px;
+    }
+
+    header .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    header .logo {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 40px rgba(139, 92, 246, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    header .logo::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      animation: shine 3s ease-in-out infinite;
+    }
+
+    @keyframes shine {
+      0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+      100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    }
+
+    header .logo svg {
+      width: 48px;
+      height: 48px;
+      filter: drop-shadow(0 2px 8px rgba(255, 255, 255, 0.3));
     }
 
     header h1 {
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
+      font-size: 4rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, #ffffff 0%, #c7d2fe 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1.25rem;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+
+    header p {
+      font-size: 1.4rem;
+      color: #cbd5e0;
+      font-weight: 400;
+      line-height: 1.6;
+      letter-spacing: 0.01em;
+      text-shadow: 0 0 20px rgba(167, 139, 250, 0.3), 0 0 40px rgba(167, 139, 250, 0.2);
+    }
+
+    header .illustration {
+      flex-shrink: 0;
+      width: 400px;
+      height: 400px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* 3D AI Brain Illustration */
+    header .ai-brain {
+      position: relative;
+      width: 300px;
+      height: 300px;
+      animation: float-illustration 6s ease-in-out infinite;
+    }
+
+    @keyframes float-illustration {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(5deg); }
+    }
+
+    header .brain-circle {
+      position: absolute;
+      border-radius: 50%;
+      border: 3px solid rgba(139, 92, 246, 0.3);
+    }
+
+    header .brain-circle:nth-child(1) {
+      width: 300px;
+      height: 300px;
+      top: 0;
+      left: 0;
+      animation: pulse 3s ease-in-out infinite;
+    }
+
+    header .brain-circle:nth-child(2) {
+      width: 240px;
+      height: 240px;
+      top: 30px;
+      left: 30px;
+      animation: pulse 3s ease-in-out infinite 0.5s;
+      border-color: rgba(99, 102, 241, 0.4);
+    }
+
+    header .brain-circle:nth-child(3) {
+      width: 180px;
+      height: 180px;
+      top: 60px;
+      left: 60px;
+      animation: pulse 3s ease-in-out infinite 1s;
+      border-color: rgba(167, 139, 250, 0.5);
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.2) 0%, transparent 70%);
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.6; }
+      50% { transform: scale(1.05); opacity: 1; }
+    }
+
+    header .brain-nodes {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+    }
+
+    header .node {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+      border-radius: 50%;
+      box-shadow: 0 0 20px rgba(139, 92, 246, 0.8);
+      animation: node-pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes node-pulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(139, 92, 246, 0.8); }
+      50% { transform: scale(1.2); box-shadow: 0 0 30px rgba(139, 92, 246, 1); }
+    }
+
+    header .node:nth-child(1) { top: 20%; left: 50%; animation-delay: 0s; }
+    header .node:nth-child(2) { top: 40%; left: 20%; animation-delay: 0.3s; }
+    header .node:nth-child(3) { top: 40%; left: 80%; animation-delay: 0.6s; }
+    header .node:nth-child(4) { top: 60%; left: 35%; animation-delay: 0.9s; }
+    header .node:nth-child(5) { top: 60%; left: 65%; animation-delay: 1.2s; }
+    header .node:nth-child(6) { top: 80%; left: 50%; animation-delay: 1.5s; }
+
+    @media (max-width: 968px) {
+      header .container {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      header .illustration {
+        display: none;
+      }
+
+      header h1 {
+        font-size: 3rem;
+      }
     }
 
     nav {
-      background: white;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(10px);
       padding: 1rem 0;
-      margin-bottom: 2rem;
+      margin-bottom: 3rem;
+      border-radius: 24px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
     }
 
     nav ul {
       list-style: none;
       display: flex;
-      gap: 2rem;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
     }
 
     nav a {
-      color: #667eea;
+      color: #4a5568;
       text-decoration: none;
-      font-weight: 500;
-      transition: color 0.3s;
+      font-weight: 600;
+      padding: 0.75rem 1.5rem;
+      border-radius: 16px;
+      transition: all 0.3s ease;
+      display: inline-block;
     }
 
     nav a:hover {
-      color: #764ba2;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
     }
 
     main {
       background: white;
       padding: 3rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      border-radius: 32px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.06);
       margin-bottom: 3rem;
       min-height: 60vh;
     }
 
     footer {
       text-align: center;
-      padding: 2rem;
-      color: #666;
-      border-top: 1px solid #e0e0e0;
+      padding: 3rem 2rem;
+      color: #718096;
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 24px;
+      margin-bottom: 2rem;
+      backdrop-filter: blur(10px);
+    }
+
+    footer strong {
+      color: #667eea;
+      font-weight: 700;
     }
 
     h1, h2, h3, h4 {
-      margin-top: 1.5rem;
+      margin-top: 2rem;
       margin-bottom: 1rem;
-      color: #2c3e50;
+      color: #1a202c;
+      font-weight: 800;
+      letter-spacing: -0.01em;
     }
 
-    h1 { font-size: 2.5rem; }
-    h2 { font-size: 2rem; border-bottom: 2px solid #667eea; padding-bottom: 0.5rem; }
-    h3 { font-size: 1.5rem; }
+    h1 { font-size: 2.75rem; }
+    h2 {
+      font-size: 2.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 4px solid;
+      border-image: linear-gradient(90deg, #667eea, #764ba2, #f093fb) 1;
+    }
+    h3 { font-size: 1.75rem; }
 
     p {
-      margin-bottom: 1rem;
+      margin-bottom: 1.25rem;
+      color: #4a5568;
     }
 
     code {
-      background: #f4f4f4;
-      padding: 0.2rem 0.4rem;
-      border-radius: 3px;
-      font-family: 'Courier New', monospace;
+      background: linear-gradient(135deg, #fef5e7 0%, #fce4ec 100%);
+      padding: 0.25rem 0.6rem;
+      border-radius: 8px;
+      font-family: 'Fira Code', 'Courier New', monospace;
       font-size: 0.9em;
+      color: #d63384;
+      font-weight: 500;
     }
 
     pre {
-      background: #2d2d2d;
-      padding: 1.5rem;
-      border-radius: 5px;
+      background: #1a202c;
+      padding: 2rem;
+      border-radius: 20px;
       overflow-x: auto;
-      margin: 1.5rem 0;
+      margin: 2rem 0;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
     }
 
     pre code {
       background: none;
       padding: 0;
       color: #f8f8f2;
+      font-weight: normal;
     }
 
     ul, ol {
       margin-left: 2rem;
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem;
     }
 
     li {
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.75rem;
+      color: #4a5568;
     }
 
     .course-meta {
       display: flex;
       gap: 2rem;
       margin: 2rem 0;
-      padding: 1.5rem;
-      background: #f8f9fa;
-      border-radius: 8px;
+      padding: 2rem;
+      background: linear-gradient(135deg, #f0f9ff 0%, #fef3c7 100%);
+      border-radius: 24px;
       flex-wrap: wrap;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.04);
     }
 
     .course-meta-item {
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      font-weight: 600;
     }
 
     .course-meta-item strong {
@@ -149,30 +423,44 @@
 
     .course-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 2rem;
-      margin: 2rem 0;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 2.5rem;
+      margin: 3rem 0;
     }
 
     .course-card {
       background: white;
-      padding: 2rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      transition: transform 0.3s, box-shadow 0.3s;
-      border-left: 4px solid #667eea;
+      padding: 2.5rem;
+      border-radius: 28px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 3px solid transparent;
       display: flex;
       flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .course-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
     }
 
     .course-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 20px 60px rgba(102, 126, 234, 0.25);
+      border-color: #667eea;
     }
 
     .course-card h3 {
       margin-top: 0;
-      color: #667eea;
+      color: #1a202c;
+      font-size: 1.5rem;
     }
 
     .course-card a {
@@ -182,54 +470,123 @@
 
     .btn {
       display: inline-block;
-      padding: 0.75rem 1.5rem;
-      background: #667eea;
+      padding: 1rem 2rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
       text-decoration: none;
-      border-radius: 5px;
-      transition: background 0.3s;
-      font-weight: 500;
+      border-radius: 16px;
+      transition: all 0.3s ease;
+      font-weight: 700;
+      font-size: 1rem;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+      border: none;
+      cursor: pointer;
     }
 
     .btn:hover {
-      background: #764ba2;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+      background: linear-gradient(135deg, #5568d3 0%, #6a3d8f 100%);
     }
 
     blockquote {
-      border-left: 4px solid #667eea;
-      padding-left: 1.5rem;
-      margin: 1.5rem 0;
+      border-left: 6px solid #667eea;
+      padding: 1.5rem 2rem;
+      margin: 2rem 0;
       font-style: italic;
-      color: #555;
+      color: #4a5568;
+      background: linear-gradient(135deg, #f0f9ff 0%, #fef3c7 100%);
+      border-radius: 16px;
+      font-size: 1.1rem;
     }
 
     .back-link {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
       margin-bottom: 2rem;
       color: #667eea;
       text-decoration: none;
-      font-weight: 500;
+      font-weight: 600;
+      padding: 0.75rem 1.5rem;
+      background: rgba(102, 126, 234, 0.1);
+      border-radius: 16px;
+      transition: all 0.3s ease;
     }
 
     .back-link:hover {
-      text-decoration: underline;
+      background: #667eea;
+      color: white;
+      transform: translateX(-4px);
     }
+
+    /* Badge/Sticker Style Tags */
+    .tag {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      border-radius: 12px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      background: #e0e0e0;
+      color: #333;
+      margin-right: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Playful Gradient Backgrounds */
+    .gradient-bg-1 { background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); }
+    .gradient-bg-2 { background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); }
+    .gradient-bg-3 { background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%); }
   </style>
 </head>
 <body>
   <header>
+    <!-- Scattered particles -->
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+
     <div class="container">
-      <h1>🤖 Intelligent Photocopier</h1>
-      <p>AI-Powered Programming Courses</p>
+      <div class="header-content">
+        <div class="logo-section">
+          <div class="logo">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 22.5l-.394-1.933a2.25 2.25 0 00-1.423-1.423L12.75 18.75l1.933-.394a2.25 2.25 0 001.423-1.423L16.5 15l.394 1.933a2.25 2.25 0 001.423 1.423l1.933.394-1.933.394a2.25 2.25 0 00-1.423 1.423z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+        <h1>Intelligent Photocopier</h1>
+        <p>AI-Powered Programming Courses</p>
+      </div>
+
+      <!-- 3D AI Illustration -->
+      <div class="illustration">
+        <div class="ai-brain">
+          <div class="brain-circle"></div>
+          <div class="brain-circle"></div>
+          <div class="brain-circle"></div>
+          <div class="brain-nodes">
+            <div class="node"></div>
+            <div class="node"></div>
+            <div class="node"></div>
+            <div class="node"></div>
+            <div class="node"></div>
+            <div class="node"></div>
+          </div>
+        </div>
+      </div>
     </div>
   </header>
 
   <nav>
     <div class="container">
       <ul>
-        <li><a href="/">🏠 Home</a></li>
-        <li><a href="/documentation/">📖 Documentation</a></li>
-        <li><a href="https://github.com/chengxin199/IS601_MidtermProject_Intelligent-Photocopier" target="_blank">💻 GitHub</a></li>
+        <li><a href="/">Home</a></li>
+        <li><a href="/documentation/">Documentation</a></li>
+        <li><a href="https://github.com/chengxin199/IS601_MidtermProject_Intelligent-Photocopier" target="_blank">GitHub</a></li>
       </ul>
     </div>
   </nav>

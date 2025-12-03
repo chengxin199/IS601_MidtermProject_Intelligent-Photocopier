@@ -1,3 +1,8 @@
 # This calculator has no runtime dependencies.
 # All dependencies are development tools listed in requirements-dev.txt
 # If you need to add runtime dependencies, list them here.
+
+# AI Course Builder API dependencies
+flask>=3.0.0
+flask-cors>=4.0.0
+openai>=1.0.0

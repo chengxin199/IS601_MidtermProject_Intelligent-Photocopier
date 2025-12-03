@@ -4,68 +4,564 @@ title: Home
 permalink: /
 ---
 
-<h1>🤖 Welcome to Intelligent Photocopier</h1>
-
-<p style="font-size: 1.2rem; color: #555; margin-bottom: 2rem;">
-  AI-powered course generation tool that creates professional programming courses from your content.
-</p>
-
-<div style="background: linear-gradient(135deg, #667eea22 0%, #764ba222 100%); padding: 2rem; border-radius: 8px; margin-bottom: 3rem;">
-  <h2 style="border: none;">✨ Features</h2>
-  <ul style="margin-left: 0; list-style: none;">
-    <li style="margin-bottom: 1rem;">📚 <strong>Material Library:</strong> Pre-loaded professional courses ready to use</li>
-    <li style="margin-bottom: 1rem;">🎨 <strong>Custom Content:</strong> Generate courses from your own materials</li>
-    <li style="margin-bottom: 1rem;">🤖 <strong>AI-Powered:</strong> Leverages OpenAI GPT-4o-mini for intelligent content generation</li>
-    <li style="margin-bottom: 1rem;">📖 <strong>Complete Structure:</strong> README, lessons, summaries, references, and solutions</li>
-    <li style="margin-bottom: 1rem;">🌐 <strong>Static Websites:</strong> Beautiful course websites with Eleventy</li>
-  </ul>
+<div style="text-align: center; margin-bottom: 4rem; padding: 4rem 2rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 0 0 48px 48px; margin-top: -2rem; box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);">
+  <div style="max-width: 900px; margin: 0 auto;">
+    <div style="display: inline-block; padding: 0.5rem 1.5rem; background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); border-radius: 20px; margin-bottom: 1.5rem; border: 1px solid rgba(255, 255, 255, 0.2);">
+      <span style="color: rgba(255, 255, 255, 0.9); font-size: 0.9rem; font-weight: 600; letter-spacing: 0.05em;">AI-POWERED EDUCATION</span>
+    </div>
+    <h1 style="font-size: 4rem; margin-bottom: 1.5rem; color: white; font-weight: 900; letter-spacing: -0.03em; line-height: 1.1;">
+      Intelligent Photocopier
+    </h1>
+    <p style="font-size: 1.4rem; color: rgba(255, 255, 255, 0.95); font-weight: 400; max-width: 700px; margin: 0 auto 2.5rem; line-height: 1.6;">
+      Transform your educational content into professional, AI-enhanced programming courses with cutting-edge technology
+    </p>
+    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+      <a href="#courseBuilder" style="display: inline-block; padding: 1rem 2.5rem; background: white; color: #667eea; border-radius: 16px; font-weight: 700; text-decoration: none; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2); transition: all 0.3s ease; font-size: 1.1rem;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 12px 40px rgba(0, 0, 0, 0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 30px rgba(0, 0, 0, 0.2)'">
+        Start Creating
+      </a>
+      <a href="#courses" style="display: inline-block; padding: 1rem 2.5rem; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); color: white; border-radius: 16px; font-weight: 700; text-decoration: none; border: 2px solid rgba(255, 255, 255, 0.3); transition: all 0.3s ease; font-size: 1.1rem;" onmouseover="this.style.background='rgba(255, 255, 255, 0.2)'; this.style.borderColor='rgba(255, 255, 255, 0.5)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.1)'; this.style.borderColor='rgba(255, 255, 255, 0.3)'">
+        Browse Courses
+      </a>
+    </div>
+  </div>
 </div>
 
-<h2>📚 Available Courses</h2>
+<!-- AI Course Builder - Moved to Top -->
+<div id="courseBuilder-section" style="margin-bottom: 4rem; padding: 4rem 3rem; background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%); border-radius: 32px; box-shadow: 0 12px 40px rgba(142, 197, 252, 0.3);">
+  <div style="text-align: center; margin-bottom: 3rem;">
+    <div style="display: inline-block; padding: 0.5rem 1.5rem; background: rgba(255, 255, 255, 0.3); backdrop-filter: blur(10px); border-radius: 12px; margin-bottom: 1rem; border: 1px solid rgba(255, 255, 255, 0.4);">
+      <span style="color: #2d3748; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.05em;">AI COURSE GENERATOR</span>
+    </div>
+    <h2 style="border: none; font-size: 2.75rem; margin-bottom: 1rem; font-weight: 800; color: #1a202c;">Create Your Course with AI</h2>
+    <p style="font-size: 1.25rem; color: #2d3748; max-width: 600px; margin: 0 auto; line-height: 1.6;">
+      Transform your ideas into professional programming courses instantly
+    </p>
+  </div>
 
-<div class="course-grid">
+  <div id="courseBuilder" style="background: white; padding: 3rem; border-radius: 28px; box-shadow: 0 8px 30px rgba(0,0,0,0.1); scroll-margin-top: 2rem;">
+
+    <!-- Step 1: Material Input (Direct Entry) -->
+    <div class="builder-step active" id="step1">
+      <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.5rem;">1</div>
+        <h3 style="margin: 0; font-size: 1.75rem;">Provide Your Course Material</h3>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+        <button class="input-method-btn active" onclick="selectInputMethod('paste', this)" style="padding: 1.5rem; background: white; border: 3px solid #667eea; border-radius: 20px; cursor: pointer; transition: all 0.3s; font-weight: 600; font-size: 1rem;">
+          📝 Paste Text
+        </button>
+        <button class="input-method-btn" onclick="selectInputMethod('upload', this)" style="padding: 1.5rem; background: white; border: 3px solid #e2e8f0; border-radius: 20px; cursor: pointer; transition: all 0.3s; font-weight: 600; font-size: 1rem;">
+          📄 Upload File
+        </button>
+      </div>
+
+      <!-- Paste Text Area -->
+      <div id="pasteArea" class="input-area">
+        <textarea id="courseContent" placeholder="Paste your course outline, learning objectives, or any reference material here...
+
+Example:
+# Course: Advanced Python Design Patterns
+## Learning Objectives
+- Master creational patterns (Singleton, Factory, Builder)
+- Implement structural patterns (Adapter, Decorator, Facade)
+- Apply behavioral patterns (Observer, Strategy, Command)
+- Write SOLID, maintainable code
+
+## Topics to Cover
+1. Introduction to Design Patterns
+2. Creational Patterns with Examples
+3. Structural Patterns in Practice
+4. Behavioral Patterns for Clean Code
+5. Real-world Applications" style="width: 100%; min-height: 300px; padding: 1.5rem; border: 2px solid #e2e8f0; border-radius: 16px; font-family: 'Fira Code', monospace; font-size: 0.95rem; resize: vertical;"></textarea>
+      </div>
+
+      <!-- Upload Area -->
+      <div id="uploadArea" class="input-area" style="display: none;">
+        <div style="border: 3px dashed #cbd5e0; border-radius: 20px; padding: 3rem; text-align: center; background: #f7fafc; cursor: pointer;" onclick="document.getElementById('fileInput').click()">
+          <div style="font-size: 3rem; margin-bottom: 1rem;">📁</div>
+          <p style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem;">Drop files here or click to browse</p>
+          <p style="color: #718096; font-size: 0.9rem;">Supports PDF, TXT, DOCX, MD</p>
+          <input type="file" id="fileInput" accept=".pdf,.txt,.docx,.md" style="display: none;" onchange="handleFileUpload(event)">
+        </div>
+        <div id="filePreview" style="margin-top: 1.5rem; display: none;"></div>
+      </div>
+
+      <button class="btn" onclick="nextStep(2)" style="margin-top: 2rem; width: 100%; font-size: 1.1rem; padding: 1.25rem;">
+        Continue to Configuration →
+      </button>
+    </div>
+
+    <!-- Step 2: Course Configuration -->
+    <div class="builder-step" id="step2" style="display: none;">
+      <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.5rem;">2</div>
+        <h3 style="margin: 0; font-size: 1.75rem;">Configure Your Course</h3>
+      </div>
+
+      <div style="display: grid; gap: 1.5rem;">
+        <div>
+          <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #2d3748;">Course ID <span style="color: #e53e3e;">*</span></label>
+          <input type="text" id="courseId" placeholder="e.g., B3-advanced-design-patterns" style="width: 100%; padding: 1rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem;">
+          <p style="color: #718096; font-size: 0.85rem; margin-top: 0.5rem;">Format: [Letter][Number]-kebab-case (e.g., A1, B2, C3)</p>
+        </div>
+
+        <div>
+          <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #2d3748;">Course Title <span style="color: #e53e3e;">*</span></label>
+          <input type="text" id="courseTitle" placeholder="e.g., Advanced Python Design Patterns" style="width: 100%; padding: 1rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem;">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+          <div>
+            <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #2d3748;">Level <span style="color: #e53e3e;">*</span></label>
+            <select id="courseLevel" style="width: 100%; padding: 1rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; background: white;">
+              <option>Beginner</option>
+              <option selected>Intermediate</option>
+              <option>Advanced</option>
+            </select>
+          </div>
+          <div>
+            <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #2d3748;">Duration <span style="color: #e53e3e;">*</span></label>
+            <select id="courseDuration" style="width: 100%; padding: 1rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; background: white;">
+              <option>1-2 hours</option>
+              <option>2-3 hours</option>
+              <option selected>3-4 hours</option>
+              <option>4-5 hours</option>
+              <option>5-6 hours</option>
+              <option>Full day</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #2d3748;">Description</label>
+          <textarea id="courseDescription" placeholder="Brief description of what students will learn..." style="width: 100%; min-height: 100px; padding: 1rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; resize: vertical;"></textarea>
+        </div>
+
+        <div>
+          <label style="display: block; font-weight: 600; margin-bottom: 1rem; color: #2d3748;">Course Structure (Select Files to Generate)</label>
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+            <label style="display: flex; align-items: center; gap: 0.5rem; padding: 1rem; background: #f0f9ff; border: 2px solid #3b82f6; border-radius: 12px; cursor: pointer;">
+              <input type="checkbox" checked disabled> <strong>README.md</strong> <span style="color: #718096; font-size: 0.85rem;">(Required)</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem; padding: 1rem; background: #f0f9ff; border: 2px solid #3b82f6; border-radius: 12px; cursor: pointer;">
+              <input type="checkbox" id="incLessonContent" checked disabled> <strong>lesson-content.md</strong> <span style="color: #718096; font-size: 0.85rem;">(Required)</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem; padding: 1rem; background: #f7fafc; border: 2px solid #e2e8f0; border-radius: 12px; cursor: pointer;">
+              <input type="checkbox" id="incSummary" checked> <strong>summary.md</strong>
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem; padding: 1rem; background: #f7fafc; border: 2px solid #e2e8f0; border-radius: 12px; cursor: pointer;">
+              <input type="checkbox" id="incReference" checked> <strong>reference/</strong>
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem; padding: 1rem; background: #f7fafc; border: 2px solid #e2e8f0; border-radius: 12px; cursor: pointer;">
+              <input type="checkbox" id="incSolutions" checked> <strong>solutions/</strong>
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem; padding: 1rem; background: #f7fafc; border: 2px solid #e2e8f0; border-radius: 12px; cursor: pointer;">
+              <input type="checkbox" id="incTests" checked> <strong>tests/</strong>
+            </label>
+          </div>
+          <p style="color: #718096; font-size: 0.85rem; margin-top: 1rem;">
+            ℹ️ Matches the structure: <code>Lessons/[CourseID]/[files]</code>
+          </p>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+        <button class="btn" onclick="prevStep(1)" style="flex: 1; background: #e2e8f0; color: #4a5568;">
+          ← Back
+        </button>
+        <button class="btn" onclick="generateCourse()" style="flex: 2; font-size: 1.1rem; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); box-shadow: 0 4px 20px rgba(245, 87, 108, 0.4);">
+          🚀 Generate Course with AI
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 3: Generation Progress -->
+    <div class="builder-step" id="step3" style="display: none;">
+      <div style="text-align: center; padding: 3rem 0;">
+        <div class="loading-spinner" style="width: 80px; height: 80px; margin: 0 auto 2rem; border: 6px solid #e2e8f0; border-top: 6px solid #667eea; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        <h3 style="font-size: 2rem; margin-bottom: 1rem;">Generating Your Course...</h3>
+        <div id="progressSteps" style="max-width: 500px; margin: 0 auto;">
+          <div class="progress-step" data-step="1" style="padding: 1rem; margin-bottom: 0.5rem; background: #f0f9ff; border-radius: 12px; display: flex; align-items: center; gap: 1rem;">
+            <span style="font-size: 1.5rem;">✅</span>
+            <span style="font-weight: 600;">Analyzing course material</span>
+          </div>
+          <div class="progress-step" data-step="2" style="padding: 1rem; margin-bottom: 0.5rem; background: #fef3c7; border-radius: 12px; display: flex; align-items: center; gap: 1rem;">
+            <span style="font-size: 1.5rem;">⏳</span>
+            <span style="font-weight: 600;">Creating course structure</span>
+          </div>
+          <div class="progress-step" data-step="3" style="padding: 1rem; margin-bottom: 0.5rem; background: #f7fafc; border-radius: 12px; display: flex; align-items: center; gap: 1rem; opacity: 0.5;">
+            <span style="font-size: 1.5rem;">⏸️</span>
+            <span style="font-weight: 600;">Generating content with AI</span>
+          </div>
+          <div class="progress-step" data-step="4" style="padding: 1rem; background: #f7fafc; border-radius: 12px; display: flex; align-items: center; gap: 1rem; opacity: 0.5;">
+            <span style="font-size: 1.5rem;">⏸️</span>
+            <span style="font-weight: 600;">Building static site</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 4: Success & Preview -->
+    <div class="builder-step" id="step4" style="display: none;">
+      <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+        <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">✓</div>
+        <h3 style="margin: 0; font-size: 1.75rem;">Course Generated Successfully!</h3>
+      </div>
+
+      <div id="outputPreview" style="background: #f7fafc; padding: 2rem; border-radius: 20px; margin-bottom: 2rem;">
+        <div style="margin-bottom: 1.5rem;">
+          <h4 style="font-size: 1.5rem; margin-bottom: 1rem;">📋 <span id="previewTitle">Your Course</span></h4>
+          <div style="background: white; padding: 1.5rem; border-radius: 16px;" id="courseStructurePreview">
+            <p style="margin: 0;"><strong>✓ Course structure created</strong></p>
+          </div>
+        </div>
+      </div>
+
+      <div style="background: #fef3c7; padding: 1.5rem; border-radius: 16px; margin-bottom: 2rem;">
+        <p style="margin: 0; font-weight: 600;">📁 Course Location:</p>
+        <code style="background: white; padding: 0.5rem 1rem; border-radius: 8px; display: inline-block; margin-top: 0.5rem;" id="courseLocation">Lessons/[CourseID]/</code>
+      </div>
+
+      <div style="display: flex; gap: 1rem;">
+        <button class="btn" onclick="resetBuilder()" style="flex: 1; background: #e2e8f0; color: #4a5568;">
+          Create Another Course
+        </button>
+        <button class="btn" onclick="viewCourse()" style="flex: 2;">
+          👀 View Generated Course
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<style>
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .input-method-btn:hover {
+    border-color: #667eea !important;
+    transform: translateY(-2px);
+  }
+
+  .input-method-btn.active {
+    border-color: #667eea !important;
+    background: linear-gradient(135deg, #667eea10 0%, #764ba210 100%) !important;
+  }
+
+  #courseContent:focus, input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  }
+</style>
+
+<script>
+  let selectedInputMethod = 'paste';
+  let generatedCourseId = '';
+
+  function selectInputMethod(method, element) {
+    selectedInputMethod = method;
+    document.querySelectorAll('.input-method-btn').forEach(btn => btn.classList.remove('active'));
+    element.classList.add('active');
+
+    document.querySelectorAll('.input-area').forEach(area => area.style.display = 'none');
+    document.getElementById(method + 'Area').style.display = 'block';
+  }
+
+  function nextStep(step) {
+    // Validate inputs before moving forward
+    if (step === 2) {
+      const content = document.getElementById('courseContent').value.trim();
+      const fileInput = document.getElementById('fileInput');
+
+      if (selectedInputMethod === 'paste' && !content) {
+        alert('⚠️ Please provide course material before continuing.');
+        return;
+      }
+      if (selectedInputMethod === 'upload' && (!fileInput.files || fileInput.files.length === 0)) {
+        alert('⚠️ Please upload a file before continuing.');
+        return;
+      }
+    }
+
+    document.querySelectorAll('.builder-step').forEach(s => s.style.display = 'none');
+    document.getElementById('step' + step).style.display = 'block';
+    document.getElementById('courseBuilder').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function prevStep(step) {
+    nextStep(step);
+  }
+
+  function handleFileUpload(event) {
+    const file = event.target.files[0];
+    if (file) {
+      const preview = document.getElementById('filePreview');
+      preview.style.display = 'block';
+      preview.innerHTML = `
+        <div style="padding: 1.5rem; background: #d1fae5; border-radius: 16px; display: flex; align-items: center; gap: 1rem;">
+          <span style="font-size: 2rem;">📄</span>
+          <div style="flex: 1;">
+            <p style="margin: 0; font-weight: 600; color: #065f46;">${file.name}</p>
+            <p style="margin: 0; color: #059669; font-size: 0.9rem;">${(file.size / 1024).toFixed(2)} KB</p>
+          </div>
+          <span style="color: #10b981; font-weight: 600; font-size: 1.5rem;">✓</span>
+        </div>
+      `;
+    }
+  }
+
+  async function generateCourse() {
+    // Validate required fields
+    const courseId = document.getElementById('courseId').value.trim();
+    const courseTitle = document.getElementById('courseTitle').value.trim();
+    const courseContent = document.getElementById('courseContent').value.trim();
+
+    if (!courseId || !courseTitle) {
+      alert('⚠️ Please fill in all required fields (Course ID and Title)');
+      return;
+    }
+
+    if (!courseContent && selectedInputMethod === 'paste') {
+      alert('⚠️ Please provide course material');
+      return;
+    }
+
+    // Validate courseId format
+    const courseIdPattern = /^[A-Z]\d+-[a-z0-9-]+$/;
+    if (!courseIdPattern.test(courseId)) {
+      alert(`⚠️ Invalid Course ID format: "${courseId}"\n\nRequired format: [Letter][Number]-kebab-case\n\nValid examples:\n• A1-defensive-programming\n• B2-performance-optimization\n• C3-advanced-patterns\n\nRules:\n✓ Start with uppercase letter + number (A1, B2, C3)\n✓ Followed by hyphen (-)\n✓ Then lowercase words separated by hyphens\n✗ No spaces\n✗ No uppercase letters after the first character`);
+      return;
+    }
+
+    generatedCourseId = courseId;
+    nextStep(3);
+
+    // Prepare API request
+    const payload = {
+      courseId: courseId,
+      title: courseTitle,
+      level: document.getElementById('courseLevel').value,
+      duration: document.getElementById('courseDuration').value,
+      description: document.getElementById('courseDescription').value.trim(),
+      content: courseContent,
+      sections: {
+        summary: document.getElementById('incSummary').checked,
+        reference: document.getElementById('incReference').checked,
+        solutions: document.getElementById('incSolutions').checked,
+        tests: document.getElementById('incTests').checked
+      }
+    };
+
+    try {
+      // Update progress: Analyzing
+      updateProgress(2);
+
+      // Call API
+      const response = await fetch('http://localhost:5000/api/generate-course', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to generate course');
+      }
+
+      const result = await response.json();
+
+      // Update progress through steps
+      updateProgress(3);
+      await sleep(1500);
+      updateProgress(4);
+      await sleep(1500);
+
+      // Show success
+      showSuccess(result);
+
+    } catch (error) {
+      console.error('Error generating course:', error);
+      alert(`❌ Error generating course:\n\n${error.message}\n\nMake sure the API server is running:\npython -m src.intelligent_photocopier.api`);
+      // Reset to step 2
+      nextStep(2);
+    }
+  }
+
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  function updateProgress(step) {
+    const steps = document.querySelectorAll('.progress-step');
+    const currentStep = steps[step - 1];
+
+    // Mark previous steps as complete
+    for (let i = 0; i < step - 1; i++) {
+      steps[i].style.background = '#d1fae5';
+      steps[i].querySelector('span:first-child').textContent = '✅';
+    }
+
+    // Mark current step as in progress
+    currentStep.style.background = '#fef3c7';
+    currentStep.style.opacity = '1';
+    currentStep.querySelector('span:first-child').textContent = '⏳';
+  }
+
+  function showSuccess(result) {
+    const steps = document.querySelectorAll('.progress-step');
+    steps[3].style.background = '#d1fae5';
+    steps[3].querySelector('span:first-child').textContent = '✅';
+
+    setTimeout(() => {
+      const courseId = result.courseId;
+      const title = document.getElementById('courseTitle').value;
+      const level = document.getElementById('courseLevel').value;
+      const duration = document.getElementById('courseDuration').value;
+
+      document.getElementById('previewTitle').textContent = title;
+      document.getElementById('courseLocation').textContent = result.path;
+
+      const filesCreated = result.filesCreated || [];
+
+      document.getElementById('courseStructurePreview').innerHTML = `
+        <p style="margin-bottom: 1rem;"><strong>📚 ${title}</strong></p>
+        <p style="color: #718096; margin-bottom: 0.5rem;"><strong>Level:</strong> ${level} | <strong>Duration:</strong> ${duration}</p>
+        <p style="color: #718096; margin-bottom: 1rem;"><strong>Course ID:</strong> <code>${courseId}</code></p>
+        <hr style="margin: 1rem 0; border: none; border-top: 1px solid #e2e8f0;">
+        <p style="font-weight: 600; margin-bottom: 0.5rem; color: #059669;">✓ ${filesCreated.length} Files Generated:</p>
+        <ul style="margin-left: 1.5rem; color: #4a5568; line-height: 1.8;">
+          ${filesCreated.map(f => `<li>${f}</li>`).join('')}
+        </ul>
+        <div style="margin-top: 1.5rem; padding: 1rem; background: #d1fae5; border-radius: 12px;">
+          <p style="margin: 0; color: #065f46; font-weight: 600;">${result.message}</p>
+        </div>
+      `;
+
+      nextStep(4);
+    }, 500);
+  }
+
+    setTimeout(() => {
+      const courseId = document.getElementById('courseId').value;
+      const courseTitle = document.getElementById('courseTitle').value;
+      const level = document.getElementById('courseLevel').value;
+      const duration = document.getElementById('courseDuration').value;
+
+      document.getElementById('previewTitle').textContent = courseTitle;
+      document.getElementById('courseLocation').textContent = `Lessons/${courseId}/`;
+
+      const structure = [];
+      structure.push('README.md - Course overview and learning objectives');
+      structure.push('lesson-content.md - Main teaching content');
+      if (document.getElementById('incSummary').checked) structure.push('summary.md - Key concepts summary');
+      if (document.getElementById('incReference').checked) structure.push('reference/ - Quick reference materials');
+      if (document.getElementById('incSolutions').checked) structure.push('solutions/ - Exercise solutions');
+      if (document.getElementById('incTests').checked) structure.push('tests/ - Practice tests and quizzes');
+
+      document.getElementById('courseStructurePreview').innerHTML = `
+        <p style="margin-bottom: 1rem;"><strong>📚 ${courseTitle}</strong></p>
+        <p style="color: #718096; margin-bottom: 0.5rem;"><strong>Level:</strong> ${level} | <strong>Duration:</strong> ${duration}</p>
+        <p style="color: #718096; margin-bottom: 1rem;"><strong>Course ID:</strong> <code>${courseId}</code></p>
+        <hr style="margin: 1rem 0; border: none; border-top: 1px solid #e2e8f0;">
+        <p style="font-weight: 600; margin-bottom: 0.5rem;">Generated Files:</p>
+        <ul style="margin-left: 1.5rem; color: #4a5568; line-height: 1.8;">
+          ${structure.map(s => `<li>${s}</li>`).join('')}
+        </ul>
+      `;
+
+      nextStep(4);
+    }, 500);
+  }
+
+  function resetBuilder() {
+    nextStep(1);
+    document.getElementById('courseContent').value = '';
+    document.getElementById('courseId').value = '';
+    document.getElementById('courseTitle').value = '';
+    document.getElementById('courseDescription').value = '';
+    document.getElementById('fileInput').value = '';
+    document.getElementById('filePreview').style.display = 'none';
+    generatedCourseId = '';
+
+    // Reset progress steps
+    const steps = document.querySelectorAll('.progress-step');
+    steps[0].style.background = '#f0f9ff';
+    steps[0].querySelector('span:first-child').textContent = '✅';
+    steps[1].style.background = '#fef3c7';
+    steps[1].querySelector('span:first-child').textContent = '⏳';
+    for (let i = 2; i < steps.length; i++) {
+      steps[i].style.background = '#f7fafc';
+      steps[i].style.opacity = '0.5';
+      steps[i].querySelector('span:first-child').textContent = '⏸️';
+    }
+  }
+
+  function viewCourse() {
+    if (generatedCourseId) {
+      alert(`🎉 Opening course: ${generatedCourseId}\n\nIn a real implementation, this would:\n• Rebuild the static site\n• Navigate to /Lessons/${generatedCourseId}/`);
+    }
+  }
+</script>
+
+<div style="background: linear-gradient(135deg, #e0c3fc15 0%, #8ec5fc15 100%); padding: 3rem; border-radius: 32px; margin-bottom: 4rem; box-shadow: 0 8px 30px rgba(0,0,0,0.06);">
+  <h2 style="border: none; text-align: center; margin-top: 0;">✨ What Makes This Special</h2>
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-top: 2rem;">
+    <div style="text-align: center; padding: 2rem; background: white; border-radius: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.06);">
+      <div style="font-size: 3rem; margin-bottom: 1rem;">📚</div>
+      <h3 style="margin: 0.5rem 0; font-size: 1.25rem;">Rich Library</h3>
+      <p style="color: #718096; margin: 0;">Pre-loaded professional courses ready to use</p>
+    </div>
+    <div style="text-align: center; padding: 2rem; background: white; border-radius: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.06);">
+      <div style="font-size: 3rem; margin-bottom: 1rem;">🎨</div>
+      <h3 style="margin: 0.5rem 0; font-size: 1.25rem;">Custom Content</h3>
+      <p style="color: #718096; margin: 0;">Generate courses from your own materials</p>
+    </div>
+    <div style="text-align: center; padding: 2rem; background: white; border-radius: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.06);">
+      <div style="width: 64px; height: 64px; margin: 0 auto 1rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 22.5l-.394-1.933a2.25 2.25 0 00-1.423-1.423L12.75 18.75l1.933-.394a2.25 2.25 0 001.423-1.423L16.5 15l.394 1.933a2.25 2.25 0 001.423 1.423l1.933.394-1.933.394a2.25 2.25 0 00-1.423 1.423z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h3 style="margin: 0.5rem 0; font-size: 1.25rem;">AI-Powered</h3>
+      <p style="color: #718096; margin: 0;">Leverages GPT-4 for intelligent content</p>
+    </div>
+  </div>
+</div>
+
+<div id="courses" style="scroll-margin-top: 2rem;">
+  <h2 style="text-align: center; margin-bottom: 2rem;">📚 Explore Our Courses</h2>
+
+  <div class="course-grid">
 {% for course in collections.courses %}
   <div class="course-card">
     <h3><a href="{{ course.url }}">{% if course.data.courseId %}{{ course.data.courseId }}: {% endif %}{{ course.data.title or 'Untitled Course' }}</a></h3>
-    <p style="flex-grow: 1;">{{ course.data.description or course.data.excerpt or 'Explore this course...' }}</p>
-    <div style="margin-top: 1rem;">
+    <p style="flex-grow: 1; color: #4a5568; line-height: 1.7;">{{ course.data.description or course.data.excerpt or 'Explore this course and level up your skills...' }}</p>
+    <div style="margin-top: 1.5rem; margin-bottom: 1.5rem;">
       {% if course.data.level %}
-      <span style="display: inline-block; background: #e0e0e0; color: #333; padding: 0.25rem 0.75rem; border-radius: 3px; font-size: 0.85rem; margin-bottom: 0.5rem;">{{ course.data.level }}</span>
+      <span class="tag">{{ course.data.level }}</span>
+      {% endif %}
+      {% if course.data.duration %}
+      <span class="tag">⏱️ {{ course.data.duration }}</span>
       {% endif %}
     </div>
-    <a href="{{ course.url }}" class="btn" style="margin-top: auto; padding-top: 1.5rem; display: block;">View Course →</a>
+    <a href="{{ course.url }}" class="btn" style="margin-top: auto; text-align: center;">Explore Course →</a>
   </div>
 {% endfor %}
 </div>
 
 {% if collections.courses.length == 0 %}
-<div style="text-align: center; padding: 3rem; background: #f8f9fa; border-radius: 8px;">
-  <p style="font-size: 1.2rem; color: #666;">No courses generated yet. Run the Intelligent Photocopier to create your first course!</p>
-  <a href="https://github.com/chengxin199/IS601_MidtermProject_Intelligent-Photocopier" class="btn" style="margin-top: 1rem;">Get Started on GitHub →</a>
+<div style="text-align: center; padding: 4rem; background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); border-radius: 32px; box-shadow: 0 8px 30px rgba(0,0,0,0.08);">
+  <div style="font-size: 4rem; margin-bottom: 1rem;">🎓</div>
+  <p style="font-size: 1.5rem; color: #1a202c; font-weight: 600; margin-bottom: 1rem;">No courses generated yet</p>
+  <p style="color: #4a5568; margin-bottom: 2rem;">Run the Intelligent Photocopier to create your first course!</p>
+  <a href="https://github.com/chengxin199/IS601_MidtermProject_Intelligent-Photocopier" class="btn" style="font-size: 1.1rem; padding: 1.25rem 2.5rem;">Get Started on GitHub →</a>
 </div>
 {% endif %}
-
-<div style="margin-top: 3rem; padding: 2rem; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 8px;">
-  <h3>🚀 Quick Start</h3>
-  <pre><code class="language-bash"># Clone the repository
-git clone https://github.com/chengxin199/IS601_MidtermProject_Intelligent-Photocopier.git
-cd IS601_MidtermProject_Intelligent-Photocopier
-
-# Set up environment
-python3 -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-
-# Configure OpenAI API
-cp .env.example .env
-# Edit .env and add your OPENAI_API_KEY
-
-# Run the tool
-python -m src.intelligent_photocopier.main
-
-# Generate static website
-npm install
-npm run build
-npm run serve  # View at http://localhost:8080
-</code></pre>
 </div>
