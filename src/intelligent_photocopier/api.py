@@ -4,7 +4,6 @@ Flask API for AI Course Builder web interface.
 Provides REST endpoints for creating courses through the web UI.
 """
 
-import base64
 import logging
 import os
 import subprocess
@@ -253,6 +252,9 @@ def _commit_to_github(course_id: str, files_created: list[str]):
             try:
                 # Try to get existing file
                 contents = repo.get_contents(github_path, ref=branch)
+                # Handle case where get_contents returns a list
+                if isinstance(contents, list):
+                    contents = contents[0]
                 # Update existing file
                 repo.update_file(
                     github_path,
