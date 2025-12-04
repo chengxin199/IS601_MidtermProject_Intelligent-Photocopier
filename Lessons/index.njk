@@ -588,9 +588,13 @@ Example:
     const duration = document.getElementById('courseDuration').value;
 
     document.getElementById('previewTitle').textContent = title;
-    document.getElementById('courseLocation').textContent = result.path;
+    document.getElementById('courseLocation').textContent = `Lessons/${courseId}/`;
 
     const filesCreated = result.filesCreated || [];
+
+    const deploymentNote = result.githubCommitted
+      ? '<p style="color: #10b981; margin-top: 1rem;"><strong>✓</strong> Files committed to GitHub. Netlify will deploy in 2-3 minutes.</p>'
+      : '<p style="color: #f59e0b; margin-top: 1rem;"><strong>⚠</strong> Files generated but not committed to GitHub.</p>';
 
     const courseStructure = `
       <p style="margin-bottom: 1rem;"><strong>📚 ${title}</strong></p>
@@ -601,8 +605,10 @@ Example:
       <ul style="margin-left: 1.5rem; color: #4a5568; line-height: 1.8;">
         ${filesCreated.map(f => `<li>${f}</li>`).join('')}
       </ul>
+      ${deploymentNote}
       <div style="margin-top: 1.5rem; padding: 1rem; background: #d1fae5; border-radius: 12px;">
         <p style="margin: 0; color: #065f46; font-weight: 600;">🎉 ${result.message}</p>
+        <p style="margin: 0.5rem 0 0 0; color: #047857; font-size: 0.9rem;">⏱️ Please wait 2-3 minutes for deployment before viewing the course.</p>
       </div>
       <div style="margin-top: 1.5rem; text-align: center;">
         <button onclick="viewCourse('${courseId}')" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 1rem 2rem; border-radius: 12px; font-size: 1.1rem; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4); transition: all 0.3s ease;">🎉 View Course →</button>
