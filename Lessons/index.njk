@@ -4,6 +4,20 @@ title: Home
 permalink: /
 ---
 
+<!-- Early BrowserSync Dialog Blocker -->
+<script>
+  (function() {
+    // Override window.confirm ASAP before BrowserSync loads
+    const originalConfirm = window.confirm;
+    window.confirm = function(message) {
+      console.log('[Early Blocker] Intercepted confirm:', message);
+      // Auto-decline all confirm dialogs (acts like clicking Cancel)
+      return false;
+    };
+    console.log('[Early Blocker] window.confirm overridden');
+  })();
+</script>
+
 <div style="text-align: center; margin-bottom: 4rem; padding: 4rem 2rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 0 0 48px 48px; margin-top: -2rem; box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);">
   <div style="max-width: 900px; margin: 0 auto;">
     <div style="display: inline-block; padding: 0.5rem 1.5rem; background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); border-radius: 20px; margin-bottom: 1.5rem; border: 1px solid rgba(255, 255, 255, 0.2);">
@@ -274,6 +288,17 @@ Example:
   let selectedInputMethod = 'paste';
   let generatedCourseId = '';
 
+  // Intercept and block all window.confirm dialogs from BrowserSync
+  const originalConfirm = window.confirm;
+  window.confirm = function(message) {
+    // If it's a BrowserSync reload prompt, automatically return false (Cancel)
+    if (message && (message.includes('Reload') || message.includes('reload') || message.includes('saved'))) {
+      console.log('[BrowserSync] Blocked confirm dialog:', message);
+      return false;
+    }
+    return originalConfirm.apply(this, arguments);
+  };
+
   // Prevent page reload during course generation
   window.addEventListener('beforeunload', function(e) {
     if (window.isGeneratingCourse) {
@@ -284,38 +309,72 @@ Example:
     }
   });
 
-  // Prevent BrowserSync from reloading during course generation
+  // Disable BrowserSync notifications and prompts
   setTimeout(() => {
     if (window.___browserSync___) {
-      console.log('[BrowserSync] Setting up reload prevention');
+      console.log('[BrowserSync] Disabling all reload prompts and notifications');
 
-      // Method 1: Override socket emit
+      // Completely disable notify popups
+      if (window.___browserSync___.notify) {
+        window.___browserSync___.notify = function() {
+          console.log('[BrowserSync] Notify disabled');
+        };
+      }
+
+      // Override socket to block all reload events
       const originalEmit = window.___browserSync___.socket.emit;
       window.___browserSync___.socket.emit = function(event, data) {
-        if (window.isGeneratingCourse && (event === 'browser:reload' || event === 'browser:notify')) {
-          console.log('[BrowserSync] Blocked event during generation:', event);
+        // Block all reload-related events
+        if (event === 'browser:reload' || event === 'browser:notify' || event === 'file:reload') {
+          console.log('[BrowserSync] Blocked reload event:', event);
           return;
         }
         return originalEmit.apply(this, arguments);
       };
 
-      // Method 2: Override reload function
+      // Override reload function
       const originalReload = window.___browserSync___.reload;
       window.___browserSync___.reload = function() {
-        if (window.isGeneratingCourse) {
-          console.log('[BrowserSync] Reload blocked during generation');
-          return;
-        }
-        return originalReload.apply(this, arguments);
+        console.log('[BrowserSync] Reload function disabled');
+        return;
       };
+
+      // Override the socket 'on' listener for browser:reload
+      if (window.___browserSync___.socket && window.___browserSync___.socket.on) {
+        const originalOn = window.___browserSync___.socket.on;
+        window.___browserSync___.socket.on = function(event, callback) {
+          if (event === 'browser:reload' || event === 'file:reload') {
+            console.log('[BrowserSync] Blocked listener for:', event);
+            return;
+          }
+          return originalOn.apply(this, arguments);
+        };
+      }
+
+      // Intercept confirmReload if it exists
+      if (window.___browserSync___.confirmReload) {
+        window.___browserSync___.confirmReload = function() {
+          console.log('[BrowserSync] confirmReload disabled');
+          return false;
+        };
+      }
     }
   }, 100);
 
   function selectInputMethod(method, element) {
     selectedInputMethod = method;
-    document.querySelectorAll('.input-method-btn').forEach(btn => btn.classList.remove('active'));
-    element.classList.add('active');
 
+    // Remove active class and reset border color for all buttons
+    document.querySelectorAll('.input-method-btn').forEach(btn => {
+      btn.classList.remove('active');
+      btn.style.borderColor = '#e2e8f0';
+    });
+
+    // Add active class and set active border color for selected button
+    element.classList.add('active');
+    element.style.borderColor = '#667eea';
+
+    // Toggle input areas
     document.querySelectorAll('.input-area').forEach(area => area.style.display = 'none');
     document.getElementById(method + 'Area').style.display = 'block';
   }
@@ -407,21 +466,21 @@ Example:
       // Initialize progress bar
       console.log('Initializing progress bar...');
       updateProgressBar(0, 'Starting course generation...');
-      await sleep(800);
+      await sleep(2000);
 
       // Progress: Analyzing
       console.log('Progress: 10%');
       updateProgressBar(10, 'Analyzing course material...');
-      await sleep(1000);
+      await sleep(3000);
 
       console.log('Progress: 20%');
       updateProgressBar(20, 'Preparing AI prompts...');
-      await sleep(1000);
+      await sleep(3000);
 
       // Progress: Generating - Start API call and simulate progress
       console.log('Progress: 30%');
       updateProgressBar(30, 'Generating content with AI...');
-      await sleep(800);
+      await sleep(2000);
 
       // Call API in background while updating progress
       console.log('Calling API...');
@@ -433,16 +492,18 @@ Example:
         body: JSON.stringify(payload)
       });
 
-      // Simulate progress during API call
+      // Simulate progress during API call (spread over ~90 seconds)
       updateProgressBar(40, 'AI is writing lesson content...');
-      await sleep(2000);
+      await sleep(15000);  // 15 seconds
       updateProgressBar(50, 'Creating exercises and examples...');
-      await sleep(2000);
+      await sleep(15000);  // 15 seconds
       updateProgressBar(60, 'Generating reference materials...');
-      await sleep(2000);
+      await sleep(15000);  // 15 seconds
       updateProgressBar(70, 'Building practice solutions...');
-      await sleep(2000);
-      updateProgressBar(75, 'Almost done...');
+      await sleep(15000);  // 15 seconds
+      updateProgressBar(75, 'Polishing content...');
+      await sleep(10000);  // 10 seconds
+      updateProgressBar(80, 'Almost done...');
 
       // Wait for API to complete
       const response = await apiPromise;
@@ -458,16 +519,16 @@ Example:
       // Progress: Finalizing
       console.log('Progress: 85%');
       updateProgressBar(85, 'Finalizing course structure...');
-      await sleep(800);
+      await sleep(2000);
 
       console.log('Progress: 95%');
       updateProgressBar(95, 'Preparing files...');
-      await sleep(800);
+      await sleep(2000);
 
       // Progress: Complete
       console.log('Progress: 100%');
       updateProgressBar(100, 'Course generated successfully!');
-      await sleep(2000);
+      await sleep(3000);
 
       // Show success
       console.log('Showing success page...');
@@ -587,12 +648,6 @@ Example:
       steps[i].style.background = '#f7fafc';
       steps[i].style.opacity = '0.5';
       steps[i].querySelector('span:first-child').textContent = '⏸️';
-    }
-  }
-
-  function viewCourse() {
-    if (generatedCourseId) {
-      alert(`🎉 Opening course: ${generatedCourseId}\n\nIn a real implementation, this would:\n• Rebuild the static site\n• Navigate to /Lessons/${generatedCourseId}/`);
     }
   }
 </script>
