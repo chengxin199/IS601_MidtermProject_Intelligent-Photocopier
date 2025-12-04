@@ -7,7 +7,6 @@ Provides REST endpoints for creating courses through the web UI.
 import logging
 import os
 import subprocess
-from pathlib import Path
 
 from flask import Flask, jsonify, request
 from flask_cors import CORS
@@ -113,11 +112,9 @@ def generate_course():
             course_info, template_structure
         )
 
-        # Create output directory
-        output_dir = Path("Lessons") / course_id
-        output_dir.mkdir(parents=True, exist_ok=True)        # Write files
-        files_created = []
-
+        # Prepare files for GitHub commit
+        files_to_commit = {}
+        
         # Process generated content - handle both dict keys and file paths
         for key, content in generated_content.items():
             if not content:
@@ -125,42 +122,29 @@ def generate_course():
 
             # Determine file path
             if key == "README.md" or key == "readme":
-                file_path = output_dir / "README.md"
+                rel_path = "README.md"
             elif key == "lesson-content.md" or key == "lesson_content":
-                file_path = output_dir / "lesson-content.md"
+                rel_path = "lesson-content.md"
             elif key == "summary.md" or key == "summary":
-                file_path = output_dir / "summary.md"
+                rel_path = "summary.md"
             elif "/" in key:  # Handle paths like "reference/quick_reference.md"
-                file_path = output_dir / key
+                rel_path = key
             else:
                 # Skip unknown keys
                 continue
 
-            # Create parent directories if needed
-            file_path.parent.mkdir(parents=True, exist_ok=True)
+            files_to_commit[rel_path] = content
 
-            # Write content
-            file_path.write_text(content, encoding="utf-8")
-            files_created.append(str(file_path.relative_to(output_dir)))
-
-        logger.info(f"Course created successfully: {output_dir}")
+        logger.info(f"Course content generated: {len(files_to_commit)} files")
 
         # Commit to GitHub to trigger Netlify rebuild
-        _commit_to_github(course_id, files_created)
-
-        # Skip rebuilding site when using eleventy --serve
-        # BrowserSync will auto-refresh when it detects file changes
-        # Uncommment the lines below if you need manual rebuild
-        # try:
-        #     _rebuild_site()
-        # except Exception as e:
-        #     logger.warning(f"Failed to rebuild site: {e}")
+        github_success = _commit_to_github(course_id, files_to_commit)
 
         return jsonify({
             "success": True,
             "courseId": course_id,
-            "path": str(output_dir),
-            "filesCreated": files_created,
+            "filesCreated": list(files_to_commit.keys()),
+            "githubCommitted": github_success,
             "message": f"Course '{title}' generated successfully!"
         })
 
@@ -214,8 +198,13 @@ def _extract_topics(content: str) -> list[str]:
     return topics[:8]  # Limit to 8 topics
 
 
-def _commit_to_github(course_id: str, files_created: list[str]):
-    """Commit generated course files to GitHub repository."""
+def _commit_to_github(course_id: str, files_content: dict[str, str]):
+    """Commit generated course files to GitHub repository.
+    
+    Args:
+        course_id: The course ID
+        files_content: Dict mapping relative file paths to their content
+    """
     try:
         github_token = os.getenv("GITHUB_TOKEN")
         if not github_token:
@@ -234,18 +223,7 @@ def _commit_to_github(course_id: str, files_created: list[str]):
         # Create commit for all files
         commit_message = f"Add generated course: {course_id}"
 
-        # Get all files in the course directory
-        course_dir = Path("Lessons") / course_id
-
-        for file_rel_path in files_created:
-            file_path = course_dir / file_rel_path
-            if not file_path.exists():
-                continue
-
-            # Read file content
-            with open(file_path, 'r', encoding='utf-8') as f:
-                content = f.read()
-
+        for file_rel_path, content in files_content.items():
             # GitHub path
             github_path = f"Lessons/{course_id}/{file_rel_path}"
 
