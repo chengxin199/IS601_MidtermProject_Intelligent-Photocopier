@@ -679,10 +679,11 @@ Generate practical, code-focused exercises suitable for {course_info['level'].lo
         if not self.client:
             return f"# {course_info['title']} - Practice Solution\n\n## TODO\nAdd practice solution code"
 
+        objectives_text = chr(10).join([f"- {obj}" for obj in course_info['objectives']])
         prompt = f"""Create a comprehensive practice solution document in Markdown format for "{course_info['title']}".
 
 Learning Objectives to demonstrate:
-{chr(10).join([f"- {obj}" for obj in course_info['objectives']])}
+{objectives_text}
 
 For each exercise from the exercise instructions, provide:
 1. **Complete working code** - Fully functional implementation
@@ -691,86 +692,18 @@ For each exercise from the exercise instructions, provide:
 4. **Testing examples** - Show how to test the code with test cases
 5. **Alternative approaches** - Demonstrate different implementation strategies
 
-Format structure:
-# Practice Solutions - [Title]
+Format each solution with these sections:
+- Overview: Brief description of the solution approach
+- Basic Implementation: Clean working code with comments
+- Enhanced Implementation: Improved version with error handling and validation
+- Testing the Solution: Complete test cases with assertions
+- Explanation: Design decisions, key concepts, complexity analysis
+- Key Takeaways: Important lessons and best practices
 
-## Solution 1: [Exercise Title]
-
-### Overview
-Brief description of the solution approach and key concepts used.
-
-### Basic Implementation
-```python
-# Clean, working solution with step-by-step comments
-def solution_basic(param):
-    # Step 1: Explain what this does
-    result = some_operation()
-
-    # Step 2: Explain next step
-    processed = process(result)
-
-    return processed
-```
-
-### Enhanced Implementation
-```python
-# Improved version with error handling, input validation, edge cases
-def solution_enhanced(param):
-    # Input validation
-    if not isinstance(param, expected_type):
-        raise TypeError(f"Expected {expected_type}, got {type(param)}")
-
-    # Main logic with error handling
-    try:
-        result = improved_operation(param)
-    except SpecificError as e:
-        logger.error(f"Operation failed: {e}")
-        return default_value
-
-    # Additional edge case handling
-    if edge_condition:
-        return special_case_result
-
-    return result
-
-# Helper functions for better code organization
-def helper_function(data):
-    """Helper docstring explaining purpose."""
-    return processed_data
-```
-
-### Testing the Solution
-```python
-# Test cases with expected outputs
-def test_solution():
-    # Test case 1: Normal input
-    assert solution_enhanced("valid_input") == expected_output
-    print("✓ Test 1 passed")
-
-    # Test case 2: Edge case
-    assert solution_enhanced("") == default_value
-    print("✓ Test 2 passed")
-
-    # Test case 3: Error handling
-    try:
-        solution_enhanced(None)
-        assert False, "Should raise TypeError"
-    except TypeError:
-        print("✓ Test 3 passed")
-
-test_solution()
-```
-
-### Explanation
-- **Why this approach:** Explain design decisions and trade-offs
-- **Key concepts used:** List and explain important concepts applied
-- **Time/Space complexity:** Brief analysis (for intermediate/advanced)
-- **When to use:** Scenarios where this solution is most appropriate
-
-### Key Takeaways
-- Important lesson 1 from this solution
-- Best practice demonstrated
-- Common pitfall avoided
+Use proper Markdown formatting with code blocks (use triple backticks with python).
+Include inline comments explaining each step.
+Show both basic and enhanced versions with proper error handling.
+Provide runnable test cases that demonstrate the solution works.
 
 Generate production-quality, well-tested solutions for {course_info['level'].lower()} level."""
 
