@@ -35,6 +35,19 @@ def health_check():
     return jsonify({"status": "ok", "service": "AI Course Builder API"})
 
 
+@app.route("/api/debug", methods=["GET"])
+def debug_info():
+    """Debug endpoint to check environment."""
+    github_token = os.getenv("GITHUB_TOKEN")
+    openai_key = os.getenv("OPENAI_API_KEY")
+    return jsonify({
+        "github_token_set": bool(github_token),
+        "github_token_length": len(github_token) if github_token else 0,
+        "openai_key_set": bool(openai_key),
+        "openai_key_length": len(openai_key) if openai_key else 0
+    })
+
+
 @app.route("/api/generate-course", methods=["POST"])
 def generate_course():
     """
@@ -114,7 +127,7 @@ def generate_course():
 
         # Prepare files for GitHub commit
         files_to_commit = {}
-        
+
         # Process generated content - handle both dict keys and file paths
         for key, content in generated_content.items():
             if not content:
@@ -200,7 +213,7 @@ def _extract_topics(content: str) -> list[str]:
 
 def _commit_to_github(course_id: str, files_content: dict[str, str]):
     """Commit generated course files to GitHub repository.
-    
+
     Args:
         course_id: The course ID
         files_content: Dict mapping relative file paths to their content
