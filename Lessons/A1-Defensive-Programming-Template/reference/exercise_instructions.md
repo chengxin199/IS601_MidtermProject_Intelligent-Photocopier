@@ -1,6 +1,7 @@
 ---
 title: Defensive Programming - Exercise Instructions
-layout: layouts/base.njk
+layout: layouts/course.njk
+courseId: A1-Defensive-Programming-Template
 tags:
   - exercises
 date: 2025-11-17T20:03:21.602200

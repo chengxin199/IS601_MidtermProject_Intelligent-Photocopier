@@ -1,7 +1,7 @@
 ---
 title: Working with Third-Party Libraries
 layout: layouts/course.njk
-courseId: C6
+courseId: C6-working-with-thirdparty-libraries
 level: Intermediate
 duration: 3-4 hours
 description: "Master the art of effectively using third-party libraries with proper documentation reading, semantic versioning, and security practices."

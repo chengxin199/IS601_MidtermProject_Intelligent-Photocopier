@@ -1,6 +1,6 @@
 ---
 title: Performance Optimization and Profiling - Exercise Instructions
-layout: layouts/base.njk
+layout: layouts/course.njk
 courseId: B2-performance-optimization-and-profiling
 tags:
   - exercises

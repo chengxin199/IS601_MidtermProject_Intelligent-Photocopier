@@ -1,6 +1,7 @@
 ---
 title: Third-Party Libraries - Solution
-layout: layouts/base.njk
+layout: layouts/course.njk
+courseId: C6-working-with-thirdparty-libraries
 tags:
   - solutions
   - code

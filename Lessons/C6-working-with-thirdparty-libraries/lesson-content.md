@@ -1,6 +1,7 @@
 ---
 title: Third-Party Libraries - Detailed Lessons
-layout: layouts/base.njk
+layout: layouts/course.njk
+courseId: C6-working-with-thirdparty-libraries
 tags:
   - lesson
   - content

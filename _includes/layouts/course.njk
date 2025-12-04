@@ -2,6 +2,79 @@
 layout: layouts/base.njk
 ---
 
+<style>
+  .course-layout {
+    display: flex;
+    gap: 2rem;
+    margin-top: 1rem;
+  }
+
+  .course-sidebar {
+    position: sticky;
+    top: 20px;
+    width: 280px;
+    height: fit-content;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 8px 30px rgba(102, 126, 234, 0.3);
+    flex-shrink: 0;
+  }
+
+  .course-sidebar h3 {
+    color: white;
+    margin-top: 0;
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid rgba(255,255,255,0.3);
+    padding-bottom: 0.75rem;
+  }
+
+  .course-sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .course-sidebar li {
+    margin-bottom: 0.75rem;
+  }
+
+  .course-sidebar a {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: white;
+    text-decoration: none;
+    padding: 0.75rem;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.1);
+    transition: all 0.2s;
+    font-size: 0.95rem;
+  }
+
+  .course-sidebar a:hover {
+    background: rgba(255,255,255,0.25);
+    transform: translateX(5px);
+  }
+
+  .course-content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  @media (max-width: 768px) {
+    .course-layout {
+      flex-direction: column;
+    }
+
+    .course-sidebar {
+      position: static;
+      width: 100%;
+    }
+  }
+</style>
+
 <a href="/" class="back-link">← Back to All Courses</a>
 
 {% if courseId or level or duration %}
@@ -32,27 +105,34 @@ layout: layouts/base.njk
 </div>
 {% endif %}
 
-{{ content | safe }}
+<div class="course-layout">
+  <!-- Sidebar -->
+  <aside class="course-sidebar">
+    <h3>📁 Course Materials</h3>
+    <ul>
+      <li><a href="/{{ courseId }}/README/">🏠 Course Overview</a></li>
+      <li><a href="/{{ courseId }}/lesson-content/">📖 Detailed Lesson Content</a></li>
+      <li><a href="/{{ courseId }}/summary/">📝 Course Summary</a></li>
+      <li><a href="/{{ courseId }}/reference/quick_reference/">🔍 Quick Reference Guide</a></li>
+      <li><a href="/{{ courseId }}/reference/best_practices/">✅ Best Practices</a></li>
+      <li><a href="/{{ courseId }}/reference/exercise_instructions/">💻 Exercise Instructions</a></li>
+      <li><a href="/{{ courseId }}/solutions/practice_solution/">🎯 Practice Solutions</a></li>
+    </ul>
+  </aside>
 
-{% if objectives %}
-<section style="margin-top: 3rem; padding: 2rem; background: #f8f9fa; border-radius: 8px;">
-  <h2>🎯 Learning Objectives</h2>
-  <ul>
-  {% for objective in objectives %}
-    <li>{{ objective }}</li>
-  {% endfor %}
-  </ul>
-</section>
-{% endif %}
+  <!-- Main Content -->
+  <main class="course-content">
+    {{ content | safe }}
 
-<div style="margin-top: 3rem; padding: 2rem; background: #e3f2fd; border-radius: 8px; border-left: 4px solid #2196f3;">
-  <h3>📁 Course Materials</h3>
-  <ul style="margin-left: 0; list-style: none;">
-    <li>📖 <a href="../lesson-content/">Detailed Lesson Content</a></li>
-    <li>📝 <a href="../summary/">Course Summary</a></li>
-    <li>🔍 <a href="../reference/quick_reference/">Quick Reference Guide</a></li>
-    <li>✅ <a href="../reference/best_practices/">Best Practices</a></li>
-    <li>💻 <a href="../reference/exercise_instructions/">Exercise Instructions</a></li>
-    <li>🎯 <a href="../solutions/practice_solution/">Practice Solutions</a></li>
-  </ul>
+    {% if objectives %}
+    <section style="margin-top: 3rem; padding: 2rem; background: #f8f9fa; border-radius: 8px;">
+      <h2>🎯 Learning Objectives</h2>
+      <ul>
+      {% for objective in objectives %}
+        <li>{{ objective }}</li>
+      {% endfor %}
+      </ul>
+    </section>
+    {% endif %}
+  </main>
 </div>

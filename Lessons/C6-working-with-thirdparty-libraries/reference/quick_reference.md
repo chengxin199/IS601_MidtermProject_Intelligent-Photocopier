@@ -1,6 +1,7 @@
 ---
 title: Third-Party Libraries - Quick Reference
-layout: layouts/base.njk
+layout: layouts/course.njk
+courseId: C6-working-with-thirdparty-libraries
 tags:
   - reference
   - quick-guide

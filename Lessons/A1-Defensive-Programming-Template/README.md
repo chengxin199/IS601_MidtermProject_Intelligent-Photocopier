@@ -1,7 +1,7 @@
 ---
-title: Defensive Programming, Errors, and Contracts
+title: "Defensive Programming, Errors, and Contracts"
 layout: layouts/course.njk
-courseId: A1
+courseId: A1-Defensive-Programming-Template
 level: Intermediate
 duration: 3-4 hours
 description: "Write resilient code that fails fast, communicates intent, and recovers gracefully."

@@ -1,6 +1,7 @@
 ---
 title: Defensive Programming - Best Practices
-layout: layouts/base.njk
+layout: layouts/course.njk
+courseId: A1-Defensive-Programming-Template
 tags:
   - reference
   - best-practices

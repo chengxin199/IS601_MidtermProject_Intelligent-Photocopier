@@ -74,14 +74,17 @@ def generate_course():
 
         # Prepare course info
         course_info = {
-            "id": course_id,
+            "course_id": course_id,
+            "id": course_id,  # Keep both for compatibility
             "title": title,
             "level": level,
             "duration": duration,
-            "description": description,
+            "description": description or f"A comprehensive {level.lower()} course on {title}",
             "source_material": content,
-            "learning_objectives": _extract_objectives(content),
+            "objectives": _extract_objectives(content),
+            "learning_objectives": _extract_objectives(content),  # Keep both
             "topics": _extract_topics(content),
+            "prerequisites": ["Basic programming knowledge", "Familiarity with Python"],
         }
 
         # Define template structure based on selected sections
@@ -106,47 +109,30 @@ def generate_course():
         output_dir.mkdir(parents=True, exist_ok=True)        # Write files
         files_created = []
 
-        # README.md
-        if "readme" in generated_content:
-            readme_path = output_dir / "README.md"
-            readme_path.write_text(generated_content["readme"], encoding="utf-8")
-            files_created.append("README.md")
+        # Process generated content - handle both dict keys and file paths
+        for key, content in generated_content.items():
+            if not content:
+                continue
 
-        # lesson-content.md
-        if "lesson_content" in generated_content:
-            lesson_path = output_dir / "lesson-content.md"
-            lesson_path.write_text(generated_content["lesson_content"], encoding="utf-8")
-            files_created.append("lesson-content.md")
+            # Determine file path
+            if key == "README.md" or key == "readme":
+                file_path = output_dir / "README.md"
+            elif key == "lesson-content.md" or key == "lesson_content":
+                file_path = output_dir / "lesson-content.md"
+            elif key == "summary.md" or key == "summary":
+                file_path = output_dir / "summary.md"
+            elif "/" in key:  # Handle paths like "reference/quick_reference.md"
+                file_path = output_dir / key
+            else:
+                # Skip unknown keys
+                continue
 
-        # summary.md
-        if sections.get("summary") and "summary" in generated_content:
-            summary_path = output_dir / "summary.md"
-            summary_path.write_text(generated_content["summary"], encoding="utf-8")
-            files_created.append("summary.md")
+            # Create parent directories if needed
+            file_path.parent.mkdir(parents=True, exist_ok=True)
 
-        # reference/
-        if sections.get("reference") and "reference" in generated_content:
-            ref_dir = output_dir / "reference"
-            ref_dir.mkdir(exist_ok=True)
-            ref_path = ref_dir / "quick-reference.md"
-            ref_path.write_text(generated_content["reference"], encoding="utf-8")
-            files_created.append("reference/quick-reference.md")
-
-        # solutions/
-        if sections.get("solutions") and "solutions" in generated_content:
-            sol_dir = output_dir / "solutions"
-            sol_dir.mkdir(exist_ok=True)
-            sol_path = sol_dir / "exercise-solutions.md"
-            sol_path.write_text(generated_content["solutions"], encoding="utf-8")
-            files_created.append("solutions/exercise-solutions.md")
-
-        # tests/
-        if sections.get("tests") and "tests" in generated_content:
-            test_dir = output_dir / "tests"
-            test_dir.mkdir(exist_ok=True)
-            test_path = test_dir / "practice-tests.md"
-            test_path.write_text(generated_content["tests"], encoding="utf-8")
-            files_created.append("tests/practice-tests.md")
+            # Write content
+            file_path.write_text(content, encoding="utf-8")
+            files_created.append(str(file_path.relative_to(output_dir)))
 
         logger.info(f"Course created successfully: {output_dir}")
 

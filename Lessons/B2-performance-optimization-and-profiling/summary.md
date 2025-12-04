@@ -1,6 +1,6 @@
 ---
 title: Performance Optimization and Profiling - Summary
-layout: layouts/base.njk
+layout: layouts/course.njk
 courseId: B2-performance-optimization-and-profiling
 level: Intermediate
 tags:

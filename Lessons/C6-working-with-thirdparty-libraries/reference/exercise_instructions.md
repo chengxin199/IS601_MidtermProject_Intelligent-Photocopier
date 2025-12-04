@@ -1,6 +1,7 @@
 ---
 title: Third-Party Libraries - Exercise Instructions
-layout: layouts/base.njk
+layout: layouts/course.njk
+courseId: C6-working-with-thirdparty-libraries
 tags:
   - exercises
 date: 2025-11-17T20:03:21.604104

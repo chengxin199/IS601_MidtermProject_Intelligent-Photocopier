@@ -1,6 +1,7 @@
 ---
 title: Defensive Programming - Summary
-layout: layouts/base.njk
+layout: layouts/course.njk
+courseId: A1-Defensive-Programming-Template
 tags:
   - summary
 date: 2025-11-17T20:03:21.601328

@@ -1,6 +1,7 @@
 ---
 title: Defensive Programming - Python Exceptions
-layout: layouts/base.njk
+layout: layouts/course.njk
+courseId: A1-Defensive-Programming-Template
 tags:
   - reference
 date: 2025-11-17T20:03:21.602519

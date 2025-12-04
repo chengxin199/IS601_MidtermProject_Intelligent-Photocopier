@@ -592,19 +592,52 @@ Make it practical and actionable for {course_info['level'].lower()} level develo
         if not self.client:
             return f"# {course_info['title']} - Exercise Instructions\n\n// TODO: Add exercise instructions"
 
-        prompt = f"""Create detailed exercise instructions for "{course_info['title']}".
+        prompt = f"""Create detailed hands-on coding exercise instructions for "{course_info['title']}".
 
 Learning Objectives:
 {chr(10).join([f"- {obj}" for obj in course_info['objectives']])}
 
-Create exercises that:
-1. Practice each learning objective
-2. Build incrementally in difficulty
-3. Include clear step-by-step instructions
-4. Provide acceptance criteria
-5. Include hints for common challenges
+Create 3-5 progressive coding exercises that:
+1. **Include starter code** - Provide Python code templates with TODO comments
+2. **Have clear objectives** - State what the student should implement
+3. **Build incrementally** - Start simple, add complexity
+4. **Include test cases** - Show expected input/output examples
+5. **Provide hints** - Give helpful tips for common challenges
 
-Generate 3-5 practical exercises suitable for {course_info['level'].lower()} level."""
+Format each exercise as:
+
+## Exercise [N]: [Title]
+**Difficulty:** [Beginner/Intermediate/Advanced]
+**Time Estimate:** [X minutes]
+
+### Objective
+Clear description of what to implement
+
+### Starter Code
+```python
+# Provide actual code template with TODO markers
+def function_name():
+    # TODO: Implement this
+    pass
+```
+
+### Requirements
+- Specific requirement 1
+- Specific requirement 2
+- Include edge cases to handle
+
+### Test Cases
+```python
+# Example test cases
+assert function_name(input1) == expected_output1
+assert function_name(input2) == expected_output2
+```
+
+### Hints
+- Helpful hint 1
+- Helpful hint 2
+
+Generate practical, code-focused exercises suitable for {course_info['level'].lower()} level."""
 
         try:
             if not self.client:
@@ -615,7 +648,7 @@ Generate 3-5 practical exercises suitable for {course_info['level'].lower()} lev
                 messages=[
                     {
                         "role": "system",
-                        "content": "You are an expert educational designer creating hands-on programming exercises. Make them practical and engaging.",
+                        "content": "You are an expert Python instructor creating hands-on coding exercises. Focus on providing actual runnable code templates and clear test cases.",
                     },
                     {"role": "user", "content": prompt},
                 ],
@@ -651,39 +684,95 @@ Generate 3-5 practical exercises suitable for {course_info['level'].lower()} lev
 Learning Objectives to demonstrate:
 {chr(10).join([f"- {obj}" for obj in course_info['objectives']])}
 
-Requirements:
-1. Start with a brief introduction explaining the solution approach
-2. Include multiple solution examples (basic, intermediate, advanced if applicable)
-3. Use proper Markdown formatting with code blocks using ```python
-4. Add clear comments within code explaining key concepts
-5. Include explanations between code blocks
-6. Demonstrate best practices and error handling
-7. End with a "Key Takeaways" section
+For each exercise from the exercise instructions, provide:
+1. **Complete working code** - Fully functional implementation
+2. **Progressive solutions** - Basic version, then enhanced version with proper error handling
+3. **Detailed inline comments** - Explain key logic step-by-step
+4. **Testing examples** - Show how to test the code with test cases
+5. **Alternative approaches** - Demonstrate different implementation strategies
 
 Format structure:
-# Practice Solution - [Title]
+# Practice Solutions - [Title]
 
-## Overview
-Brief explanation...
+## Solution 1: [Exercise Title]
 
-## Solution 1: Basic Implementation
+### Overview
+Brief description of the solution approach and key concepts used.
+
+### Basic Implementation
 ```python
-# Well-commented code
+# Clean, working solution with step-by-step comments
+def solution_basic(param):
+    # Step 1: Explain what this does
+    result = some_operation()
+
+    # Step 2: Explain next step
+    processed = process(result)
+
+    return processed
 ```
 
-## Solution 2: Enhanced Implementation (if applicable)
+### Enhanced Implementation
 ```python
-# More advanced code
+# Improved version with error handling, input validation, edge cases
+def solution_enhanced(param):
+    # Input validation
+    if not isinstance(param, expected_type):
+        raise TypeError(f"Expected {expected_type}, got {type(param)}")
+
+    # Main logic with error handling
+    try:
+        result = improved_operation(param)
+    except SpecificError as e:
+        logger.error(f"Operation failed: {e}")
+        return default_value
+
+    # Additional edge case handling
+    if edge_condition:
+        return special_case_result
+
+    return result
+
+# Helper functions for better code organization
+def helper_function(data):
+    """Helper docstring explaining purpose."""
+    return processed_data
 ```
 
-## Explanation
-Detailed explanation of the approach...
+### Testing the Solution
+```python
+# Test cases with expected outputs
+def test_solution():
+    # Test case 1: Normal input
+    assert solution_enhanced("valid_input") == expected_output
+    print("✓ Test 1 passed")
 
-## Key Takeaways
-- Important points learned
-- Best practices applied
+    # Test case 2: Edge case
+    assert solution_enhanced("") == default_value
+    print("✓ Test 2 passed")
 
-Generate a well-structured Markdown document that students can learn from."""
+    # Test case 3: Error handling
+    try:
+        solution_enhanced(None)
+        assert False, "Should raise TypeError"
+    except TypeError:
+        print("✓ Test 3 passed")
+
+test_solution()
+```
+
+### Explanation
+- **Why this approach:** Explain design decisions and trade-offs
+- **Key concepts used:** List and explain important concepts applied
+- **Time/Space complexity:** Brief analysis (for intermediate/advanced)
+- **When to use:** Scenarios where this solution is most appropriate
+
+### Key Takeaways
+- Important lesson 1 from this solution
+- Best practice demonstrated
+- Common pitfall avoided
+
+Generate production-quality, well-tested solutions for {course_info['level'].lower()} level."""
 
         try:
             if not self.client:
@@ -694,7 +783,7 @@ Generate a well-structured Markdown document that students can learn from."""
                 messages=[
                     {
                         "role": "system",
-                        "content": "You are an expert Python developer creating educational documentation. Write well-structured Markdown documents with clear code examples and explanations.",
+                        "content": "You are a senior Python engineer and instructor. Provide clean, production-quality code with comprehensive explanations, proper error handling, and complete testing examples. Focus on real-world applicability.",
                     },
                     {"role": "user", "content": prompt},
                 ],

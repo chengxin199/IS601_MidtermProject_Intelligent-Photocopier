@@ -4,6 +4,38 @@ title: Home
 permalink: /
 ---
 
+<!-- Sidebar for Course List -->
+<div id="courseSidebar" style="position: fixed; left: -280px; top: 0; width: 280px; height: 100vh; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); box-shadow: 4px 0 20px rgba(0,0,0,0.15); z-index: 1000; overflow-y: auto; transition: left 0.3s ease; padding: 20px;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+    <h3 style="color: white; margin: 0; font-size: 1.25rem;">📚 Courses</h3>
+    <button onclick="toggleSidebar()" style="background: rgba(255,255,255,0.2); border: none; color: white; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; font-size: 1.2rem;">✕</button>
+  </div>
+
+  <div id="sidebarCourseList">
+    {% for course in collections.courses %}
+    <a href="{{ course.url }}" style="display: block; padding: 12px; background: rgba(255,255,255,0.1); border-radius: 12px; margin-bottom: 10px; text-decoration: none; color: white; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+      <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 4px;">{% if course.data.courseId %}{{ course.data.courseId }}{% endif %}</div>
+      <div style="font-size: 0.85rem; opacity: 0.9;">{{ course.data.title or 'Untitled' }}</div>
+      {% if course.data.level %}
+      <span style="display: inline-block; font-size: 0.75rem; background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 6px; margin-top: 6px;">{{ course.data.level }}</span>
+      {% endif %}
+    </a>
+    {% endfor %}
+
+    {% if collections.courses.length == 0 %}
+    <div style="text-align: center; padding: 2rem 1rem; color: rgba(255,255,255,0.8); font-size: 0.9rem;">
+      <div style="font-size: 2rem; margin-bottom: 0.5rem;">🎓</div>
+      <p style="margin: 0;">No courses yet. Create your first course!</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Toggle Button for Sidebar -->
+<button id="sidebarToggle" onclick="toggleSidebar()" style="position: fixed; left: 20px; top: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; color: white; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; font-size: 1.5rem; box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4); z-index: 999; transition: all 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+  ☰
+</button>
+
 <div style="text-align: center; margin-bottom: 4rem; padding: 4rem 2rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 0 0 48px 48px; margin-top: -2rem; box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);">
   <div style="max-width: 900px; margin: 0 auto;">
     <div style="display: inline-block; padding: 0.5rem 1.5rem; background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); border-radius: 20px; margin-bottom: 1.5rem; border: 1px solid rgba(255, 255, 255, 0.2);">
@@ -87,7 +119,22 @@ Example:
         <div id="filePreview" style="margin-top: 1.5rem; display: none;"></div>
       </div>
 
-      <button class="btn" onclick="nextStep(2)" style="margin-top: 2rem; width: 100%; font-size: 1.1rem; padding: 1.25rem;">
+      <button class="btn" onclick="
+        alert('Button clicked!');
+        console.log('Hiding all steps...');
+        document.querySelectorAll('.builder-step').forEach(function(s) {
+          s.style.display = 'none';
+          console.log('Hid step:', s.id);
+        });
+        console.log('Now showing step2...');
+        var step2 = document.getElementById('step2');
+        if (step2) {
+          step2.style.display = 'block';
+          alert('Step 2 should now be visible!');
+        } else {
+          alert('ERROR: step2 element not found!');
+        }
+      " style="margin-top: 2rem; width: 100%; font-size: 1.1rem; padding: 1.25rem;">
         Continue to Configuration →
       </button>
     </div>
@@ -167,10 +214,79 @@ Example:
       </div>
 
       <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-        <button class="btn" onclick="prevStep(1)" style="flex: 1; background: #e2e8f0; color: #4a5568;">
+        <button class="btn" onclick="
+          document.querySelectorAll('.builder-step').forEach(function(s) { s.style.display = 'none'; });
+          document.getElementById('step1').style.display = 'block';
+        " style="flex: 1; background: #e2e8f0; color: #4a5568;">
           ← Back
         </button>
-        <button class="btn" onclick="generateCourse()" style="flex: 2; font-size: 1.1rem; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); box-shadow: 0 4px 20px rgba(245, 87, 108, 0.4);">
+        <button class="btn" onclick="
+          (async function() {
+            try {
+              console.log('Generate button clicked - inline version');
+
+              // Get form values
+              var courseId = document.getElementById('courseId').value.trim();
+              var courseTitle = document.getElementById('courseTitle').value.trim();
+              var courseContent = document.getElementById('courseContent').value.trim();
+
+              if (!courseId || !courseTitle) {
+                alert('⚠️ Please fill in Course ID and Title');
+                return;
+              }
+
+              // Show Step 3
+              document.querySelectorAll('.builder-step').forEach(function(s) { s.style.display = 'none'; });
+              document.getElementById('step3').style.display = 'block';
+
+              // Prepare payload
+              var payload = {
+                courseId: courseId,
+                title: courseTitle,
+                level: document.getElementById('courseLevel').value,
+                duration: document.getElementById('courseDuration').value,
+                description: document.getElementById('courseDescription').value.trim(),
+                content: courseContent || 'Create a comprehensive programming course',
+                sections: {
+                  summary: document.getElementById('incSummary').checked,
+                  reference: document.getElementById('incReference').checked,
+                  solutions: document.getElementById('incSolutions').checked,
+                  tests: document.getElementById('incTests').checked
+                }
+              };
+
+              console.log('Calling API with payload:', payload);
+
+              // Call API
+              var response = await fetch('http://localhost:5000/api/generate-course', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+              });
+
+              if (!response.ok) {
+                var error = await response.json();
+                throw new Error(error.error || 'Failed to generate course');
+              }
+
+              var result = await response.json();
+              console.log('API response:', result);
+
+              // Show success (Step 4)
+              document.querySelectorAll('.builder-step').forEach(function(s) { s.style.display = 'none'; });
+              document.getElementById('step4').style.display = 'block';
+              document.getElementById('courseLocation').textContent = 'Lessons/' + courseId + '/';
+
+              alert('✅ Course generated successfully!');
+
+            } catch (error) {
+              console.error('Error:', error);
+              alert('❌ Error: ' + error.message + '\\n\\nMake sure API server is running on port 5000');
+              document.querySelectorAll('.builder-step').forEach(function(s) { s.style.display = 'none'; });
+              document.getElementById('step2').style.display = 'block';
+            }
+          })();
+        " style="flex: 2; font-size: 1.1rem; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); box-shadow: 0 4px 20px rgba(245, 87, 108, 0.4);">
           🚀 Generate Course with AI
         </button>
       </div>
@@ -273,24 +389,21 @@ Example:
   }
 
   function nextStep(step) {
-    // Validate inputs before moving forward
-    if (step === 2) {
-      const content = document.getElementById('courseContent').value.trim();
-      const fileInput = document.getElementById('fileInput');
+    console.log('nextStep function called with step:', step);
+    alert('nextStep function executing for step: ' + step);
 
-      if (selectedInputMethod === 'paste' && !content) {
-        alert('⚠️ Please provide course material before continuing.');
-        return;
-      }
-      if (selectedInputMethod === 'upload' && (!fileInput.files || fileInput.files.length === 0)) {
-        alert('⚠️ Please upload a file before continuing.');
-        return;
-      }
-    }
-
+    // Simply switch to the requested step
     document.querySelectorAll('.builder-step').forEach(s => s.style.display = 'none');
-    document.getElementById('step' + step).style.display = 'block';
-    document.getElementById('courseBuilder').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    const targetStep = document.getElementById('step' + step);
+    console.log('Target step element:', targetStep);
+
+    if (targetStep) {
+      targetStep.style.display = 'block';
+      console.log('Step', step, 'is now visible');
+      document.getElementById('courseBuilder').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    } else {
+      alert('ERROR: Could not find step' + step + ' element!');
+    }
   }
 
   function prevStep(step) {
@@ -316,25 +429,14 @@ Example:
   }
 
   async function generateCourse() {
-    // Validate required fields
+    // Get values
     const courseId = document.getElementById('courseId').value.trim();
     const courseTitle = document.getElementById('courseTitle').value.trim();
     const courseContent = document.getElementById('courseContent').value.trim();
 
+    // Only check if required fields exist
     if (!courseId || !courseTitle) {
-      alert('⚠️ Please fill in all required fields (Course ID and Title)');
-      return;
-    }
-
-    if (!courseContent && selectedInputMethod === 'paste') {
-      alert('⚠️ Please provide course material');
-      return;
-    }
-
-    // Validate courseId format
-    const courseIdPattern = /^[A-Z]\d+-[a-z0-9-]+$/;
-    if (!courseIdPattern.test(courseId)) {
-      alert(`⚠️ Invalid Course ID format: "${courseId}"\n\nRequired format: [Letter][Number]-kebab-case\n\nValid examples:\n• A1-defensive-programming\n• B2-performance-optimization\n• C3-advanced-patterns\n\nRules:\n✓ Start with uppercase letter + number (A1, B2, C3)\n✓ Followed by hyphen (-)\n✓ Then lowercase words separated by hyphens\n✗ No spaces\n✗ No uppercase letters after the first character`);
+      alert('⚠️ Please fill in Course ID and Title');
       return;
     }
 
@@ -348,7 +450,7 @@ Example:
       level: document.getElementById('courseLevel').value,
       duration: document.getElementById('courseDuration').value,
       description: document.getElementById('courseDescription').value.trim(),
-      content: courseContent,
+      content: courseContent || 'Create a comprehensive programming course',
       sections: {
         summary: document.getElementById('incSummary').checked,
         reference: document.getElementById('incReference').checked,
@@ -540,6 +642,7 @@ Example:
 
   <div class="course-grid">
 {% for course in collections.courses %}
+  {% if loop.index <= 3 %}
   <div class="course-card">
     <h3><a href="{{ course.url }}">{% if course.data.courseId %}{{ course.data.courseId }}: {% endif %}{{ course.data.title or 'Untitled Course' }}</a></h3>
     <p style="flex-grow: 1; color: #4a5568; line-height: 1.7;">{{ course.data.description or course.data.excerpt or 'Explore this course and level up your skills...' }}</p>
@@ -553,8 +656,15 @@ Example:
     </div>
     <a href="{{ course.url }}" class="btn" style="margin-top: auto; text-align: center;">Explore Course →</a>
   </div>
+  {% endif %}
 {% endfor %}
 </div>
+
+{% if collections.courses.length > 3 %}
+<div style="text-align: center; margin-top: 3rem;">
+  <a href="/courses/" class="btn" style="font-size: 1.1rem; padding: 1rem 2.5rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">View All Courses →</a>
+</div>
+{% endif %}
 
 {% if collections.courses.length == 0 %}
 <div style="text-align: center; padding: 4rem; background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); border-radius: 32px; box-shadow: 0 8px 30px rgba(0,0,0,0.08);">

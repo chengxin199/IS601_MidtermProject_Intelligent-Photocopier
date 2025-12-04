@@ -1,6 +1,7 @@
 ---
 title: Third-Party Libraries - Summary
-layout: layouts/base.njk
+layout: layouts/course.njk
+courseId: C6-working-with-thirdparty-libraries
 tags:
   - summary
 date: 2025-11-17T20:03:21.603637

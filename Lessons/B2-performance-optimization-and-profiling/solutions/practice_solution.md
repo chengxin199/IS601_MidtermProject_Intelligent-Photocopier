@@ -1,6 +1,6 @@
 ---
 title: Performance Optimization and Profiling - Practice Solution
-layout: layouts/base.njk
+layout: layouts/course.njk
 courseId: B2-performance-optimization-and-profiling
 tags:
   - solutions
