@@ -4,12 +4,15 @@ Flask API for AI Course Builder web interface.
 Provides REST endpoints for creating courses through the web UI.
 """
 
+import base64
 import logging
+import os
 import subprocess
 from pathlib import Path
 
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+from github import Github, GithubException
 
 from .course_generator import CourseGenerator
 
@@ -28,8 +31,6 @@ CORS(app, origins=[
     "http://www.intelligentphotocopier.online",
     "https://intelligentphotocopier.netlify.app"
 ])
-
-
 @app.route("/api/health", methods=["GET"])
 def health_check():
     """Health check endpoint."""
@@ -145,6 +146,9 @@ def generate_course():
 
         logger.info(f"Course created successfully: {output_dir}")
 
+        # Commit to GitHub to trigger Netlify rebuild
+        _commit_to_github(course_id, files_created)
+
         # Skip rebuilding site when using eleventy --serve
         # BrowserSync will auto-refresh when it detects file changes
         # Uncommment the lines below if you need manual rebuild
@@ -209,6 +213,71 @@ def _extract_topics(content: str) -> list[str]:
         topics = ["Introduction", "Core Concepts", "Advanced Techniques", "Best Practices", "Summary"]
 
     return topics[:8]  # Limit to 8 topics
+
+
+def _commit_to_github(course_id: str, files_created: list[str]):
+    """Commit generated course files to GitHub repository."""
+    try:
+        github_token = os.getenv("GITHUB_TOKEN")
+        if not github_token:
+            logger.warning("GITHUB_TOKEN not set, skipping GitHub commit")
+            return False
+
+        # Initialize GitHub client
+        g = Github(github_token)
+        repo = g.get_repo("chengxin199/Intelligent-Photocopier")
+
+        logger.info(f"Committing course {course_id} to GitHub...")
+
+        # Get the default branch
+        branch = repo.default_branch
+
+        # Create commit for all files
+        commit_message = f"Add generated course: {course_id}"
+
+        # Get all files in the course directory
+        course_dir = Path("Lessons") / course_id
+
+        for file_rel_path in files_created:
+            file_path = course_dir / file_rel_path
+            if not file_path.exists():
+                continue
+
+            # Read file content
+            with open(file_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+
+            # GitHub path
+            github_path = f"Lessons/{course_id}/{file_rel_path}"
+
+            try:
+                # Try to get existing file
+                contents = repo.get_contents(github_path, ref=branch)
+                # Update existing file
+                repo.update_file(
+                    github_path,
+                    commit_message,
+                    content,
+                    contents.sha,
+                    branch=branch
+                )
+                logger.info(f"Updated {github_path}")
+            except GithubException:
+                # Create new file
+                repo.create_file(
+                    github_path,
+                    commit_message,
+                    content,
+                    branch=branch
+                )
+                logger.info(f"Created {github_path}")
+
+        logger.info(f"Successfully committed course {course_id} to GitHub")
+        return True
+
+    except Exception as e:
+        logger.error(f"Failed to commit to GitHub: {e}")
+        return False
 
 
 def _rebuild_site():
