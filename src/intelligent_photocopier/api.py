@@ -21,7 +21,7 @@ app = Flask(__name__)
 # Enable CORS for production domain and localhost
 CORS(app, origins=[
     "http://localhost:8080",
-    "http://localhost:8081", 
+    "http://localhost:8081",
     "https://intelligentphotocopier.online",
     "http://intelligentphotocopier.online",
     "https://www.intelligentphotocopier.online",
