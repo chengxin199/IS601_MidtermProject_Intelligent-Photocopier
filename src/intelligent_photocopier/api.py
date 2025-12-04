@@ -18,7 +18,16 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for web interface
+# Enable CORS for production domain and localhost
+CORS(app, origins=[
+    "http://localhost:8080",
+    "http://localhost:8081", 
+    "https://intelligentphotocopier.online",
+    "http://intelligentphotocopier.online",
+    "https://www.intelligentphotocopier.online",
+    "http://www.intelligentphotocopier.online",
+    "https://intelligentphotocopier.netlify.app"
+])
 
 
 @app.route("/api/health", methods=["GET"])
