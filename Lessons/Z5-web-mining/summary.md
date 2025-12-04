@@ -1,6 +1,6 @@
 ---
 title: Advance web mining - Summary
-layout: layouts/base.njk
+layout: layouts/course.njk
 courseId: Z5-web-mining
 level: Advanced
 tags:

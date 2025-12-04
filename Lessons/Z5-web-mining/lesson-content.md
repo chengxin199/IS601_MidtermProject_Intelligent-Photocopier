@@ -1,6 +1,6 @@
 ---
 title: Advance web mining - Detailed Lessons
-layout: layouts/base.njk
+layout: layouts/course.njk
 courseId: Z5-web-mining
 level: Advanced
 duration: 5-6 hours

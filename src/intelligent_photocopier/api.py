@@ -136,11 +136,13 @@ def generate_course():
 
         logger.info(f"Course created successfully: {output_dir}")
 
-        # Optionally rebuild Eleventy site
-        try:
-            _rebuild_site()
-        except Exception as e:
-            logger.warning(f"Failed to rebuild site: {e}")
+        # Skip rebuilding site when using eleventy --serve
+        # BrowserSync will auto-refresh when it detects file changes
+        # Uncommment the lines below if you need manual rebuild
+        # try:
+        #     _rebuild_site()
+        # except Exception as e:
+        #     logger.warning(f"Failed to rebuild site: {e}")
 
         return jsonify({
             "success": True,

@@ -187,79 +187,10 @@ Example:
       </div>
 
       <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-        <button class="btn" onclick="
-          document.querySelectorAll('.builder-step').forEach(function(s) { s.style.display = 'none'; });
-          document.getElementById('step1').style.display = 'block';
-        " style="flex: 1; background: #e2e8f0; color: #4a5568;">
+        <button class="btn" onclick="prevStep(1)" style="flex: 1; background: #e2e8f0; color: #4a5568;">
           ← Back
         </button>
-        <button class="btn" onclick="
-          (async function() {
-            try {
-              console.log('Generate button clicked - inline version');
-
-              // Get form values
-              var courseId = document.getElementById('courseId').value.trim();
-              var courseTitle = document.getElementById('courseTitle').value.trim();
-              var courseContent = document.getElementById('courseContent').value.trim();
-
-              if (!courseId || !courseTitle) {
-                alert('⚠️ Please fill in Course ID and Title');
-                return;
-              }
-
-              // Show Step 3
-              document.querySelectorAll('.builder-step').forEach(function(s) { s.style.display = 'none'; });
-              document.getElementById('step3').style.display = 'block';
-
-              // Prepare payload
-              var payload = {
-                courseId: courseId,
-                title: courseTitle,
-                level: document.getElementById('courseLevel').value,
-                duration: document.getElementById('courseDuration').value,
-                description: document.getElementById('courseDescription').value.trim(),
-                content: courseContent || 'Create a comprehensive programming course',
-                sections: {
-                  summary: document.getElementById('incSummary').checked,
-                  reference: document.getElementById('incReference').checked,
-                  solutions: document.getElementById('incSolutions').checked,
-                  tests: document.getElementById('incTests').checked
-                }
-              };
-
-              console.log('Calling API with payload:', payload);
-
-              // Call API
-              var response = await fetch('http://localhost:5000/api/generate-course', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-              });
-
-              if (!response.ok) {
-                var error = await response.json();
-                throw new Error(error.error || 'Failed to generate course');
-              }
-
-              var result = await response.json();
-              console.log('API response:', result);
-
-              // Show success (Step 4)
-              document.querySelectorAll('.builder-step').forEach(function(s) { s.style.display = 'none'; });
-              document.getElementById('step4').style.display = 'block';
-              document.getElementById('courseLocation').textContent = 'Lessons/' + courseId + '/';
-
-              alert('✅ Course generated successfully!');
-
-            } catch (error) {
-              console.error('Error:', error);
-              alert('❌ Error: ' + error.message + '\\n\\nMake sure API server is running on port 5000');
-              document.querySelectorAll('.builder-step').forEach(function(s) { s.style.display = 'none'; });
-              document.getElementById('step2').style.display = 'block';
-            }
-          })();
-        " style="flex: 2; font-size: 1.1rem; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); box-shadow: 0 4px 20px rgba(245, 87, 108, 0.4);">
+        <button class="btn" onclick="generateCourse()" style="flex: 2; font-size: 1.1rem; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); box-shadow: 0 4px 20px rgba(245, 87, 108, 0.4);">
           🚀 Generate Course with AI
         </button>
       </div>
@@ -273,11 +204,11 @@ Example:
 
         <!-- Progress Bar -->
         <div style="max-width: 500px; margin: 0 auto 2rem;">
-          <div style="background: #e2e8f0; height: 8px; border-radius: 10px; overflow: hidden;">
-            <div id="progressBar" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); height: 100%; width: 0%; transition: width 0.5s ease;"></div>
+          <div style="background: #e2e8f0; height: 20px; border-radius: 10px; overflow: hidden; border: 2px solid #cbd5e0;">
+            <div id="progressBar" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); height: 100%; width: 0%; transition: width 0.8s ease;"></div>
           </div>
-          <p id="progressText" style="margin-top: 1rem; font-size: 1.1rem; font-weight: 600; color: #667eea;">Generating content with AI...</p>
-          <p id="progressPercent" style="margin-top: 0.5rem; font-size: 0.9rem; color: #718096;">0%</p>
+          <p id="progressText" style="margin-top: 1rem; font-size: 1.2rem; font-weight: 700; color: #667eea;">Generating content with AI...</p>
+          <p id="progressPercent" style="margin-top: 0.5rem; font-size: 1.1rem; font-weight: 600; color: #4a5568;">0%</p>
         </div>
       </div>
     </div>
@@ -343,6 +274,43 @@ Example:
   let selectedInputMethod = 'paste';
   let generatedCourseId = '';
 
+  // Prevent page reload during course generation
+  window.addEventListener('beforeunload', function(e) {
+    if (window.isGeneratingCourse) {
+      console.log('[beforeunload] Preventing page unload during generation');
+      e.preventDefault();
+      e.returnValue = '';
+      return '';
+    }
+  });
+
+  // Prevent BrowserSync from reloading during course generation
+  setTimeout(() => {
+    if (window.___browserSync___) {
+      console.log('[BrowserSync] Setting up reload prevention');
+
+      // Method 1: Override socket emit
+      const originalEmit = window.___browserSync___.socket.emit;
+      window.___browserSync___.socket.emit = function(event, data) {
+        if (window.isGeneratingCourse && (event === 'browser:reload' || event === 'browser:notify')) {
+          console.log('[BrowserSync] Blocked event during generation:', event);
+          return;
+        }
+        return originalEmit.apply(this, arguments);
+      };
+
+      // Method 2: Override reload function
+      const originalReload = window.___browserSync___.reload;
+      window.___browserSync___.reload = function() {
+        if (window.isGeneratingCourse) {
+          console.log('[BrowserSync] Reload blocked during generation');
+          return;
+        }
+        return originalReload.apply(this, arguments);
+      };
+    }
+  }, 100);
+
   function selectInputMethod(method, element) {
     selectedInputMethod = method;
     document.querySelectorAll('.input-method-btn').forEach(btn => btn.classList.remove('active'));
@@ -353,6 +321,9 @@ Example:
   }
 
   function nextStep(step) {
+    console.log(`[nextStep] Switching to step ${step}`);
+    console.log(`[nextStep] Current URL: ${window.location.href}`);
+
     // Switch to the requested step
     document.querySelectorAll('.builder-step').forEach(s => s.style.display = 'none');
     const targetStep = document.getElementById('step' + step);
@@ -360,9 +331,10 @@ Example:
     if (targetStep) {
       targetStep.style.display = 'block';
       targetStep.classList.add('active');
+      console.log(`[nextStep] Step ${step} is now visible`);
       document.getElementById('courseBuilder').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     } else {
-      console.error('Could not find step element: step' + step);
+      console.error(`[nextStep] Could not find step element: step${step}`);
     }
   }
 
@@ -389,19 +361,24 @@ Example:
   }
 
   async function generateCourse() {
+    console.log('[generateCourse] Function started');
+    console.log('[generateCourse] Current URL:', window.location.href);
+
     // Get values
     const courseId = document.getElementById('courseId').value.trim();
     const courseTitle = document.getElementById('courseTitle').value.trim();
     const courseContent = document.getElementById('courseContent').value.trim();
 
+    console.log(`[generateCourse] CourseID: ${courseId}, Title: ${courseTitle}`);
+
     // Only check if required fields exist
     if (!courseId || !courseTitle) {
+      console.log('[generateCourse] Missing required fields');
       alert('⚠️ Please fill in Course ID and Title');
       return;
     }
 
     generatedCourseId = courseId;
-    nextStep(3);
 
     // Prepare API request
     const payload = {
@@ -419,15 +396,36 @@ Example:
       }
     };
 
+    // Switch to step 3 and wait for DOM
+    nextStep(3);
+    await sleep(100);
+
     try {
-      // Start progress animation
-      updateProgressBar(20, 'Analyzing course material...');
-      await sleep(500);
+      // Mark that we're generating to prevent page reload
+      window.isGeneratingCourse = true;
 
-      updateProgressBar(40, 'Generating content with AI...');
+      // Initialize progress bar
+      console.log('Initializing progress bar...');
+      updateProgressBar(0, 'Starting course generation...');
+      await sleep(800);
 
-      // Call API
-      const response = await fetch('http://localhost:5000/api/generate-course', {
+      // Progress: Analyzing
+      console.log('Progress: 10%');
+      updateProgressBar(10, 'Analyzing course material...');
+      await sleep(1000);
+
+      console.log('Progress: 20%');
+      updateProgressBar(20, 'Preparing AI prompts...');
+      await sleep(1000);
+
+      // Progress: Generating - Start API call and simulate progress
+      console.log('Progress: 30%');
+      updateProgressBar(30, 'Generating content with AI...');
+      await sleep(800);
+
+      // Call API in background while updating progress
+      console.log('Calling API...');
+      const apiPromise = fetch('http://localhost:5000/api/generate-course', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -435,24 +433,57 @@ Example:
         body: JSON.stringify(payload)
       });
 
+      // Simulate progress during API call
+      updateProgressBar(40, 'AI is writing lesson content...');
+      await sleep(2000);
+      updateProgressBar(50, 'Creating exercises and examples...');
+      await sleep(2000);
+      updateProgressBar(60, 'Generating reference materials...');
+      await sleep(2000);
+      updateProgressBar(70, 'Building practice solutions...');
+      await sleep(2000);
+      updateProgressBar(75, 'Almost done...');
+
+      // Wait for API to complete
+      const response = await apiPromise;
+
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error.error || 'Failed to generate course');
       }
 
-      updateProgressBar(80, 'Finalizing course structure...');
-      await sleep(500);
-
       const result = await response.json();
+      console.log('API Result:', result);
 
-      updateProgressBar(100, 'Course generated successfully!');
+      // Progress: Finalizing
+      console.log('Progress: 85%');
+      updateProgressBar(85, 'Finalizing course structure...');
       await sleep(800);
 
+      console.log('Progress: 95%');
+      updateProgressBar(95, 'Preparing files...');
+      await sleep(800);
+
+      // Progress: Complete
+      console.log('Progress: 100%');
+      updateProgressBar(100, 'Course generated successfully!');
+      await sleep(2000);
+
       // Show success
+      console.log('Showing success page...');
+      console.log('Result data:', JSON.stringify(result));
       showSuccess(result);
+
+      // Wait a bit before clearing flag to prevent reload
+      await sleep(1000);
+
+      // Clear generation flag
+      console.log('Clearing generation flag');
+      window.isGeneratingCourse = false;
 
     } catch (error) {
       console.error('Error generating course:', error);
+      window.isGeneratingCourse = false;
       alert(`❌ Error generating course:\n\n${error.message}\n\nMake sure the API server is running:\npython -m src.intelligent_photocopier.api`);
       // Reset to step 2
       nextStep(2);
@@ -464,75 +495,76 @@ Example:
   }
 
   function updateProgressBar(percent, text) {
-    document.getElementById('progressBar').style.width = percent + '%';
-    document.getElementById('progressText').textContent = text;
-    document.getElementById('progressPercent').textContent = percent + '%';
+    console.log(`[updateProgressBar] Called with ${percent}%, "${text}"`);
+
+    const bar = document.getElementById('progressBar');
+    const textElem = document.getElementById('progressText');
+    const percentElem = document.getElementById('progressPercent');
+
+    console.log(`[updateProgressBar] Elements found - bar: ${!!bar}, text: ${!!textElem}, percent: ${!!percentElem}`);
+
+    if (bar && textElem && percentElem) {
+      bar.style.width = percent + '%';
+      textElem.textContent = text;
+      percentElem.textContent = percent + '%';
+      console.log(`[updateProgressBar] SUCCESS - Bar width: ${bar.style.width}, Text: ${textElem.textContent}`);
+    } else {
+      console.error('[updateProgressBar] ERROR - Elements not found!');
+      console.error('[updateProgressBar] bar:', bar);
+      console.error('[updateProgressBar] textElem:', textElem);
+      console.error('[updateProgressBar] percentElem:', percentElem);
+    }
   }
 
   function showSuccess(result) {
-    setTimeout(() => {
-      const courseId = result.courseId;
-      const title = document.getElementById('courseTitle').value;
-      const level = document.getElementById('courseLevel').value;
-      const duration = document.getElementById('courseDuration').value;
+    console.log('[showSuccess] Function called');
+    console.log('[showSuccess] Result:', result);
+    console.log('[showSuccess] Current URL:', window.location.href);
 
-      document.getElementById('previewTitle').textContent = title;
-      document.getElementById('courseLocation').textContent = result.path;
+    const courseId = result.courseId;
+    const title = document.getElementById('courseTitle').value;
+    const level = document.getElementById('courseLevel').value;
+    const duration = document.getElementById('courseDuration').value;
 
-      const filesCreated = result.filesCreated || [];
+    document.getElementById('previewTitle').textContent = title;
+    document.getElementById('courseLocation').textContent = result.path;
 
-      document.getElementById('courseStructurePreview').innerHTML = `
-        <p style="margin-bottom: 1rem;"><strong>📚 ${title}</strong></p>
-        <p style="color: #718096; margin-bottom: 0.5rem;"><strong>Level:</strong> ${level} | <strong>Duration:</strong> ${duration}</p>
-        <p style="color: #718096; margin-bottom: 1rem;"><strong>Course ID:</strong> <code>${courseId}</code></p>
-        <hr style="margin: 1rem 0; border: none; border-top: 1px solid #e2e8f0;">
-        <p style="font-weight: 600; margin-bottom: 0.5rem; color: #059669;">✓ ${filesCreated.length} Files Generated:</p>
-        <ul style="margin-left: 1.5rem; color: #4a5568; line-height: 1.8;">
-          ${filesCreated.map(f => `<li>${f}</li>`).join('')}
-        </ul>
-        <div style="margin-top: 1.5rem; padding: 1rem; background: #d1fae5; border-radius: 12px;">
-          <p style="margin: 0; color: #065f46; font-weight: 600;">🎉 ${result.message}</p>
-        </div>
-        <div style="margin-top: 1.5rem; text-align: center;">
-          <button onclick="window.location.href='/${courseId}/README/'" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 1rem 2rem; border-radius: 12px; font-size: 1.1rem; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4); transition: all 0.3s ease;">🎉 View Course →</button>
-          <button onclick="window.location.href='/courses/'" style="background: white; color: #667eea; border: 2px solid #667eea; padding: 1rem 2rem; border-radius: 12px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-left: 1rem; transition: all 0.3s ease;">📚 My Courses</button>
-        </div>
-      `;
+    const filesCreated = result.filesCreated || [];
 
-      nextStep(4);
-    }, 500);
+    const courseStructure = `
+      <p style="margin-bottom: 1rem;"><strong>📚 ${title}</strong></p>
+      <p style="color: #718096; margin-bottom: 0.5rem;"><strong>Level:</strong> ${level} | <strong>Duration:</strong> ${duration}</p>
+      <p style="color: #718096; margin-bottom: 1rem;"><strong>Course ID:</strong> <code>${courseId}</code></p>
+      <hr style="margin: 1rem 0; border: none; border-top: 1px solid #e2e8f0;">
+      <p style="font-weight: 600; margin-bottom: 0.5rem; color: #059669;">✓ ${filesCreated.length} Files Generated:</p>
+      <ul style="margin-left: 1.5rem; color: #4a5568; line-height: 1.8;">
+        ${filesCreated.map(f => `<li>${f}</li>`).join('')}
+      </ul>
+      <div style="margin-top: 1.5rem; padding: 1rem; background: #d1fae5; border-radius: 12px;">
+        <p style="margin: 0; color: #065f46; font-weight: 600;">🎉 ${result.message}</p>
+      </div>
+      <div style="margin-top: 1.5rem; text-align: center;">
+        <button onclick="viewCourse('${courseId}')" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 1rem 2rem; border-radius: 12px; font-size: 1.1rem; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4); transition: all 0.3s ease;">🎉 View Course →</button>
+        <button onclick="viewMyCourses()" style="background: white; color: #667eea; border: 2px solid #667eea; padding: 1rem 2rem; border-radius: 12px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-left: 1rem; transition: all 0.3s ease;">📚 My Courses</button>
+      </div>
+    `;
+
+    document.getElementById('courseStructurePreview').innerHTML = courseStructure;
+
+    console.log('About to switch to step 4...');
+    console.log('Step 4 element exists:', !!document.getElementById('step4'));
+    nextStep(4);
+    console.log('Step 4 should now be visible');
   }
 
-  function resetBuilder() {
-      const courseId = document.getElementById('courseId').value;
-      const courseTitle = document.getElementById('courseTitle').value;
-      const level = document.getElementById('courseLevel').value;
-      const duration = document.getElementById('courseDuration').value;
+  function viewCourse(courseId) {
+    console.log('Navigating to course:', courseId);
+    window.location.href = `/${courseId}/`;
+  }
 
-      document.getElementById('previewTitle').textContent = courseTitle;
-      document.getElementById('courseLocation').textContent = `Lessons/${courseId}/`;
-
-      const structure = [];
-      structure.push('README.md - Course overview and learning objectives');
-      structure.push('lesson-content.md - Main teaching content');
-      if (document.getElementById('incSummary').checked) structure.push('summary.md - Key concepts summary');
-      if (document.getElementById('incReference').checked) structure.push('reference/ - Quick reference materials');
-      if (document.getElementById('incSolutions').checked) structure.push('solutions/ - Exercise solutions');
-      if (document.getElementById('incTests').checked) structure.push('tests/ - Practice tests and quizzes');
-
-      document.getElementById('courseStructurePreview').innerHTML = `
-        <p style="margin-bottom: 1rem;"><strong>📚 ${courseTitle}</strong></p>
-        <p style="color: #718096; margin-bottom: 0.5rem;"><strong>Level:</strong> ${level} | <strong>Duration:</strong> ${duration}</p>
-        <p style="color: #718096; margin-bottom: 1rem;"><strong>Course ID:</strong> <code>${courseId}</code></p>
-        <hr style="margin: 1rem 0; border: none; border-top: 1px solid #e2e8f0;">
-        <p style="font-weight: 600; margin-bottom: 0.5rem;">Generated Files:</p>
-        <ul style="margin-left: 1.5rem; color: #4a5568; line-height: 1.8;">
-          ${structure.map(s => `<li>${s}</li>`).join('')}
-        </ul>
-      `;
-
-      nextStep(4);
-    }, 500);
+  function viewMyCourses() {
+    console.log('Navigating to My Courses');
+    window.location.href = '/courses/';
   }
 
   function resetBuilder() {

@@ -277,7 +277,7 @@ Generate professional, technical content that teaches the subject thoroughly."""
             # Add front matter for Eleventy
             front_matter = self._create_front_matter(
                 title=f"{course_info['title']} - Detailed Lessons",
-                layout="layouts/base.njk",
+                layout="layouts/course.njk",
                 course_id=course_info.get("course_id"),
                 level=course_info.get("level"),
                 duration=course_info.get("duration"),
@@ -344,7 +344,7 @@ Generate a comprehensive summary that helps students consolidate their learning 
             # Add front matter for Eleventy
             front_matter = self._create_front_matter(
                 title=f"{course_info['title']} - Summary",
-                layout="layouts/base.njk",
+                layout="layouts/course.njk",
                 course_id=course_info.get("course_id"),
                 level=course_info.get("level"),
                 tags=["summary", "assessment", course_info.get("level", "").lower()],
@@ -522,7 +522,7 @@ Generate a practical quick reference that students can use during coding."""
                 markdown_content = content.strip()
                 front_matter = self._create_front_matter(
                     title=f"{course_info['title']} - Quick Reference",
-                    layout="layouts/base.njk",
+                    layout="layouts/course.njk",
                     course_id=course_info.get("course_id"),
                     tags=["reference", "quick-guide"],
                 )
@@ -576,7 +576,7 @@ Make it practical and actionable for {course_info['level'].lower()} level develo
                 markdown_content = content.strip()
                 front_matter = self._create_front_matter(
                     title=f"{course_info['title']} - Best Practices",
-                    layout="layouts/base.njk",
+                    layout="layouts/course.njk",
                     course_id=course_info.get("course_id"),
                     tags=["best-practices", "guidelines"],
                 )
@@ -663,7 +663,7 @@ Generate practical, code-focused exercises suitable for {course_info['level'].lo
                 markdown_content = content.strip()
                 front_matter = self._create_front_matter(
                     title=f"{course_info['title']} - Exercise Instructions",
-                    layout="layouts/base.njk",
+                    layout="layouts/course.njk",
                     course_id=course_info.get("course_id"),
                     tags=["exercises", "practice"],
                 )
@@ -731,7 +731,7 @@ Generate production-quality, well-tested solutions for {course_info['level'].low
                 markdown_content = content.strip()
                 front_matter = self._create_front_matter(
                     title=f"{course_info['title']} - Practice Solution",
-                    layout="layouts/base.njk",
+                    layout="layouts/course.njk",
                     course_id=course_info.get("course_id"),
                     tags=["solutions", "code"],
                 )

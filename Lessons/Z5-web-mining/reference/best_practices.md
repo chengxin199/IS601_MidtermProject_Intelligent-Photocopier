@@ -1,6 +1,6 @@
 ---
 title: Advance web mining - Best Practices
-layout: layouts/base.njk
+layout: layouts/course.njk
 courseId: Z5-web-mining
 tags:
   - best-practices
