@@ -254,16 +254,24 @@ def _commit_to_github(course_id: str, files_content: dict[str, str]):
                     contents.sha,
                     branch=branch
                 )
-                logger.info(f"Updated {github_path}")
-            except GithubException:
-                # Create new file
-                repo.create_file(
-                    github_path,
-                    commit_message,
-                    content,
-                    branch=branch
-                )
-                logger.info(f"Created {github_path}")
+                logger.info(f"✓ Updated {github_path}")
+            except GithubException as e:
+                # File doesn't exist, create it
+                if e.status == 404:
+                    try:
+                        repo.create_file(
+                            github_path,
+                            commit_message,
+                            content,
+                            branch=branch
+                        )
+                        logger.info(f"✓ Created {github_path}")
+                    except Exception as create_error:
+                        logger.error(f"Failed to create {github_path}: {create_error}")
+                        raise
+                else:
+                    logger.error(f"GitHub API error for {github_path}: {e}")
+                    raise
 
         logger.info(f"Successfully committed course {course_id} to GitHub")
         return True
