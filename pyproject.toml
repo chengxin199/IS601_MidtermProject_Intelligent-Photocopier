@@ -152,7 +152,7 @@ exclude_lines = [
 [tool.mypy]
 python_version = "3.11"
 strict = false
-warn_unused_ignores = true
+warn_unused_ignores = false  # Disabled due to inconsistent type stub availability
 warn_redundant_casts = true
 warn_return_any = false
 warn_unreachable = true
@@ -169,3 +169,11 @@ exclude = [
   "src/intelligent_photocopier/test_api.py",
   "src/intelligent_photocopier/test_components.py",
 ]
+
+[[tool.mypy.overrides]]
+module = "github"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "github.*"
+ignore_missing_imports = true

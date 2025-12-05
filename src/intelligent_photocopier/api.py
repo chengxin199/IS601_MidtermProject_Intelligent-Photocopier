@@ -8,9 +8,9 @@ import logging
 import os
 import subprocess  # nosec B404 - Used safely with fixed command list
 
-from flask import Flask, jsonify, request  # type: ignore[import-untyped]
-from flask_cors import CORS  # type: ignore[import-untyped]
-from github import Github  # type: ignore[import-untyped]
+from flask import Flask, jsonify, request
+from flask_cors import CORS
+from github import Github, InputGitTreeElement
 
 from .course_generator import CourseGenerator
 
@@ -116,7 +116,8 @@ def generate_course():  # pylint: disable=too-many-locals
             description = (
                 desc_candidate[:150] + "..."
                 if len(desc_candidate) > 150
-                else desc_candidate or f"Learn {title} with practical examples and hands-on exercises"
+                else desc_candidate
+                or f"Learn {title} with practical examples and hands-on exercises"
             )
 
         course_info = {
@@ -279,15 +280,11 @@ def _commit_to_github(  # pylint: disable=too-many-locals
             # Create a blob for the file content
             blob = repo.create_git_blob(content, "utf-8")
 
-            # Add to tree elements with proper mode for files
-            tree_elements.append(
-                {
-                    "path": github_path,
-                    "mode": "100644",  # Regular file mode
-                    "type": "blob",
-                    "sha": blob.sha,
-                }
+            # Add to tree elements using InputGitTreeElement
+            tree_element = InputGitTreeElement(
+                path=github_path, mode="100644", type="blob", sha=blob.sha
             )
+            tree_elements.append(tree_element)
             logger.info(f"✓ Prepared blob for {github_path}")
 
         # Create a new tree with all the files
