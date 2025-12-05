@@ -36,6 +36,33 @@ class CourseGenerator:
             self.client = None
 
     @staticmethod
+    def _clean_ai_response(content: str) -> str:
+        """Clean up AI response by removing markdown code block wrappers.
+
+        AI sometimes wraps responses in ```markdown ... ``` or ``` ... ```
+        This removes those wrappers to get clean markdown content.
+        """
+        content = content.strip()
+
+        # Remove markdown code block wrapper
+        if content.startswith("```markdown"):
+            content = content[len("```markdown") :].strip()
+        elif content.startswith("````markdown"):
+            content = content[len("````markdown") :].strip()
+        elif content.startswith("```"):
+            content = content[3:].strip()
+        elif content.startswith("````"):
+            content = content[4:].strip()
+
+        # Remove trailing code block markers
+        if content.endswith("```"):
+            content = content[:-3].strip()
+        elif content.endswith("````"):
+            content = content[:-4].strip()
+
+        return content
+
+    @staticmethod
     def _create_front_matter(
         title: str,
         layout: str = "layouts/course.njk",
@@ -169,6 +196,8 @@ Requirements:
 4. Include practical, actionable content
 5. End with motivational call-to-action
 
+IMPORTANT: Return ONLY the raw markdown content. Do NOT wrap your response in markdown code blocks (```markdown or ```). Start directly with the # heading.
+
 Generate a complete, professional README that matches the style of high-quality educational content."""
 
         try:
@@ -189,7 +218,7 @@ Generate a complete, professional README that matches the style of high-quality 
             )
 
             content = response.choices[0].message.content
-            markdown_content = content.strip() if content else ""
+            markdown_content = self._clean_ai_response(content) if content else ""
 
             # Add front matter for Eleventy
             front_matter = self._create_front_matter(

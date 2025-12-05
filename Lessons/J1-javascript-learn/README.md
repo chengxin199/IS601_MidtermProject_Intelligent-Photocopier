@@ -11,7 +11,7 @@ tags:
   - intermediate
 date: 2025-12-04T23:56:35.099303
 ---
-```markdown
+
 # Introduction to JavaScript 🚀
 
 ## Course Overview
@@ -117,4 +117,3 @@ introduction-to-javascript/
 
 ### Ready to dive into the world of JavaScript? 💻
 Join us on this exciting journey and unlock your potential as a skilled JavaScript developer. Let's start building amazing projects together! 🚀
-```

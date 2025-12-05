@@ -56,7 +56,7 @@ def debug_info():
 
 
 @app.route("/api/generate-course", methods=["POST"])
-def generate_course():
+def generate_course():  # pylint: disable=too-many-locals
     """
     Generate a course from provided material.
 
@@ -144,11 +144,11 @@ def generate_course():
                 continue
 
             # Determine file path
-            if key == "README.md" or key == "readme":
+            if key in ("README.md", "readme"):
                 rel_path = "README.md"
-            elif key == "lesson-content.md" or key == "lesson_content":
+            elif key in ("lesson-content.md", "lesson_content"):
                 rel_path = "lesson-content.md"
-            elif key == "summary.md" or key == "summary":
+            elif key in ("summary.md", "summary"):
                 rel_path = "summary.md"
             elif "/" in key:  # Handle paths like "reference/quick_reference.md"
                 rel_path = key
@@ -231,7 +231,9 @@ def _extract_topics(content: str) -> list[str]:
     return topics[:8]  # Limit to 8 topics
 
 
-def _commit_to_github(course_id: str, files_content: dict[str, str]):
+def _commit_to_github(  # pylint: disable=too-many-locals
+    course_id: str, files_content: dict[str, str]
+):
     """Commit generated course files to GitHub repository as a single batch commit.
 
     Args:
@@ -276,7 +278,8 @@ def _commit_to_github(course_id: str, files_content: dict[str, str]):
             logger.info(f"✓ Prepared blob for {github_path}")
 
         # Create a new tree with all the files
-        new_tree = repo.create_git_tree(tree_elements, base_tree)
+        # Type ignore needed as PyGithub's InputGitTreeElement type is not exposed
+        new_tree = repo.create_git_tree(tree_elements, base_tree)  # type: ignore[arg-type]
         logger.info(f"Created git tree with {len(tree_elements)} files")
 
         # Create a single commit with all changes
