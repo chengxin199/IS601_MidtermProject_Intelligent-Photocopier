@@ -8,6 +8,10 @@ pytest-pylint>=0.21
 debugpy>=1.8
 pre-commit>=3.7
 mypy>=1.10
+# Type stubs for mypy
+types-Flask
+types-Flask-Cors
+types-requests
 # Flake8 plugins (installed to match config behavior)
 flake8-bugbear>=24.2
 flake8-comprehensions>=3.14

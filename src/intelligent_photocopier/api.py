@@ -6,11 +6,11 @@ Provides REST endpoints for creating courses through the web UI.
 
 import logging
 import os
-import subprocess
+import subprocess  # nosec B404 - Used safely with fixed command list
 
-from flask import Flask, jsonify, request
-from flask_cors import CORS
-from github import Github
+from flask import Flask, jsonify, request  # type: ignore[import-untyped]
+from flask_cors import CORS  # type: ignore[import-untyped]
+from github import Github  # type: ignore[import-untyped]
 
 from .course_generator import CourseGenerator
 
@@ -106,13 +106,26 @@ def generate_course():  # pylint: disable=too-many-locals
         generator = CourseGenerator()
 
         # Prepare course info
+        # Generate a more natural description if not provided
+        if not description:
+            # Extract first meaningful sentence from content as description
+            first_lines = content.split("\n")[:5]
+            desc_candidate = " ".join(first_lines).strip()
+            # Clean up and limit length
+            desc_candidate = desc_candidate.replace("#", "").strip()
+            description = (
+                desc_candidate[:150] + "..."
+                if len(desc_candidate) > 150
+                else desc_candidate or f"Learn {title} with practical examples and hands-on exercises"
+            )
+
         course_info = {
             "course_id": course_id,
             "id": course_id,  # Keep both for compatibility
             "title": title,
             "level": level,
             "duration": duration,
-            "description": description or f"A comprehensive {level.lower()} course on {title}",
+            "description": description,
             "source_material": content,
             "objectives": _extract_objectives(content),
             "learning_objectives": _extract_objectives(content),  # Keep both
@@ -278,8 +291,7 @@ def _commit_to_github(  # pylint: disable=too-many-locals
             logger.info(f"✓ Prepared blob for {github_path}")
 
         # Create a new tree with all the files
-        # Type ignore needed as PyGithub's InputGitTreeElement type is not exposed
-        new_tree = repo.create_git_tree(tree_elements, base_tree)  # type: ignore[arg-type]
+        new_tree = repo.create_git_tree(tree_elements, base_tree)
         logger.info(f"Created git tree with {len(tree_elements)} files")
 
         # Create a single commit with all changes
@@ -303,7 +315,8 @@ def _rebuild_site():
     """Rebuild the Eleventy static site."""
     try:
         logger.info("Rebuilding Eleventy site...")
-        result = subprocess.run(
+        # Fixed command list with no user input - safe to use
+        result = subprocess.run(  # nosec B603 B607
             ["npm", "run", "build"], capture_output=True, text=True, timeout=60, check=False
         )
         if result.returncode == 0:
@@ -314,8 +327,14 @@ def _rebuild_site():
         logger.error(f"Error rebuilding site: {e}")
 
 
-def run_server(host: str = "0.0.0.0", port: int = 5000, debug: bool = False):
-    """Run the Flask API server."""
+def run_server(host: str = "0.0.0.0", port: int = 5000, debug: bool = False):  # nosec B104
+    """Run the Flask API server.
+
+    Args:
+        host: Bind to 0.0.0.0 for Docker/container deployment (intentional)
+        port: Port to listen on
+        debug: Enable debug mode
+    """
     logger.info(f"Starting AI Course Builder API on {host}:{port}")
     app.run(host=host, port=port, debug=debug)
 
