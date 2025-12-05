@@ -293,7 +293,7 @@ Prism.js provides:
 Nunjucks (Eleventy's template engine) uses `{{ }}` and `{% %}` for templating. However, many frameworks also use these delimiters:
 
 - **Vue.js**: `{{ message }}` for data binding
-- **Angular**: `{{ expression }}` for interpolation  
+- **Angular**: `{{ expression }}` for interpolation
 - **Jinja2/Django**: `{{ variable }}` in Python templates
 
 When Eleventy processes markdown containing these syntaxes, it causes build failures:
