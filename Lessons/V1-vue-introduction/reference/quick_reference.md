@@ -42,9 +42,11 @@ date: 2025-12-05T01:38:53.938072
 
 ### 2.2 Data Binding
 - **Interpolation**:
+{% raw %}
   ```html
   <div id="app">{{ message }}</div>
   ```
+{% endraw %}
 
 - **v-bind Directive**:
   ```html
@@ -118,7 +120,7 @@ date: 2025-12-05T01:38:53.938072
 
 - **Component Naming**:
   - Use PascalCase for component names.
-  
+
 - **Keep Components Small**:
   - Aim for single responsibility; each component should do one thing.
 
@@ -132,7 +134,7 @@ date: 2025-12-05T01:38:53.938072
 ### Common Issues
 - **Vue Instance Not Updating**:
   - Ensure data properties are reactive. Use `Vue.set()` for adding new properties.
-  
+
 - **Component Not Rendering**:
   - Check if the component is registered correctly and the template is valid.
 
@@ -155,6 +157,6 @@ date: 2025-12-05T01:38:53.938072
 - Follow best practices to maintain clean and efficient code.
 - Utilize troubleshooting tips to quickly resolve common issues.
 
---- 
+---
 
 Keep this guide handy while coding to reinforce your understanding of Vue.js concepts and practices!

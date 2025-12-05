@@ -46,12 +46,12 @@ In this exercise, we will create a simple Vue.js component that displays a messa
                     message: 'Hello, Vue!'
                 };
             },
-            template: `
+{% raw %}            template: `
                 <div>
                     <p>{{ message }}</p>
                     <button @click="updateMessage">Update Message</button>
                 </div>
-            `,
+            `,{% endraw %}
             methods: {
                 // Method to update the message
                 updateMessage() {
@@ -94,13 +94,13 @@ In this exercise, we will create a simple Vue.js component that displays a messa
                     error: null
                 };
             },
-            template: `
+{% raw %}            template: `
                 <div>
                     <p v-if="error" style="color: red;">{{ error }}</p>
                     <p v-else>{{ message }}</p>
                     <button @click="updateMessage">Update Message</button>
                 </div>
-            `,
+            `,{% endraw %}
             methods: {
                 updateMessage() {
                     try {
@@ -134,13 +134,13 @@ To test the functionality of our Vue component, we can simulate button clicks an
 function testMessageComponent() {
     // Create the instance of the Vue component
     const vm = new Vue({ el: '#app' });
-    
+
     // Initial message should be 'Hello, Vue!'
     console.assert(vm.$children[0].message === 'Hello, Vue!', 'Initial message is incorrect');
-    
+
     // Simulate a button click to update the message
     vm.$children[0].updateMessage();
-    
+
     // Check if the message has been updated
     console.assert(vm.$children[0].message === 'You clicked the button!', 'Message did not update correctly');
 }

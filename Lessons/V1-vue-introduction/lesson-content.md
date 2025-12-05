@@ -14,8 +14,8 @@ date: 2025-12-05T01:38:21.509714
 
 ## Course Overview
 
-**Duration:** 3-4 hours  
-**Level:** Intermediate  
+**Duration:** 3-4 hours
+**Level:** Intermediate
 **Description:** This course provides a comprehensive introduction to Vue.js, a progressive JavaScript framework for building user interfaces. Through a combination of theoretical concepts, practical implementation, and real-world project examples, learners will gain a solid foundation in Vue.js development.
 
 ### Learning Objectives
@@ -58,6 +58,7 @@ To start with Vue.js, you need Node.js and npm (Node Package Manager) installed 
 
 ### Code Example: Creating a Simple Vue Component
 
+{% raw %}
 ```html
 <template>
   <div id="app">
@@ -131,6 +132,7 @@ Vue uses directives to bind data to the DOM. Common directives include:
 
 ### Code Example: Using Directives
 
+{% raw %}
 ```html
 <div id="app">
   <input v-model="message" placeholder="Type something">

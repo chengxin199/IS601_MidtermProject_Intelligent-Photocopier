@@ -63,6 +63,42 @@ class CourseGenerator:
         return content
 
     @staticmethod
+    def _wrap_template_syntax(content: str) -> str:
+        """Wrap code blocks containing {{ }} or {% %} with Nunjucks raw tags.
+
+        This prevents conflicts between Vue.js/Angular/Jinja2 template syntax
+        and Nunjucks (Eleventy's template engine).
+        """
+        import re
+
+        # Pattern to match code blocks (```...```)
+        code_block_pattern = r"(```[\w]*\n)(.*?)(```)"
+
+        def wrap_if_needed(match):
+            opening = match.group(1)
+            code_content = match.group(2)
+            closing = match.group(3)
+
+            # Check if the code block contains {{ }} or {% %}
+            if (
+                "{{" in code_content
+                or "}}" in code_content
+                or "{%" in code_content
+                or "%}" in code_content
+            ):
+                return f"{{% raw %}}\n{opening}{code_content}{closing}\n{{% endraw %}}"
+            return match.group(0)
+
+        # Apply wrapping to all code blocks
+        content = re.sub(code_block_pattern, wrap_if_needed, content, flags=re.DOTALL)
+
+        # Also wrap inline code with {{ }} or {% %}
+        inline_pattern = r"(`[^`]*(?:\{\{|\}\}|\{%|%\})[^`]*`)"
+        content = re.sub(inline_pattern, r"{% raw %}\1{% endraw %}", content)
+
+        return content
+
+    @staticmethod
     def _create_front_matter(
         title: str,
         layout: str = "layouts/course.njk",
@@ -220,6 +256,9 @@ Generate a complete, professional README that matches the style of high-quality 
             content = response.choices[0].message.content
             markdown_content = self._clean_ai_response(content) if content else ""
 
+            # Wrap template syntax to prevent Nunjucks conflicts
+            markdown_content = self._wrap_template_syntax(markdown_content)
+
             # Add front matter for Eleventy
             front_matter = self._create_front_matter(
                 title=course_info["title"],
@@ -303,6 +342,9 @@ Generate professional, technical content that teaches the subject thoroughly."""
             content = response.choices[0].message.content
             markdown_content = content.strip() if content else ""
 
+            # Wrap template syntax to prevent Nunjucks conflicts
+            markdown_content = self._wrap_template_syntax(markdown_content)
+
             # Add front matter for Eleventy
             front_matter = self._create_front_matter(
                 title=f"{course_info['title']} - Detailed Lessons",
@@ -369,6 +411,9 @@ Generate a comprehensive summary that helps students consolidate their learning 
 
             content = response.choices[0].message.content
             markdown_content = content.strip() if content else ""
+
+            # Wrap template syntax to prevent Nunjucks conflicts
+            markdown_content = self._wrap_template_syntax(markdown_content)
 
             # Add front matter for Eleventy
             front_matter = self._create_front_matter(
@@ -549,6 +594,8 @@ Generate a practical quick reference that students can use during coding."""
             # Add front matter
             if content:
                 markdown_content = content.strip()
+                # Wrap template syntax to prevent Nunjucks conflicts
+                markdown_content = self._wrap_template_syntax(markdown_content)
                 front_matter = self._create_front_matter(
                     title=f"{course_info['title']} - Quick Reference",
                     layout="layouts/course.njk",
@@ -603,6 +650,8 @@ Make it practical and actionable for {course_info['level'].lower()} level develo
             # Add front matter
             if content:
                 markdown_content = content.strip()
+                # Wrap template syntax to prevent Nunjucks conflicts
+                markdown_content = self._wrap_template_syntax(markdown_content)
                 front_matter = self._create_front_matter(
                     title=f"{course_info['title']} - Best Practices",
                     layout="layouts/course.njk",
@@ -690,6 +739,8 @@ Generate practical, code-focused exercises suitable for {course_info['level'].lo
             # Add front matter
             if content:
                 markdown_content = content.strip()
+                # Wrap template syntax to prevent Nunjucks conflicts
+                markdown_content = self._wrap_template_syntax(markdown_content)
                 front_matter = self._create_front_matter(
                     title=f"{course_info['title']} - Exercise Instructions",
                     layout="layouts/course.njk",
@@ -758,6 +809,8 @@ Generate production-quality, well-tested solutions for {course_info['level'].low
             # Add front matter
             if content:
                 markdown_content = content.strip()
+                # Wrap template syntax to prevent Nunjucks conflicts
+                markdown_content = self._wrap_template_syntax(markdown_content)
                 front_matter = self._create_front_matter(
                     title=f"{course_info['title']} - Practice Solution",
                     layout="layouts/course.njk",

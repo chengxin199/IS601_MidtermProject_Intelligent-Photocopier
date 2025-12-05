@@ -286,4 +286,62 @@ Prism.js provides:
 
 ---
 
+## Handling Template Syntax Conflicts
+
+### The Problem
+
+Nunjucks (Eleventy's template engine) uses `{{ }}` and `{% %}` for templating. However, many frameworks also use these delimiters:
+
+- **Vue.js**: `{{ message }}` for data binding
+- **Angular**: `{{ expression }}` for interpolation  
+- **Jinja2/Django**: `{{ variable }}` in Python templates
+
+When Eleventy processes markdown containing these syntaxes, it causes build failures:
+
+```
+[11ty] unexpected token: }}
+```
+
+### The Solution
+
+The `CourseGenerator` automatically wraps problematic syntax with `{% raw %}...{% endraw %}` tags:
+
+```python
+# Automatically applied to all AI-generated content
+markdown_content = self._wrap_template_syntax(markdown_content)
+```
+
+This method:
+1. Detects `{{ }}` or `{% %}` in code blocks and inline code
+2. Wraps them with `{% raw %}...{% endraw %}` tags
+3. Preserves all formatting and indentation
+4. Works for Vue, Angular, Jinja2, and similar frameworks
+
+### Example
+
+**Before** (causes errors):
+```markdown
+<div id="app">{{ message }}</div>
+```
+
+**After** (works correctly):
+```markdown
+{% raw %}
+<div id="app">{{ message }}</div>
+{% endraw %}
+```
+
+### Coverage
+
+Applied to all content types:
+- README (course overview)
+- Lesson content
+- Exercises and solutions
+- Quick references
+- Best practices
+
+This ensures **all future courses work automatically** without manual fixes.
+
+---
+
 For more information about Eleventy, visit: https://www.11ty.dev/docs/

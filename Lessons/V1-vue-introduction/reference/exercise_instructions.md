@@ -8,7 +8,7 @@ tags:
 date: 2025-12-05T01:39:49.275978
 ---
 ## Exercise 1: Vue Instance Creation
-**Difficulty:** Beginner  
+**Difficulty:** Beginner
 **Time Estimate:** 20 minutes
 
 ### Objective
@@ -50,19 +50,20 @@ To validate your implementation, check that the displayed content matches the ex
 2. Change the value of `message` to "Welcome to Vue!" and verify that it updates accordingly.
 
 ### Hints
-- Use double curly braces `{{ }}` to bind data in Vue templates.
+{% raw %}- Use double curly braces `{{ }}` to bind data in Vue templates.{% endraw %}
 - Make sure your Vue instance is correctly linked to the HTML element ID.
 
 ---
 
 ## Exercise 2: Data Binding
-**Difficulty:** Intermediate  
+**Difficulty:** Intermediate
 **Time Estimate:** 30 minutes
 
 ### Objective
 Implement data binding to create an input field that updates the displayed message in real-time.
 
 ### Starter Code
+{% raw %}
 ```html
 <!DOCTYPE html>
 <html>
@@ -104,13 +105,14 @@ Implement data binding to create an input field that updates the displayed messa
 ---
 
 ## Exercise 3: Conditional Rendering
-**Difficulty:** Intermediate  
+**Difficulty:** Intermediate
 **Time Estimate:** 35 minutes
 
 ### Objective
 Implement conditional rendering to show a special message when the input field contains a specific keyword.
 
 ### Starter Code
+{% raw %}
 ```html
 <!DOCTYPE html>
 <html>
@@ -155,7 +157,7 @@ Implement conditional rendering to show a special message when the input field c
 ---
 
 ## Exercise 4: List Rendering
-**Difficulty:** Intermediate  
+**Difficulty:** Intermediate
 **Time Estimate:** 40 minutes
 
 ### Objective
