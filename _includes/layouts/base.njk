@@ -279,7 +279,39 @@
       }
 
       header h1 {
-        font-size: 3rem;
+        font-size: 2.5rem;
+      }
+
+      header {
+        padding: 3rem 0;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        padding: 0 1rem;
+      }
+
+      header {
+        padding: 2rem 0;
+      }
+
+      header h1 {
+        font-size: 2rem;
+      }
+
+      header p {
+        font-size: 1rem;
+      }
+
+      nav ul {
+        gap: 0.5rem;
+        padding: 0 0.5rem;
+      }
+
+      nav a {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
       }
     }
 
@@ -410,6 +442,38 @@
       box-shadow: 0 4px 20px rgba(0,0,0,0.04);
     }
 
+    @media (max-width: 640px) {
+      .course-meta {
+        gap: 1rem;
+        padding: 1rem;
+        margin: 1rem 0;
+        flex-direction: column;
+      }
+
+      .course-meta-item {
+        font-size: 0.9rem;
+      }
+
+      .btn {
+        padding: 0.8rem 1.5rem;
+        font-size: 0.9rem;
+        width: 100%;
+        text-align: center;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      h2 {
+        font-size: 1.5rem;
+      }
+
+      h3 {
+        font-size: 1.2rem;
+      }
+    }
+
     .course-meta-item {
       display: flex;
       align-items: center;
@@ -426,6 +490,18 @@
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
       gap: 2.5rem;
       margin: 3rem 0;
+    }
+
+    @media (max-width: 768px) {
+      .course-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        margin: 2rem 0;
+      }
+
+      .course-card {
+        padding: 1.5rem;
+      }
     }
 
     .course-card {
@@ -498,6 +574,40 @@
       background: linear-gradient(135deg, #f0f9ff 0%, #fef3c7 100%);
       border-radius: 16px;
       font-size: 1.1rem;
+    }
+
+    @media (max-width: 640px) {
+      blockquote {
+        padding: 1rem;
+        font-size: 1rem;
+        border-left-width: 4px;
+      }
+
+      pre {
+        padding: 0.8rem;
+        font-size: 0.85rem;
+        border-radius: 8px;
+      }
+
+      code {
+        font-size: 0.85rem;
+      }
+
+      p, li {
+        font-size: 0.95rem;
+      }
+
+      footer {
+        padding: 2rem 0;
+        font-size: 0.85rem;
+      }
+
+      .back-link {
+        font-size: 0.85rem;
+        padding: 0.5rem 1rem;
+        margin-bottom: 1rem;
+      }
+    }
     }
 
     .back-link {

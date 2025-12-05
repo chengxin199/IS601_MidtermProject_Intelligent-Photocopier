@@ -282,6 +282,100 @@ Example:
     border-color: #667eea;
     box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
   }
+
+  /* Mobile Responsive Styles */
+  @media (max-width: 768px) {
+    .builder-step {
+      padding: 1.5rem !important;
+    }
+
+    .builder-step h3 {
+      font-size: 1.3rem !important;
+    }
+
+    /* Step number badges smaller on mobile */
+    .builder-step > div:first-child > div:first-child {
+      width: 40px !important;
+      height: 40px !important;
+      font-size: 1.2rem !important;
+    }
+
+    /* Single column layout for input method buttons */
+    #step1 > div:nth-child(2) {
+      grid-template-columns: 1fr !important;
+    }
+
+    /* Stack form fields vertically on mobile */
+    div[style*="grid-template-columns: 1fr 1fr"] {
+      grid-template-columns: 1fr !important;
+    }
+
+    /* Course structure checkboxes - single column */
+    div[style*="display: grid; grid-template-columns: repeat(2, 1fr)"] {
+      grid-template-columns: 1fr !important;
+    }
+
+    /* Reduce padding on form elements */
+    input, select, textarea {
+      padding: 0.8rem !important;
+      font-size: 0.95rem !important;
+    }
+
+    /* Full width buttons on mobile */
+    .btn {
+      width: 100% !important;
+      padding: 1rem !important;
+      font-size: 1rem !important;
+    }
+
+    /* Review table responsive */
+    table {
+      font-size: 0.9rem !important;
+    }
+
+    table td {
+      padding: 0.75rem !important;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .builder-step {
+      padding: 1rem !important;
+      border-radius: 16px !important;
+    }
+
+    .builder-step h3 {
+      font-size: 1.1rem !important;
+    }
+
+    /* Even smaller on very small screens */
+    input, select, textarea {
+      padding: 0.7rem !important;
+      font-size: 0.9rem !important;
+    }
+
+    /* Compact labels */
+    label {
+      font-size: 0.9rem !important;
+    }
+
+    /* Reduce gaps */
+    div[style*="gap: 1.5rem"] {
+      gap: 1rem !important;
+    }
+
+    /* Compact course structure options */
+    label[style*="padding: 1rem"] {
+      padding: 0.75rem !important;
+      font-size: 0.85rem !important;
+    }
+
+    /* Navigation buttons side by side but smaller */
+    div[style*="display: flex; gap: 1rem; margin-top"] button {
+      padding: 0.8rem 1rem !important;
+      font-size: 0.9rem !important;
+    }
+  }
 </style>
 
 <script>
@@ -592,8 +686,21 @@ Example:
 
     const filesCreated = result.filesCreated || [];
 
+    // Store content for immediate preview
+    if (result.content) {
+      sessionStorage.setItem(`preview_${courseId}`, JSON.stringify(result.content));
+    }
+
     const deploymentNote = result.githubCommitted
-      ? '<p style="color: #10b981; margin-top: 1rem;"><strong>✓</strong> Files committed to GitHub. Netlify will deploy in 2-3 minutes.</p>'
+      ? `<div style="background: #dbeafe; padding: 1rem; border-radius: 12px; margin-top: 1rem;">
+           <p style="color: #1e40af; margin: 0; font-weight: 600;">⏱️ Deploying to website...</p>
+           <p style="color: #3b82f6; margin: 0.5rem 0 0 0; font-size: 0.9rem;">
+             Please wait <span id="countdown">180</span> seconds for Netlify to deploy.
+           </p>
+           <div style="margin-top: 1rem; background: #f0f9ff; border-radius: 8px; height: 8px; overflow: hidden;">
+             <div id="deployProgress" style="background: linear-gradient(90deg, #3b82f6, #8b5cf6); height: 100%; width: 0%; transition: width 1s linear;"></div>
+           </div>
+         </div>`
       : '<p style="color: #f59e0b; margin-top: 1rem;"><strong>⚠</strong> Files generated but not committed to GitHub.</p>';
 
     const courseStructure = `
@@ -608,20 +715,135 @@ Example:
       ${deploymentNote}
       <div style="margin-top: 1.5rem; padding: 1rem; background: #d1fae5; border-radius: 12px;">
         <p style="margin: 0; color: #065f46; font-weight: 600;">🎉 ${result.message}</p>
-        <p style="margin: 0.5rem 0 0 0; color: #047857; font-size: 0.9rem;">⏱️ Please wait 2-3 minutes for deployment before viewing the course.</p>
       </div>
       <div style="margin-top: 1.5rem; text-align: center;">
-        <button onclick="viewCourse('${courseId}')" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 1rem 2rem; border-radius: 12px; font-size: 1.1rem; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4); transition: all 0.3s ease;">🎉 View Course →</button>
+        <button onclick="previewCourse('${courseId}')" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 1rem 2rem; border-radius: 12px; font-size: 1.1rem; font-weight: 600; cursor: pointer; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); transition: all 0.3s ease;">
+          👁️ Preview Now
+        </button>
+        <button id="viewCourseBtn" onclick="viewCourse('${courseId}')" disabled style="background: #9ca3af; color: white; border: none; padding: 1rem 2rem; border-radius: 12px; font-size: 1.1rem; font-weight: 600; cursor: not-allowed; box-shadow: none; margin-left: 1rem; transition: all 0.3s ease;">
+          🌐 View Deployed (<span id="btnCountdown">180s</span>)
+        </button>
         <button onclick="viewMyCourses()" style="background: white; color: #667eea; border: 2px solid #667eea; padding: 1rem 2rem; border-radius: 12px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-left: 1rem; transition: all 0.3s ease;">📚 My Courses</button>
       </div>
     `;
 
     document.getElementById('courseStructurePreview').innerHTML = courseStructure;
 
+    // Start countdown if GitHub commit was successful
+    if (result.githubCommitted) {
+      startDeploymentCountdown();
+    }
+
     console.log('About to switch to step 4...');
     console.log('Step 4 element exists:', !!document.getElementById('step4'));
     nextStep(4);
     console.log('Step 4 should now be visible');
+  }
+
+  function startDeploymentCountdown() {
+    let seconds = 180; // 3 minutes
+    const countdownElem = document.getElementById('countdown');
+    const btnCountdownElem = document.getElementById('btnCountdown');
+    const progressElem = document.getElementById('deployProgress');
+    const btnElem = document.getElementById('viewCourseBtn');
+
+    const interval = setInterval(() => {
+      seconds--;
+      if (countdownElem) countdownElem.textContent = seconds;
+      if (btnCountdownElem) btnCountdownElem.textContent = seconds + 's';
+      if (progressElem) {
+        const progress = ((180 - seconds) / 180) * 100;
+        progressElem.style.width = progress + '%';
+      }
+
+      if (seconds <= 0) {
+        clearInterval(interval);
+        // Enable button
+        if (btnElem) {
+          btnElem.disabled = false;
+          btnElem.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+          btnElem.style.cursor = 'pointer';
+          btnElem.style.boxShadow = '0 4px 12px rgba(102, 126, 234, 0.4)';
+          btnElem.innerHTML = '🎉 View Course →';
+        }
+      }
+    }, 1000);
+  }
+
+  function previewCourse(courseId) {
+    const content = sessionStorage.getItem(`preview_${courseId}`);
+    if (!content) {
+      alert('Preview content not available. Please wait for deployment.');
+      return;
+    }
+
+    const files = JSON.parse(content);
+
+    // Create preview window
+    const previewWindow = window.open('', '_blank', 'width=1200,height=800');
+    previewWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Preview: ${courseId}</title>
+        <style>
+          body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 900px; margin: 0 auto; padding: 2rem; line-height: 1.6; background: #f7fafc; }
+          h1, h2, h3 { color: #2d3748; margin-top: 2rem; }
+          code { background: #fff; padding: 0.2rem 0.4rem; border-radius: 3px; font-size: 0.9em; border: 1px solid #e2e8f0; }
+          pre { background: #2d3748; color: #f7fafc; padding: 1rem; border-radius: 8px; overflow-x: auto; }
+          pre code { background: transparent; padding: 0; border: none; }
+          .banner { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3); }
+          .file-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; background: white; padding: 1rem; border-radius: 12px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); }
+          .file-tab { padding: 0.6rem 1.2rem; border: 2px solid #e2e8f0; border-radius: 8px; cursor: pointer; background: white; transition: all 0.3s; font-weight: 500; }
+          .file-tab:hover { background: #f7fafc; border-color: #667eea; transform: translateY(-2px); }
+          .file-tab.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-color: #667eea; box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3); }
+          .content-area { display: none; background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); }
+          .content-area.active { display: block; animation: fadeIn 0.3s ease; }
+          @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+          ul, ol { margin-left: 1.5rem; }
+          li { margin-bottom: 0.5rem; }
+          blockquote { border-left: 4px solid #667eea; padding-left: 1rem; margin-left: 0; color: #4a5568; background: #f7fafc; padding: 1rem; border-radius: 0 8px 8px 0; }
+        </style>
+        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+      </head>
+      <body>
+        <div class="banner">
+          <h2 style="margin: 0;">📚 Course Preview: ${courseId}</h2>
+          <p style="margin: 0.5rem 0 0 0; opacity: 0.9;">⚡ Instant preview - Deployment in progress...</p>
+        </div>
+        <div class="file-tabs" id="tabs"></div>
+        <div id="content"></div>
+        <script>
+          const files = ${JSON.stringify(files)};
+          const contentDiv = document.getElementById('content');
+          const tabsDiv = document.getElementById('tabs');
+
+          Object.keys(files).forEach((fileName, index) => {
+            const tab = document.createElement('button');
+            tab.className = 'file-tab' + (index === 0 ? ' active' : '');
+            tab.textContent = fileName;
+            tab.onclick = () => showFile(fileName);
+            tabsDiv.appendChild(tab);
+
+            const contentArea = document.createElement('div');
+            contentArea.className = 'content-area' + (index === 0 ? ' active' : '');
+            contentArea.id = 'file-' + index;
+            contentArea.innerHTML = marked.parse(files[fileName]);
+            contentDiv.appendChild(contentArea);
+          });
+
+          function showFile(fileName) {
+            document.querySelectorAll('.file-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.content-area').forEach(c => c.classList.remove('active'));
+
+            const index = Object.keys(files).indexOf(fileName);
+            document.querySelectorAll('.file-tab')[index].classList.add('active');
+            document.getElementById('file-' + index).classList.add('active');
+          }
+        </script>
+      </body>
+      </html>
+    `);
   }
 
   function viewCourse(courseId) {

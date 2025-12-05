@@ -10,7 +10,7 @@ import subprocess
 
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-from github import Github, GithubException
+from github import Github
 
 from .course_generator import CourseGenerator
 
@@ -158,7 +158,8 @@ def generate_course():
             "courseId": course_id,
             "filesCreated": list(files_to_commit.keys()),
             "githubCommitted": github_success,
-            "message": f"Course '{title}' generated successfully!"
+            "message": f"Course '{title}' generated successfully!",
+            "content": files_to_commit  # Return content for immediate preview
         })
 
     except Exception as e:
@@ -212,7 +213,7 @@ def _extract_topics(content: str) -> list[str]:
 
 
 def _commit_to_github(course_id: str, files_content: dict[str, str]):
-    """Commit generated course files to GitHub repository.
+    """Commit generated course files to GitHub repository as a single batch commit.
 
     Args:
         course_id: The course ID
@@ -228,52 +229,49 @@ def _commit_to_github(course_id: str, files_content: dict[str, str]):
         g = Github(github_token)
         repo = g.get_repo("chengxin199/Intelligent-Photocopier")
 
-        logger.info(f"Committing course {course_id} to GitHub...")
+        logger.info(f"Committing course {course_id} to GitHub as single batch commit...")
 
-        # Get the default branch
+        # Get the default branch and its latest commit
         branch = repo.default_branch
+        branch_ref = repo.get_branch(branch)
+        base_commit = branch_ref.commit
+        base_tree = base_commit.commit.tree
 
-        # Create commit for all files
-        commit_message = f"Add generated course: {course_id}"
-
+        # Create blobs and tree elements for all files
+        tree_elements = []
         for file_rel_path, content in files_content.items():
-            # GitHub path
             github_path = f"Lessons/{course_id}/{file_rel_path}"
 
-            try:
-                # Try to get existing file
-                contents = repo.get_contents(github_path, ref=branch)
-                # Handle case where get_contents returns a list
-                if isinstance(contents, list):
-                    contents = contents[0]
-                # Update existing file
-                repo.update_file(
-                    github_path,
-                    commit_message,
-                    content,
-                    contents.sha,
-                    branch=branch
-                )
-                logger.info(f"✓ Updated {github_path}")
-            except GithubException as e:
-                # File doesn't exist, create it
-                if e.status == 404:
-                    try:
-                        repo.create_file(
-                            github_path,
-                            commit_message,
-                            content,
-                            branch=branch
-                        )
-                        logger.info(f"✓ Created {github_path}")
-                    except Exception as create_error:
-                        logger.error(f"Failed to create {github_path}: {create_error}")
-                        raise
-                else:
-                    logger.error(f"GitHub API error for {github_path}: {e}")
-                    raise
+            # Create a blob for the file content
+            blob = repo.create_git_blob(content, "utf-8")
 
-        logger.info(f"Successfully committed course {course_id} to GitHub")
+            # Add to tree elements with proper mode for files
+            tree_elements.append({
+                "path": github_path,
+                "mode": "100644",  # Regular file mode
+                "type": "blob",
+                "sha": blob.sha
+            })
+            logger.info(f"✓ Prepared blob for {github_path}")
+
+        # Create a new tree with all the files
+        new_tree = repo.create_git_tree(tree_elements, base_tree)
+        logger.info(f"Created git tree with {len(tree_elements)} files")
+
+        # Create a single commit with all changes
+        commit_message = f"Add generated course: {course_id}"
+        new_commit = repo.create_git_commit(
+            commit_message,
+            new_tree,
+            [base_commit.commit]
+        )
+        logger.info(f"Created commit: {new_commit.sha}")
+
+        # Update the branch reference to point to the new commit
+        ref = repo.get_git_ref(f"heads/{branch}")
+        ref.edit(new_commit.sha)
+
+        logger.info(f"Successfully committed course {course_id} to GitHub in single commit")
         return True
 
     except Exception as e:

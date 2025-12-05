@@ -63,7 +63,7 @@ layout: layouts/base.njk
     min-width: 0;
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 968px) {
     .course-layout {
       flex-direction: column;
     }
@@ -71,6 +71,47 @@ layout: layouts/base.njk
     .course-sidebar {
       position: static;
       width: 100%;
+      margin-bottom: 2rem;
+    }
+
+    .course-sidebar h3 {
+      font-size: 1.1rem;
+    }
+
+    .course-sidebar a {
+      font-size: 0.9rem;
+      padding: 0.6rem;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .course-layout {
+      gap: 1rem;
+    }
+
+    .course-sidebar {
+      padding: 1rem;
+      border-radius: 12px;
+    }
+
+    .course-sidebar h3 {
+      font-size: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .course-sidebar li {
+      margin-bottom: 0.5rem;
+    }
+
+    .course-sidebar a {
+      font-size: 0.85rem;
+      padding: 0.5rem;
+      gap: 0.3rem;
+    }
+
+    .back-link {
+      font-size: 0.9rem;
+      padding: 0.6rem 1rem;
     }
   }
 </style>
