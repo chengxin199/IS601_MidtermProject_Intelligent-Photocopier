@@ -1,5 +1,48 @@
 # Troubleshooting Guide
 
+## 🌐 Web Interface Issues
+
+### Preview Not Working
+**Problem**: "Preview Now" button shows "Preview content not available"
+
+**Solution**:
+- Wait for generation to complete (progress bar at 100%)
+- Content is stored in browser sessionStorage
+- Try refreshing the page and generating again
+- Check browser console for JavaScript errors
+
+### Mobile Display Issues
+**Problem**: Layout looks broken on mobile
+
+**Solution**:
+- Clear browser cache (Ctrl+Shift+Delete)
+- Wait for Netlify deployment to complete
+- Try hard refresh (Ctrl+Shift+R or Cmd+Shift+R)
+- Check if you're on the latest deployed version
+
+### Deployment Taking Too Long
+**Problem**: "Deploying to website..." stuck at countdown
+
+**Solution**:
+- Normal deployment takes 2-3 minutes
+- Use "Preview Now" to see content immediately
+- Check [Netlify Status](https://www.netlifystatus.com/)
+- Verify GitHub commit was successful
+
+### Course Not Appearing After Generation
+**Problem**: Generated course doesn't show in "My Courses"
+
+**Solution**:
+1. Wait for full deployment (180 seconds countdown)
+2. Hard refresh the page (Ctrl+Shift+R)
+3. Check GitHub repository for the commit
+4. Verify Netlify deployment status
+5. Clear browser cache if needed
+
+---
+
+## Troubleshooting Guide
+
 ## Common Issues and Solutions
 
 ### Installation Issues

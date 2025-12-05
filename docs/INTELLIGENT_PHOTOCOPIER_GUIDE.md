@@ -2,7 +2,34 @@
 
 Welcome to the **Intelligent Photocopier**, an AI-powered course generator that creates comprehensive programming courses using your A1-Defensive-Programming lesson as a template.
 
-## 🚀 Quick Setup (5 minutes)
+## 🌐 Web Interface (No Setup Required)
+
+**The fastest way to get started!**
+
+### Visit: [intelligentphotocopier.online](https://intelligentphotocopier.online)
+
+**No installation, no API keys, just visit and generate!**
+
+#### Features:
+- ⚡ **Instant Preview** - See generated courses immediately
+- 📱 **Mobile Responsive** - Works on phones, tablets, desktops
+- 🚀 **Auto-Deploy** - Courses go live automatically on Netlify
+- 📊 **Progress Tracking** - Live countdown and progress indicators
+- 🎨 **Modern UI/UX** - Beautiful gradient design with smooth animations
+
+#### How to Use:
+1. Open intelligentphotocopier.online in your browser
+2. Paste your course outline or upload a file
+3. Configure course details (ID, title, level, duration)
+4. Click "Generate" button
+5. Preview content instantly while deployment happens
+6. Course automatically goes live on the site
+
+---
+
+## 💻 CLI Setup (For Local Development)
+
+### 🚀 Quick Setup (5 minutes)
 
 ### Step 1: Get Your OpenAI API Key
 

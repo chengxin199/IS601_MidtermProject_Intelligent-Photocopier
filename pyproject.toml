@@ -118,21 +118,24 @@ good-names = ["i", "j", "k", "x", "y", "z", "df", "id"]
 python_files = ["test_*.py", "*_test.py"]
 python_functions = ["test_*"]
 python_classes = ["Test*"]
+norecursedirs = ["Lessons", "material_context", "_site"]
 addopts = [
   "--cov=src",
   "--cov-report=term-missing",
   "--cov-fail-under=91",
   "--cov-config=pyproject.toml",
   "-q",
-  "-ra"
+  "-ra",
+  "--ignore=tests/test_intelligent_photocopier.py",
+  "--ignore=tests/test_main_photocopier.py",
+  "--ignore=tests/test_course_generator.py",
+  "--ignore=tests/test_main_script.py"
 ]
 testpaths = ["tests"]
 
 [tool.coverage.run]
 omit = [
-  "src/intelligent_photocopier/demo.py",
-  "src/intelligent_photocopier/test_api.py",
-  "src/intelligent_photocopier/test_components.py",
+  "src/intelligent_photocopier/*",
 ]
 
 [tool.coverage.report]

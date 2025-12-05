@@ -4,7 +4,18 @@
 
 > **Transform programming education with AI-generated courses** that create comprehensive, professional-grade learning materials from simple course outlines.
 
-The **Intelligent Photocopier** is an advanced AI-powered system that generates complete programming courses automatically. Using OpenAI GPT-4o-mini and sophisticated template analysis, it creates professional educational content with the same quality and structure as industry-standard training materials.
+The **Intelligent Photocopier** is an advanced AI-powered system that generates complete programming courses automatically. Using OpenAI gpt-4.1-mini and sophisticated template analysis, it creates professional educational content with the same quality and structure as industry-standard training materials.
+
+## 🌐 Live Web App
+
+**Visit**: [intelligentphotocopier.online](https://intelligentphotocopier.online)
+
+**New Features (December 2025)**:
+- ⚡ **Instant Preview** — View generated courses immediately without waiting for deployment
+- 📱 **Mobile Responsive** — Full support for phones and tablets with optimized touch interfaces
+- 🚀 **Batch Git Commits** — All course files committed in a single transaction
+- ⏱️ **Deployment Countdown** — Live progress tracking for Netlify deployments
+- 🎨 **Modern UI/UX** — Beautiful gradient design with smooth animations
 
 ## 🎯 What the Intelligent Photocopier Does
 
@@ -20,25 +31,39 @@ The **Intelligent Photocopier** is an advanced AI-powered system that generates 
 
 ## ⚡ Quick Start Guide
 
-### **Method 1: Material Library (Fastest)**
+### **Method 1: Web Interface (Easiest)** 🆕
+**Visit**: [intelligentphotocopier.online](https://intelligentphotocopier.online)
+
+1. **Paste your course outline** or upload a file
+2. **Configure course details** (ID, title, level, duration)
+3. **Click Generate** — AI creates your course in ~2 minutes
+4. **Preview Instantly** — View content immediately
+5. **Auto-Deploy** — Course goes live on Netlify automatically
+
+**Works on**:
+- 💻 Desktop browsers (Chrome, Firefox, Safari, Edge)
+- 📱 Mobile devices (iOS, Android)
+- 📱 Tablets (iPad, Android tablets)
+
+### **Method 2: Material Library (CLI)**
 ```bash
 python -m src.intelligent_photocopier.main
 # Select option 2 → Choose a course (1-6) → Done!
 ```
 
-### **Method 2: Custom Content**
+### **Method 3: Custom Content (CLI)**
 ```bash
 python -m src.intelligent_photocopier.main
 # Select option 1 → Paste your outline → Press Ctrl+D or type 'END'
 ```
 
-### **Method 3: Quick Start Menu**
+### **Method 4: Quick Start Menu**
 ```bash
 python quickstart.py
 # Interactive menu with API testing, demo, and documentation
 ```
 
-### **Method 4: Pre-configured Demo**
+### **Method 5: Pre-configured Demo**
 ```bash
 python src/intelligent_photocopier/demo.py
 # Generates a sample course instantly
@@ -151,11 +176,40 @@ Lessons/A2-dry-cohesion-coupling-clean-structure/
 - ✅ Hands-on exercise instructions with practical examples
 - ✅ Practice solutions with Markdown format documentation
 
+## 🌐 Web Interface Features
+
+### **Instant Course Preview** ⚡
+No more waiting! See your generated course content immediately:
+- 📑 **Multi-file tabs** — Switch between README, lessons, references
+- 🎨 **Markdown rendering** — Beautiful formatted preview
+- 🚀 **Zero wait time** — Content displays while deployment happens
+- 🔄 **Background deployment** — Netlify builds in parallel
+
+### **Mobile-First Design** 📱
+Perfect experience on any device:
+- 📱 **Responsive breakpoints** — 968px, 640px, 480px optimized
+- 👆 **Touch-friendly** — Large buttons, easy navigation
+- 📊 **Adaptive layouts** — Grid → Single column on mobile
+- 🎯 **Readable typography** — Auto-scaling text sizes
+
+### **Efficient GitHub Integration** 🔧
+- 📦 **Batch commits** — All files in single commit (no spam)
+- ⚡ **Single Netlify deploy** — One trigger instead of 7
+- 📊 **Progress tracking** — Live countdown and progress bar
+- ✅ **Auto-deployment** — Push to GitHub → Netlify builds → Live
+
+### **Modern Developer Experience** 🎨
+- 🎨 **Gradient UI** — Beautiful purple/blue theme
+- ⏱️ **Real-time feedback** — Progress updates every second
+- 🔔 **Smart notifications** — Deployment status alerts
+- 🌓 **Professional design** — Industry-standard UX patterns
+
 ##  Complete Documentation
 
 ### **Setup and Usage**
 - 📋 [**Setup Guide**](docs/INTELLIGENT_PHOTOCOPIER_GUIDE.md) — Complete installation and configuration
 - 📚 [**User Guide**](docs/user-guide.md) — Detailed usage instructions and examples
+- 🌐 [**Web Interface Guide**](https://intelligentphotocopier.online/documentation/) — Online documentation
 - 🔍 [**Troubleshooting**](docs/troubleshooting.md) — Common issues and solutions
 
 ---
@@ -418,6 +472,40 @@ code_quality_calc/
 - ✅ Docker containerization (advanced topics)
 - ✅ Documentation and project maintenance
 - ✅ Collaboration and code review processes
+
+## 🏗️ Technical Architecture
+
+### **Deployment Stack**
+```
+User Browser (Mobile/Desktop)
+    ↓
+Netlify CDN (intelligentphotocopier.online)
+    ↓ Static Site (Eleventy)
+    ↓
+Render.com API (intelligent-photocopier.onrender.com)
+    ↓ Flask REST API
+    ↓
+OpenAI GPT-4o-mini API
+    ↓
+GitHub Repository (Auto-commit)
+    ↓
+Netlify Auto-Deploy (Webhook trigger)
+```
+
+### **Technology Components**
+- **Frontend**: Eleventy (11ty) static site generator, Nunjucks templates
+- **Backend API**: Flask REST API hosted on Render.com
+- **AI Engine**: OpenAI GPT-4o-mini for content generation
+- **Storage**: GitHub repository as content database
+- **CDN**: Netlify for global edge distribution
+- **Domain**: intelligentphotocopier.online (via Netlify DNS)
+
+### **Key Features Implementation**
+- **Instant Preview**: sessionStorage + marked.js for client-side Markdown rendering
+- **Batch Commits**: GitHub Tree API for atomic multi-file commits
+- **Responsive Design**: CSS Grid with mobile-first breakpoints (968px, 640px, 480px)
+- **Deployment Tracking**: JavaScript countdown with progress bar animation
+- **Auto-Deploy**: GitHub → Netlify webhook integration
 
 ## 🆘 Need Help?
 

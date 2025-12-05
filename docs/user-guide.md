@@ -1,13 +1,36 @@
 # User Guide: Intelligent Photocopier
 
-## Quick Start
+## 🌐 Web Interface (Easiest Method)
+
+**Visit**: [intelligentphotocopier.online](https://intelligentphotocopier.online)
+
+### Quick Start - No Installation Required!
+
+1. **Open your browser** (works on desktop, tablet, or phone)
+2. **Visit** intelligentphotocopier.online
+3. **Paste your course outline** in the text area
+4. **Configure** course details (ID, title, level, duration)
+5. **Click "Generate"** and wait ~2 minutes
+6. **Preview instantly** - see your content right away
+7. **Auto-deployed** - course goes live automatically
+
+### Web Features
+- ⚡ **Instant Preview** - View content immediately without waiting
+- 📱 **Mobile Friendly** - Full responsive design for all devices
+- 🚀 **Auto-Deploy** - Courses go live on Netlify automatically
+- 📊 **Progress Tracking** - Live countdown and progress bar
+- 🎨 **Modern UI** - Beautiful gradient design
+
+---
+
+## 💻 CLI Installation (For Developers)
 
 ### 1. Installation & Setup
 
 **Prerequisites**:
 - Python 3.11 or higher
 - Git (for cloning the repository)
-- OpenAI API key (optional, system works without it)
+- OpenAI API key (optional for web, required for CLI)
 
 **Installation Steps**:
 ```bash

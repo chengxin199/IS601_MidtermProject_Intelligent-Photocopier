@@ -679,7 +679,7 @@ Generate practical, code-focused exercises suitable for {course_info['level'].lo
         if not self.client:
             return f"# {course_info['title']} - Practice Solution\n\n## TODO\nAdd practice solution code"
 
-        objectives_text = chr(10).join([f"- {obj}" for obj in course_info['objectives']])
+        objectives_text = chr(10).join([f"- {obj}" for obj in course_info["objectives"]])
         prompt = f"""Create a comprehensive practice solution document in Markdown format for "{course_info['title']}".
 
 Learning Objectives to demonstrate:

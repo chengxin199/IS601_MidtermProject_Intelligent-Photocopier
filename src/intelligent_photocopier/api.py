@@ -20,15 +20,20 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 # Enable CORS for production domain and localhost
-CORS(app, origins=[
-    "http://localhost:8080",
-    "http://localhost:8081",
-    "https://intelligentphotocopier.online",
-    "http://intelligentphotocopier.online",
-    "https://www.intelligentphotocopier.online",
-    "http://www.intelligentphotocopier.online",
-    "https://intelligentphotocopier.netlify.app"
-])
+CORS(
+    app,
+    origins=[
+        "http://localhost:8080",
+        "http://localhost:8081",
+        "https://intelligentphotocopier.online",
+        "http://intelligentphotocopier.online",
+        "https://www.intelligentphotocopier.online",
+        "http://www.intelligentphotocopier.online",
+        "https://intelligentphotocopier.netlify.app",
+    ],
+)
+
+
 @app.route("/api/health", methods=["GET"])
 def health_check():
     """Health check endpoint."""
@@ -40,12 +45,14 @@ def debug_info():
     """Debug endpoint to check environment."""
     github_token = os.getenv("GITHUB_TOKEN")
     openai_key = os.getenv("OPENAI_API_KEY")
-    return jsonify({
-        "github_token_set": bool(github_token),
-        "github_token_length": len(github_token) if github_token else 0,
-        "openai_key_set": bool(openai_key),
-        "openai_key_length": len(openai_key) if openai_key else 0
-    })
+    return jsonify(
+        {
+            "github_token_set": bool(github_token),
+            "github_token_length": len(github_token) if github_token else 0,
+            "openai_key_set": bool(openai_key),
+            "openai_key_length": len(openai_key) if openai_key else 0,
+        }
+    )
 
 
 @app.route("/api/generate-course", methods=["POST"])
@@ -76,10 +83,15 @@ def generate_course():
         required_fields = ["courseId", "title", "content"]
         missing_fields = [f for f in required_fields if f not in data]
         if missing_fields:
-            return jsonify({
-                "success": False,
-                "error": f"Missing required fields: {', '.join(missing_fields)}"
-            }), 400
+            return (
+                jsonify(
+                    {
+                        "success": False,
+                        "error": f"Missing required fields: {', '.join(missing_fields)}",
+                    }
+                ),
+                400,
+            )
 
         # Extract data
         course_id = data["courseId"]
@@ -121,9 +133,7 @@ def generate_course():
         logger.info(f"Generating course: {course_id}")
 
         # Generate course content
-        generated_content = generator.generate_course_content(
-            course_info, template_structure
-        )
+        generated_content = generator.generate_course_content(course_info, template_structure)
 
         # Prepare files for GitHub commit
         files_to_commit = {}
@@ -153,21 +163,20 @@ def generate_course():
         # Commit to GitHub to trigger Netlify rebuild
         github_success = _commit_to_github(course_id, files_to_commit)
 
-        return jsonify({
-            "success": True,
-            "courseId": course_id,
-            "filesCreated": list(files_to_commit.keys()),
-            "githubCommitted": github_success,
-            "message": f"Course '{title}' generated successfully!",
-            "content": files_to_commit  # Return content for immediate preview
-        })
+        return jsonify(
+            {
+                "success": True,
+                "courseId": course_id,
+                "filesCreated": list(files_to_commit.keys()),
+                "githubCommitted": github_success,
+                "message": f"Course '{title}' generated successfully!",
+                "content": files_to_commit,  # Return content for immediate preview
+            }
+        )
 
     except Exception as e:
         logger.error(f"Error generating course: {e}", exc_info=True)
-        return jsonify({
-            "success": False,
-            "error": str(e)
-        }), 500
+        return jsonify({"success": False, "error": str(e)}), 500
 
 
 def _extract_objectives(content: str) -> list[str]:
@@ -188,7 +197,11 @@ def _extract_objectives(content: str) -> list[str]:
                 break
 
     if not objectives:
-        objectives = ["Master key concepts", "Apply practical techniques", "Build real-world projects"]
+        objectives = [
+            "Master key concepts",
+            "Apply practical techniques",
+            "Build real-world projects",
+        ]
 
     return objectives[:6]  # Limit to 6 objectives
 
@@ -207,7 +220,13 @@ def _extract_topics(content: str) -> list[str]:
             topics.append(line.split(".", 1)[1].strip())
 
     if not topics:
-        topics = ["Introduction", "Core Concepts", "Advanced Techniques", "Best Practices", "Summary"]
+        topics = [
+            "Introduction",
+            "Core Concepts",
+            "Advanced Techniques",
+            "Best Practices",
+            "Summary",
+        ]
 
     return topics[:8]  # Limit to 8 topics
 
@@ -246,12 +265,14 @@ def _commit_to_github(course_id: str, files_content: dict[str, str]):
             blob = repo.create_git_blob(content, "utf-8")
 
             # Add to tree elements with proper mode for files
-            tree_elements.append({
-                "path": github_path,
-                "mode": "100644",  # Regular file mode
-                "type": "blob",
-                "sha": blob.sha
-            })
+            tree_elements.append(
+                {
+                    "path": github_path,
+                    "mode": "100644",  # Regular file mode
+                    "type": "blob",
+                    "sha": blob.sha,
+                }
+            )
             logger.info(f"✓ Prepared blob for {github_path}")
 
         # Create a new tree with all the files
@@ -260,11 +281,7 @@ def _commit_to_github(course_id: str, files_content: dict[str, str]):
 
         # Create a single commit with all changes
         commit_message = f"Add generated course: {course_id}"
-        new_commit = repo.create_git_commit(
-            commit_message,
-            new_tree,
-            [base_commit.commit]
-        )
+        new_commit = repo.create_git_commit(commit_message, new_tree, [base_commit.commit])
         logger.info(f"Created commit: {new_commit.sha}")
 
         # Update the branch reference to point to the new commit
@@ -284,11 +301,7 @@ def _rebuild_site():
     try:
         logger.info("Rebuilding Eleventy site...")
         result = subprocess.run(
-            ["npm", "run", "build"],
-            capture_output=True,
-            text=True,
-            timeout=60,
-            check=False
+            ["npm", "run", "build"], capture_output=True, text=True, timeout=60, check=False
         )
         if result.returncode == 0:
             logger.info("Site rebuilt successfully")

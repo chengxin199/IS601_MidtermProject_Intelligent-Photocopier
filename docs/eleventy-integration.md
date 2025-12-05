@@ -6,6 +6,7 @@ The Intelligent Photocopier now supports generating beautiful static websites fr
 
 - **Automatic Front Matter**: All generated markdown files include YAML front matter for Eleventy
 - **Professional Templates**: Pre-built Nunjucks templates with responsive design
+- **Mobile-First Design**: Optimized for all screen sizes with 3 breakpoints (968px, 640px, 480px)
 - **Course Collections**: Automatic course listing and navigation
 - **Syntax Highlighting**: Code blocks with Prism.js highlighting
 - **Fast & Static**: No server needed, deploy anywhere (GitHub Pages, Netlify, Vercel)
@@ -141,6 +142,21 @@ This metadata is used by Eleventy for:
 - Navigation and breadcrumbs
 
 ## Customization
+
+### Responsive Design
+
+The templates use mobile-first responsive design with breakpoints:
+- **≤480px**: Mobile phones (single column, collapsed navigation)
+- **≤640px**: Small tablets (adjusted spacing and fonts)
+- **≤968px**: Tablets and small desktops (sidebar moves to top)
+- **>968px**: Desktop (full layout with sidebar)
+
+Key responsive features:
+- Collapsible navigation on mobile
+- Flexible course grid (1-3 columns based on screen size)
+- Responsive typography (rem units with viewport scaling)
+- Touch-friendly buttons and links
+- Optimized images and media queries
 
 ### Modify Styles
 
