@@ -771,7 +771,7 @@ Example:
   }
 
   function previewCourse(courseId) {
-    const content = sessionStorage.getItem(`preview_${courseId}`);
+    const content = sessionStorage.getItem('preview_' + courseId);
     if (!content) {
       alert('Preview content not available. Please wait for deployment.');
       return;
@@ -781,69 +781,65 @@ Example:
 
     // Create preview window
     const previewWindow = window.open('', '_blank', 'width=1200,height=800');
-    previewWindow.document.write(`
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <title>Preview: ${courseId}</title>
-        <style>
-          body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 900px; margin: 0 auto; padding: 2rem; line-height: 1.6; background: #f7fafc; }
-          h1, h2, h3 { color: #2d3748; margin-top: 2rem; }
-          code { background: #fff; padding: 0.2rem 0.4rem; border-radius: 3px; font-size: 0.9em; border: 1px solid #e2e8f0; }
-          pre { background: #2d3748; color: #f7fafc; padding: 1rem; border-radius: 8px; overflow-x: auto; }
-          pre code { background: transparent; padding: 0; border: none; }
-          .banner { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3); }
-          .file-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; background: white; padding: 1rem; border-radius: 12px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); }
-          .file-tab { padding: 0.6rem 1.2rem; border: 2px solid #e2e8f0; border-radius: 8px; cursor: pointer; background: white; transition: all 0.3s; font-weight: 500; }
-          .file-tab:hover { background: #f7fafc; border-color: #667eea; transform: translateY(-2px); }
-          .file-tab.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-color: #667eea; box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3); }
-          .content-area { display: none; background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); }
-          .content-area.active { display: block; animation: fadeIn 0.3s ease; }
-          @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-          ul, ol { margin-left: 1.5rem; }
-          li { margin-bottom: 0.5rem; }
-          blockquote { border-left: 4px solid #667eea; padding-left: 1rem; margin-left: 0; color: #4a5568; background: #f7fafc; padding: 1rem; border-radius: 0 8px 8px 0; }
-        </style>
-        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-      </head>
-      <body>
-        <div class="banner">
-          <h2 style="margin: 0;">📚 Course Preview: ${courseId}</h2>
-          <p style="margin: 0.5rem 0 0 0; opacity: 0.9;">⚡ Instant preview - Deployment in progress...</p>
-        </div>
-        <div class="file-tabs" id="tabs"></div>
-        <div id="content"></div>
-        <script>
-          const files = ${JSON.stringify(files)};
-          const contentDiv = document.getElementById('content');
-          const tabsDiv = document.getElementById('tabs');
-
-          Object.keys(files).forEach((fileName, index) => {
-            const tab = document.createElement('button');
-            tab.className = 'file-tab' + (index === 0 ? ' active' : '');
-            tab.textContent = fileName;
-            tab.onclick = () => showFile(fileName);
-            tabsDiv.appendChild(tab);
-
-            const contentArea = document.createElement('div');
-            contentArea.className = 'content-area' + (index === 0 ? ' active' : '');
-            contentArea.id = 'file-' + index;
-            contentArea.innerHTML = marked.parse(files[fileName]);
-            contentDiv.appendChild(contentArea);
-          });
-
-          function showFile(fileName) {
-            document.querySelectorAll('.file-tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.content-area').forEach(c => c.classList.remove('active'));
-
-            const index = Object.keys(files).indexOf(fileName);
-            document.querySelectorAll('.file-tab')[index].classList.add('active');
-            document.getElementById('file-' + index).classList.add('active');
-          }
-        </script>
-      </body>
-      </html>
-    `);
+    previewWindow.document.write(
+      '<!DOCTYPE html>' +
+      '<html>' +
+      '<head>' +
+        '<title>Preview: ' + courseId + '</title>' +
+        '<style>' +
+          'body { font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, sans-serif; max-width: 900px; margin: 0 auto; padding: 2rem; line-height: 1.6; background: #f7fafc; }' +
+          'h1, h2, h3 { color: #2d3748; margin-top: 2rem; }' +
+          'code { background: #fff; padding: 0.2rem 0.4rem; border-radius: 3px; font-size: 0.9em; border: 1px solid #e2e8f0; }' +
+          'pre { background: #2d3748; color: #f7fafc; padding: 1rem; border-radius: 8px; overflow-x: auto; }' +
+          'pre code { background: transparent; padding: 0; border: none; }' +
+          '.banner { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3); }' +
+          '.file-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; background: white; padding: 1rem; border-radius: 12px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); }' +
+          '.file-tab { padding: 0.6rem 1.2rem; border: 2px solid #e2e8f0; border-radius: 8px; cursor: pointer; background: white; transition: all 0.3s; font-weight: 500; }' +
+          '.file-tab:hover { background: #f7fafc; border-color: #667eea; transform: translateY(-2px); }' +
+          '.file-tab.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-color: #667eea; box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3); }' +
+          '.content-area { display: none; background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); }' +
+          '.content-area.active { display: block; animation: fadeIn 0.3s ease; }' +
+          '@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }' +
+          'ul, ol { margin-left: 1.5rem; }' +
+          'li { margin-bottom: 0.5rem; }' +
+          'blockquote { border-left: 4px solid #667eea; padding-left: 1rem; margin-left: 0; color: #4a5568; background: #f7fafc; padding: 1rem; border-radius: 0 8px 8px 0; }' +
+        '</style>' +
+        '<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"><\/script>' +
+      '</head>' +
+      '<body>' +
+        '<div class="banner">' +
+          '<h2 style="margin: 0;">📚 Course Preview: ' + courseId + '</h2>' +
+          '<p style="margin: 0.5rem 0 0 0; opacity: 0.9;">⚡ Instant preview - Deployment in progress...</p>' +
+        '</div>' +
+        '<div class="file-tabs" id="tabs"></div>' +
+        '<div id="content"></div>' +
+        '<script>' +
+          'var files = ' + JSON.stringify(files) + ';' +
+          'var contentDiv = document.getElementById("content");' +
+          'var tabsDiv = document.getElementById("tabs");' +
+          'Object.keys(files).forEach(function(fileName, index) {' +
+            'var tab = document.createElement("button");' +
+            'tab.className = "file-tab" + (index === 0 ? " active" : "");' +
+            'tab.textContent = fileName;' +
+            'tab.onclick = function() { showFile(fileName); };' +
+            'tabsDiv.appendChild(tab);' +
+            'var contentArea = document.createElement("div");' +
+            'contentArea.className = "content-area" + (index === 0 ? " active" : "");' +
+            'contentArea.id = "file-" + index;' +
+            'contentArea.innerHTML = marked.parse(files[fileName]);' +
+            'contentDiv.appendChild(contentArea);' +
+          '});' +
+          'function showFile(fileName) {' +
+            'document.querySelectorAll(".file-tab").forEach(function(t) { t.classList.remove("active"); });' +
+            'document.querySelectorAll(".content-area").forEach(function(c) { c.classList.remove("active"); });' +
+            'var index = Object.keys(files).indexOf(fileName);' +
+            'document.querySelectorAll(".file-tab")[index].classList.add("active");' +
+            'document.getElementById("file-" + index).classList.add("active");' +
+          '}' +
+        '<\/script>' +
+      '</body>' +
+      '</html>'
+    );
   }
 
   function viewCourse(courseId) {
