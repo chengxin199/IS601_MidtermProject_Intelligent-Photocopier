@@ -7,16 +7,7 @@ Defines User and Course models with SQLAlchemy ORM.
 import os
 from datetime import datetime, timezone
 
-from sqlalchemy import (
-    Boolean,
-    Column,
-    DateTime,
-    ForeignKey,
-    Integer,
-    String,
-    Text,
-    create_engine,
-)
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Text, create_engine
 from sqlalchemy.orm import declarative_base, relationship, sessionmaker
 
 # Create base class for models
@@ -55,7 +46,9 @@ class User(Base):
             "full_name": self.full_name,
             "bio": self.bio,
             "avatar_url": self.avatar_url,
-            "created_at": self.created_at.isoformat() if self.created_at is not None else None,  # type: ignore
+            "created_at": (
+                self.created_at.isoformat() if self.created_at is not None else None  # type: ignore
+            ),
         }
         if include_email:
             data["email"] = self.email
@@ -99,7 +92,9 @@ class Course(Base):
             "github_url": self.github_url,
             "deployed_url": self.deployed_url,
             "user_id": self.user_id,
-            "created_at": self.created_at.isoformat() if self.created_at is not None else None,  # type: ignore
+            "created_at": (
+                self.created_at.isoformat() if self.created_at is not None else None  # type: ignore
+            ),
         }
 
 
