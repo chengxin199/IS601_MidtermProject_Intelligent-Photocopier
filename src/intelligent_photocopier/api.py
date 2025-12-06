@@ -87,22 +87,14 @@ def register():
     """Register a new user."""
     data = request.get_json()
 
-    # Validate required fields
-    required_fields = ["username", "email", "password"]
-    if not all(field in data for field in required_fields):
-        return jsonify({"error": "Missing required fields"}), 400
+    # Validate input and check for errors
+    error_response = _validate_registration_data(data)
+    if error_response:
+        return error_response
 
     username = data["username"].strip()
     email = data["email"].strip().lower()
     password = data["password"]
-
-    # Validate input
-    if len(username) < 3:
-        return jsonify({"error": "Username must be at least 3 characters"}), 400
-    if len(password) < 6:
-        return jsonify({"error": "Password must be at least 6 characters"}), 400
-    if "@" not in email:
-        return jsonify({"error": "Invalid email address"}), 400
 
     db = get_db()
 
@@ -112,9 +104,12 @@ def register():
     )
 
     if existing_user:
-        if existing_user.username == username:
-            return jsonify({"error": "Username already taken"}), 409
-        return jsonify({"error": "Email already registered"}), 409
+        error_msg = (
+            "Username already taken"
+            if existing_user.username == username
+            else "Email already registered"
+        )
+        return jsonify({"error": error_msg}), 409
 
     # Create new user
     hashed_pw = hash_password(password)
@@ -144,6 +139,26 @@ def register():
         ),
         201,
     )
+
+
+def _validate_registration_data(data):
+    """Validate registration data. Returns error response or None."""
+    required_fields = ["username", "email", "password"]
+    if not all(field in data for field in required_fields):
+        return jsonify({"error": "Missing required fields"}), 400
+
+    username = data["username"].strip()
+    email = data["email"].strip().lower()
+    password = data["password"]
+
+    if len(username) < 3:
+        return jsonify({"error": "Username must be at least 3 characters"}), 400
+    if len(password) < 6:
+        return jsonify({"error": "Password must be at least 6 characters"}), 400
+    if "@" not in email:
+        return jsonify({"error": "Invalid email address"}), 400
+
+    return None
 
 
 @app.route("/api/auth/login", methods=["POST"])

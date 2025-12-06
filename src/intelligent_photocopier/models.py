@@ -7,14 +7,23 @@ Defines User and Course models with SQLAlchemy ORM.
 import os
 from datetime import datetime, timezone
 
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Text, create_engine
+from sqlalchemy import (
+    Boolean,
+    Column,
+    DateTime,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+    create_engine,
+)
 from sqlalchemy.orm import declarative_base, relationship, sessionmaker
 
 # Create base class for models
 Base = declarative_base()
 
 
-class User(Base):
+class User(Base):  # type: ignore[misc, valid-type]
     """User model for authentication and course ownership."""
 
     __tablename__ = "users"
@@ -55,7 +64,7 @@ class User(Base):
         return data
 
 
-class Course(Base):
+class Course(Base):  # type: ignore[misc, valid-type]
     """Course model for tracking generated courses."""
 
     __tablename__ = "courses"
