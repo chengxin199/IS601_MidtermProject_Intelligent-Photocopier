@@ -6,7 +6,6 @@ Provides REST endpoints for creating courses through the web UI.
 
 import logging
 import os
-import re
 import subprocess  # nosec B404 - Used safely with fixed command list
 
 from flask import Flask, jsonify, request
@@ -131,8 +130,8 @@ def register():
     db.refresh(new_user)
 
     # Generate tokens
-    access_token = create_access_token(new_user.id, new_user.username)
-    refresh_token = create_refresh_token(new_user.id, new_user.username)
+    access_token = create_access_token(int(new_user.id), str(new_user.username))  # type: ignore
+    refresh_token = create_refresh_token(int(new_user.id), str(new_user.username))  # type: ignore
 
     return (
         jsonify(
@@ -208,7 +207,7 @@ def refresh():
 def get_current_user():
     """Get current user profile."""
     db = get_db()
-    user = db.query(User).filter(User.id == request.user_id).first()
+    user = db.query(User).filter(User.id == request.user_id).first()  # type: ignore
 
     if not user:
         return jsonify({"error": "User not found"}), 404
@@ -228,7 +227,7 @@ def update_profile():
     data = request.get_json()
     db = get_db()
 
-    user = db.query(User).filter(User.id == request.user_id).first()
+    user = db.query(User).filter(User.id == request.user_id).first()  # type: ignore
     if not user:
         return jsonify({"error": "User not found"}), 404
 
@@ -261,7 +260,7 @@ def get_my_courses():
 
     courses = (
         db.query(Course)
-        .filter(Course.user_id == request.user_id)
+        .filter(Course.user_id == request.user_id)  # type: ignore
         .order_by(Course.created_at.desc())
         .all()
     )
@@ -453,7 +452,7 @@ def generate_course():  # pylint: disable=too-many-locals
         github_success = _commit_to_github(course_id, files_to_commit)
 
         # Save course to database if user is authenticated
-        if hasattr(request, "user_id") and request.user_id:
+        if hasattr(request, "user_id") and request.user_id:  # type: ignore
             db = get_db()
             new_course = Course(
                 course_id=course_id,
@@ -463,11 +462,11 @@ def generate_course():  # pylint: disable=too-many-locals
                 duration=duration,
                 github_url=f"https://github.com/chengxin199/Intelligent-Photocopier/tree/main/Lessons/{course_id}",
                 deployed_url=f"https://intelligentphotocopier.online/lessons/{course_id}/",
-                user_id=request.user_id,
+                user_id=request.user_id,  # type: ignore
             )
             db.add(new_course)
             db.commit()
-            logger.info(f"Course {course_id} saved to database for user {request.user_id}")
+            logger.info(f"Course {course_id} saved to database for user {request.user_id}")  # type: ignore
 
         return jsonify(
             {

@@ -96,8 +96,8 @@ def require_auth(f):
             return jsonify({"error": "Invalid token type"}), 401
 
         # Add user info to request context
-        request.user_id = payload["user_id"]
-        request.username = payload["username"]
+        request.user_id = payload["user_id"]  # type: ignore
+        request.username = payload["username"]  # type: ignore
 
         return f(*args, **kwargs)
 
@@ -115,16 +115,16 @@ def optional_auth(f):
             payload = decode_token(token)
             if payload and payload.get("type") == "access":
                 # Add user info to request context
-                request.user_id = payload["user_id"]
-                request.username = payload["username"]
+                request.user_id = payload["user_id"]  # type: ignore
+                request.username = payload["username"]  # type: ignore
             else:
                 # Invalid token, but route still works without auth
-                request.user_id = None
-                request.username = None
+                request.user_id = None  # type: ignore
+                request.username = None  # type: ignore
         else:
             # No token provided
-            request.user_id = None
-            request.username = None
+            request.user_id = None  # type: ignore
+            request.username = None  # type: ignore
 
         return f(*args, **kwargs)
 
