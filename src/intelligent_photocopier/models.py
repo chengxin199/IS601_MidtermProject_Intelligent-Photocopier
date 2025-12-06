@@ -7,16 +7,7 @@ Defines User and Course models with SQLAlchemy ORM.
 import os
 from datetime import datetime, timezone
 
-from sqlalchemy import (
-    Boolean,
-    Column,
-    DateTime,
-    ForeignKey,
-    Integer,
-    String,
-    Text,
-    create_engine,
-)
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Text, create_engine
 from sqlalchemy.orm import declarative_base, relationship, sessionmaker
 
 # Create base class for models
