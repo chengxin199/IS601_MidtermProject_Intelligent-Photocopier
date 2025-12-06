@@ -269,125 +269,62 @@ def get_my_courses():
     return jsonify({"courses": [course.to_dict() for course in courses]})
 
 
-@app.route("/api/courses/<int:course_id>/versions", methods=["GET"])
-@require_auth
-def get_course_versions(course_id):
-    """Get all versions of a course."""
+# ============================================================================
+# Admin/Debug Endpoints
+# ============================================================================
+
+
+@app.route("/api/admin/users", methods=["GET"])
+def list_users():
+    """List all registered users (for debugging)."""
     db = get_db()
-
-    # Verify course ownership
-    course = db.query(Course).filter(Course.id == course_id).first()
-    if not course:
-        return jsonify({"error": "Course not found"}), 404
-
-    if course.user_id != request.user_id:
-        return jsonify({"error": "Unauthorized"}), 403
-
-    # Get all versions
-    versions = (
-        db.query(CourseVersion)
-        .filter(CourseVersion.course_id == course_id)
-        .order_by(CourseVersion.version_number.desc())
-        .all()
-    )
-
-    return jsonify(
-        {"course": course.to_dict(), "versions": [v.to_dict() for v in versions]}
-    )
-
-
-@app.route("/api/courses/<int:course_id>/versions/<int:version_number>", methods=["GET"])
-@require_auth
-def get_course_version_detail(course_id, version_number):
-    """Get detailed content of a specific version."""
-    db = get_db()
-
-    # Verify course ownership
-    course = db.query(Course).filter(Course.id == course_id).first()
-    if not course:
-        return jsonify({"error": "Course not found"}), 404
-
-    if course.user_id != request.user_id:
-        return jsonify({"error": "Unauthorized"}), 403
-
-    # Get specific version
-    version = (
-        db.query(CourseVersion)
-        .filter(
-            CourseVersion.course_id == course_id,
-            CourseVersion.version_number == version_number,
-        )
-        .first()
-    )
-
-    if not version:
-        return jsonify({"error": "Version not found"}), 404
-
-    version_dict = version.to_dict()
-    version_dict["content_snapshot"] = version.content_snapshot
-
-    return jsonify({"version": version_dict})
-
-
-@app.route("/api/courses/<int:course_id>/rollback/<int:version_number>", methods=["POST"])
-@require_auth
-def rollback_course(course_id, version_number):
-    """Rollback course to a specific version."""
-    db = get_db()
-
-    # Verify course ownership
-    course = db.query(Course).filter(Course.id == course_id).first()
-    if not course:
-        return jsonify({"error": "Course not found"}), 404
-
-    if course.user_id != request.user_id:
-        return jsonify({"error": "Unauthorized"}), 403
-
-    # Get target version
-    target_version = (
-        db.query(CourseVersion)
-        .filter(
-            CourseVersion.course_id == course_id,
-            CourseVersion.version_number == version_number,
-        )
-        .first()
-    )
-
-    if not target_version:
-        return jsonify({"error": "Version not found"}), 404
-
-    # Create new version with rollback content
-    course.current_version += 1
-    new_version = CourseVersion(
-        course_id=course.id,
-        version_number=course.current_version,
-        title=target_version.title,
-        description=target_version.description,
-        level=target_version.level,
-        duration=target_version.duration,
-        content_snapshot=target_version.content_snapshot,
-        commit_message=f"Rolled back to version {version_number}",
-        created_by=request.user_id,
-    )
-
-    # Update course metadata
-    course.title = target_version.title
-    course.description = target_version.description
-    course.level = target_version.level
-    course.duration = target_version.duration
-
-    db.add(new_version)
-    db.commit()
-
-    # Commit to GitHub
-    if target_version.content_snapshot:
-        _commit_to_github(course.course_id, target_version.content_snapshot)
+    users = db.query(User).order_by(User.created_at.desc()).all()
 
     return jsonify(
         {
-            "message": f"Course rolled back to version {version_number}",
-            "current_version": course.current_version,
-            "course": course.to_dict(),
+            "total": len(users),
+            "users": [
+                {
+                    "id": user.id,
+                    "username": user.username,
+                    "email": user.email,
+                    "full_name": user.full_name,
+                    "created_at": user.created_at.isoformat() if user.created_at else None,
+                    "courses_count": len(user.courses),
+                }
+                for user in users
+            ],
+        }
+    )
+
+
+@app.route("/api/admin/stats", methods=["GET"])
+def get_stats():
+    """Get system statistics."""
+    db = get_db()
+
+    total_users = db.query(User).count()
+    total_courses = db.query(Course).count()
+    courses_with_users = db.query(Course).filter(Course.user_id.isnot(None)).count()
+    anonymous_courses = db.query(Course).filter(Course.user_id.is_(None)).count()
+
+    # Recent registrations (last 7 days)
+    from datetime import datetime, timedelta, timezone
+
+    seven_days_ago = datetime.now(timezone.utc) - timedelta(days=7)
+    recent_users = db.query(User).filter(User.created_at >= seven_days_ago).count()
+
+    return jsonify(
+        {
+            "users": {
+                "total": total_users,
+                "recent_7_days": recent_users,
+            },
+            "courses": {
+                "total": total_courses,
+                "with_users": courses_with_users,
+                "anonymous": anonymous_courses,
+            },
         }
     )
 
