@@ -22,11 +22,12 @@ def read_version():
     return version_file.read_text().strip()
 
 
-def write_version(version):
+def write_version(version, quiet=False):
     """Write version to VERSION file."""
     version_file = Path("VERSION")
     version_file.write_text(version + "\n")
-    print(f"✅ Updated VERSION file to {version}")
+    if not quiet:
+        print(f"✅ Updated VERSION file to {version}")
 
 
 def bump_version(current, bump_type):
@@ -48,11 +49,12 @@ def bump_version(current, bump_type):
     return f"{major}.{minor}.{patch}"
 
 
-def update_index_njk(version):
+def update_index_njk(version, quiet=False):
     """Update version in Lessons/index.njk."""
     index_file = Path("Lessons/index.njk")
     if not index_file.exists():
-        print("⚠️  Lessons/index.njk not found")
+        if not quiet:
+            print("⚠️  Lessons/index.njk not found")
         return
 
     content = index_file.read_text()
@@ -73,7 +75,8 @@ def update_index_njk(version):
     )
 
     index_file.write_text(content)
-    print(f"✅ Updated Lessons/index.njk to v{version}")
+    if not quiet:
+        print(f"✅ Updated Lessons/index.njk to v{version}")
 
 
 def main():
@@ -88,13 +91,19 @@ def main():
         action="store_true",
         help="Show what would be done without making changes",
     )
+    parser.add_argument(
+        "--quiet",
+        action="store_true",
+        help="Suppress output messages (for automation)",
+    )
 
     args = parser.parse_args()
 
     current_version = read_version()
     new_version = bump_version(current_version, args.bump_type)
 
-    print(f"\n📦 Version Bump: {current_version} → {new_version}\n")
+    if not args.quiet:
+        print(f"\n📦 Version Bump: {current_version} → {new_version}\n")
 
     if args.dry_run:
         print("🔍 DRY RUN - No files will be modified")
@@ -103,14 +112,15 @@ def main():
         return
 
     # Update files
-    write_version(new_version)
-    update_index_njk(new_version)
+    write_version(new_version, quiet=args.quiet)
+    update_index_njk(new_version, quiet=args.quiet)
 
-    print("\n✨ Version bumped successfully!")
-    print("\n📝 Next steps:")
-    print("   git add VERSION Lessons/index.njk")
-    print(f'   git commit -m "chore: Bump version to {new_version}"')
-    print("   git push origin main")
+    if not args.quiet:
+        print("\n✨ Version bumped successfully!")
+        print("\n📝 Next steps:")
+        print("   git add VERSION Lessons/index.njk")
+        print(f'   git commit -m "chore: Bump version to {new_version}"')
+        print("   git push origin main")
 
 
 if __name__ == "__main__":
