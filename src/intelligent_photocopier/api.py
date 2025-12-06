@@ -6,13 +6,24 @@ Provides REST endpoints for creating courses through the web UI.
 
 import logging
 import os
+import re
 import subprocess  # nosec B404 - Used safely with fixed command list
 
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from github import Github, InputGitTreeElement
 
+from .auth import (
+    create_access_token,
+    create_refresh_token,
+    decode_token,
+    hash_password,
+    optional_auth,
+    require_auth,
+    verify_password,
+)
 from .course_generator import CourseGenerator
+from .models import Course, User, init_db
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -32,6 +43,18 @@ CORS(
         "https://intelligentphotocopier.netlify.app",
     ],
 )
+
+# Initialize database
+engine, SessionLocal = init_db()
+
+
+def get_db():
+    """Get database session."""
+    db = SessionLocal()
+    try:
+        return db
+    finally:
+        db.close()
 
 
 @app.route("/api/health", methods=["GET"])
@@ -55,7 +78,322 @@ def debug_info():
     )
 
 
+# ============================================================================
+# Authentication Endpoints
+# ============================================================================
+
+
+@app.route("/api/auth/register", methods=["POST"])
+def register():
+    """Register a new user."""
+    data = request.get_json()
+
+    # Validate required fields
+    required_fields = ["username", "email", "password"]
+    if not all(field in data for field in required_fields):
+        return jsonify({"error": "Missing required fields"}), 400
+
+    username = data["username"].strip()
+    email = data["email"].strip().lower()
+    password = data["password"]
+
+    # Validate input
+    if len(username) < 3:
+        return jsonify({"error": "Username must be at least 3 characters"}), 400
+    if len(password) < 6:
+        return jsonify({"error": "Password must be at least 6 characters"}), 400
+    if "@" not in email:
+        return jsonify({"error": "Invalid email address"}), 400
+
+    db = get_db()
+
+    # Check if user already exists
+    existing_user = (
+        db.query(User).filter((User.username == username) | (User.email == email)).first()
+    )
+
+    if existing_user:
+        if existing_user.username == username:
+            return jsonify({"error": "Username already taken"}), 409
+        return jsonify({"error": "Email already registered"}), 409
+
+    # Create new user
+    hashed_pw = hash_password(password)
+    new_user = User(
+        username=username,
+        email=email,
+        password_hash=hashed_pw,
+        full_name=data.get("full_name", ""),
+    )
+
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+
+    # Generate tokens
+    access_token = create_access_token(new_user.id, new_user.username)
+    refresh_token = create_refresh_token(new_user.id, new_user.username)
+
+    return (
+        jsonify(
+            {
+                "message": "User registered successfully",
+                "user": new_user.to_dict(include_email=True),
+                "access_token": access_token,
+                "refresh_token": refresh_token,
+            }
+        ),
+        201,
+    )
+
+
+@app.route("/api/auth/login", methods=["POST"])
+def login():
+    """Login user and return JWT tokens."""
+    data = request.get_json()
+
+    if not data or "username" not in data or "password" not in data:
+        return jsonify({"error": "Missing username or password"}), 400
+
+    username = data["username"].strip()
+    password = data["password"]
+
+    db = get_db()
+
+    # Find user by username or email
+    user = db.query(User).filter((User.username == username) | (User.email == username)).first()
+
+    if not user or not verify_password(password, user.password_hash):
+        return jsonify({"error": "Invalid credentials"}), 401
+
+    if not user.is_active:
+        return jsonify({"error": "Account is disabled"}), 403
+
+    # Generate tokens
+    access_token = create_access_token(user.id, user.username)
+    refresh_token = create_refresh_token(user.id, user.username)
+
+    return jsonify(
+        {
+            "message": "Login successful",
+            "user": user.to_dict(include_email=True),
+            "access_token": access_token,
+            "refresh_token": refresh_token,
+        }
+    )
+
+
+@app.route("/api/auth/refresh", methods=["POST"])
+def refresh():
+    """Refresh access token using refresh token."""
+    data = request.get_json()
+
+    if not data or "refresh_token" not in data:
+        return jsonify({"error": "Missing refresh token"}), 400
+
+    refresh_token = data["refresh_token"]
+    payload = decode_token(refresh_token)
+
+    if not payload or payload.get("type") != "refresh":
+        return jsonify({"error": "Invalid refresh token"}), 401
+
+    # Generate new access token
+    access_token = create_access_token(payload["user_id"], payload["username"])
+
+    return jsonify({"access_token": access_token})
+
+
+@app.route("/api/auth/me", methods=["GET"])
+@require_auth
+def get_current_user():
+    """Get current user profile."""
+    db = get_db()
+    user = db.query(User).filter(User.id == request.user_id).first()
+
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    return jsonify({"user": user.to_dict(include_email=True)})
+
+
+# ============================================================================
+# User Profile Endpoints
+# ============================================================================
+
+
+@app.route("/api/profile", methods=["PUT"])
+@require_auth
+def update_profile():
+    """Update user profile."""
+    data = request.get_json()
+    db = get_db()
+
+    user = db.query(User).filter(User.id == request.user_id).first()
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    # Update allowed fields
+    if "full_name" in data:
+        user.full_name = data["full_name"].strip()
+    if "bio" in data:
+        user.bio = data["bio"].strip()
+    if "avatar_url" in data:
+        user.avatar_url = data["avatar_url"].strip()
+
+    db.commit()
+    db.refresh(user)
+
+    return jsonify(
+        {"message": "Profile updated successfully", "user": user.to_dict(include_email=True)}
+    )
+
+
+# ============================================================================
+# Course Management Endpoints
+# ============================================================================
+
+
+@app.route("/api/courses/my", methods=["GET"])
+@require_auth
+def get_my_courses():
+    """Get all courses created by the current user."""
+    db = get_db()
+
+    courses = (
+        db.query(Course)
+        .filter(Course.user_id == request.user_id)
+        .order_by(Course.created_at.desc())
+        .all()
+    )
+
+    return jsonify({"courses": [course.to_dict() for course in courses]})
+
+
+@app.route("/api/courses/<int:course_id>/versions", methods=["GET"])
+@require_auth
+def get_course_versions(course_id):
+    """Get all versions of a course."""
+    db = get_db()
+
+    # Verify course ownership
+    course = db.query(Course).filter(Course.id == course_id).first()
+    if not course:
+        return jsonify({"error": "Course not found"}), 404
+
+    if course.user_id != request.user_id:
+        return jsonify({"error": "Unauthorized"}), 403
+
+    # Get all versions
+    versions = (
+        db.query(CourseVersion)
+        .filter(CourseVersion.course_id == course_id)
+        .order_by(CourseVersion.version_number.desc())
+        .all()
+    )
+
+    return jsonify(
+        {"course": course.to_dict(), "versions": [v.to_dict() for v in versions]}
+    )
+
+
+@app.route("/api/courses/<int:course_id>/versions/<int:version_number>", methods=["GET"])
+@require_auth
+def get_course_version_detail(course_id, version_number):
+    """Get detailed content of a specific version."""
+    db = get_db()
+
+    # Verify course ownership
+    course = db.query(Course).filter(Course.id == course_id).first()
+    if not course:
+        return jsonify({"error": "Course not found"}), 404
+
+    if course.user_id != request.user_id:
+        return jsonify({"error": "Unauthorized"}), 403
+
+    # Get specific version
+    version = (
+        db.query(CourseVersion)
+        .filter(
+            CourseVersion.course_id == course_id,
+            CourseVersion.version_number == version_number,
+        )
+        .first()
+    )
+
+    if not version:
+        return jsonify({"error": "Version not found"}), 404
+
+    version_dict = version.to_dict()
+    version_dict["content_snapshot"] = version.content_snapshot
+
+    return jsonify({"version": version_dict})
+
+
+@app.route("/api/courses/<int:course_id>/rollback/<int:version_number>", methods=["POST"])
+@require_auth
+def rollback_course(course_id, version_number):
+    """Rollback course to a specific version."""
+    db = get_db()
+
+    # Verify course ownership
+    course = db.query(Course).filter(Course.id == course_id).first()
+    if not course:
+        return jsonify({"error": "Course not found"}), 404
+
+    if course.user_id != request.user_id:
+        return jsonify({"error": "Unauthorized"}), 403
+
+    # Get target version
+    target_version = (
+        db.query(CourseVersion)
+        .filter(
+            CourseVersion.course_id == course_id,
+            CourseVersion.version_number == version_number,
+        )
+        .first()
+    )
+
+    if not target_version:
+        return jsonify({"error": "Version not found"}), 404
+
+    # Create new version with rollback content
+    course.current_version += 1
+    new_version = CourseVersion(
+        course_id=course.id,
+        version_number=course.current_version,
+        title=target_version.title,
+        description=target_version.description,
+        level=target_version.level,
+        duration=target_version.duration,
+        content_snapshot=target_version.content_snapshot,
+        commit_message=f"Rolled back to version {version_number}",
+        created_by=request.user_id,
+    )
+
+    # Update course metadata
+    course.title = target_version.title
+    course.description = target_version.description
+    course.level = target_version.level
+    course.duration = target_version.duration
+
+    db.add(new_version)
+    db.commit()
+
+    # Commit to GitHub
+    if target_version.content_snapshot:
+        _commit_to_github(course.course_id, target_version.content_snapshot)
+
+    return jsonify(
+        {
+            "message": f"Course rolled back to version {version_number}",
+            "current_version": course.current_version,
+            "course": course.to_dict(),
+        }
+    )
+
+
 @app.route("/api/generate-course", methods=["POST"])
+@optional_auth
 def generate_course():  # pylint: disable=too-many-locals
     """
     Generate a course from provided material.
@@ -176,6 +514,23 @@ def generate_course():  # pylint: disable=too-many-locals
 
         # Commit to GitHub to trigger Netlify rebuild
         github_success = _commit_to_github(course_id, files_to_commit)
+
+        # Save course to database if user is authenticated
+        if hasattr(request, "user_id") and request.user_id:
+            db = get_db()
+            new_course = Course(
+                course_id=course_id,
+                title=title,
+                description=description,
+                level=level,
+                duration=duration,
+                github_url=f"https://github.com/chengxin199/Intelligent-Photocopier/tree/main/Lessons/{course_id}",
+                deployed_url=f"https://intelligentphotocopier.online/lessons/{course_id}/",
+                user_id=request.user_id,
+            )
+            db.add(new_course)
+            db.commit()
+            logger.info(f"Course {course_id} saved to database for user {request.user_id}")
 
         return jsonify(
             {
