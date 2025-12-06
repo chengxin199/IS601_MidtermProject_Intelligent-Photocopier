@@ -879,6 +879,20 @@ Example:
 
   function viewMyCourses() {
     console.log('Checking My Courses access');
+    console.log('accessToken:', accessToken);
+    console.log('currentUser:', currentUser);
+    
+    // Force reload auth state from localStorage
+    accessToken = localStorage.getItem('accessToken');
+    const userStr = localStorage.getItem('currentUser');
+    if (userStr) {
+      currentUser = JSON.parse(userStr);
+    } else {
+      currentUser = null;
+    }
+    
+    console.log('After reload - accessToken:', accessToken);
+    console.log('After reload - currentUser:', currentUser);
 
     if (!accessToken || !currentUser) {
       // Show elegant login prompt modal
