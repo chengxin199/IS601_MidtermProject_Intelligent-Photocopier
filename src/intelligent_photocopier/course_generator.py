@@ -109,14 +109,15 @@ class CourseGenerator:
         Args:
             title: Page title
             layout: Layout template path
-            **metadata: Additional metadata (course_id, level, duration, description, tags)
+            **metadata: Additional metadata (course_id, level, duration, description, tags, file_type)
         """
         front_matter = ["---", f"title: {title}", f"layout: {layout}"]
 
         if course_id := metadata.get("course_id"):
             front_matter.append(f"courseId: {course_id}")
-            # Add permalink for correct URL generation
-            front_matter.append(f"permalink: /Lessons/{course_id}/index.html")
+            # Add unique permalink based on file type
+            file_type = metadata.get("file_type", "index")
+            front_matter.append(f"permalink: /Lessons/{course_id}/{file_type}.html")
         if level := metadata.get("level"):
             front_matter.append(f"level: {level}")
         if duration := metadata.get("duration"):
