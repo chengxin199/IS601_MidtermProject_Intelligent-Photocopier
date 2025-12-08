@@ -3,18 +3,15 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "calc-start-f25"
-version = "0.1.0"
-description = "Basic calculator demo with CLI"
+name = "intelligent-photocopier"
+version = "1.0.7"
+description = "AI-powered course generator for programming education"
 readme = "README.md"
 requires-python = ">=3.11"
-keywords = ["calculator", "teaching", "template"]
-
-[project.scripts]
-calc = "src.main:main"
+keywords = ["ai", "education", "course-generator", "openai", "programming"]
 
 [tool.setuptools]
-packages = ["src", "src.operations"]
+packages = ["src.intelligent_photocopier"]
 
 [tool.black]
 line-length = 100
