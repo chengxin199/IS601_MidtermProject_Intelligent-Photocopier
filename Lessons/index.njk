@@ -1416,7 +1416,7 @@ async function handleLogin(event) {
       saveAuthState(data.user, data.access_token, data.refresh_token);
       showLoggedIn();
       closeModal('loginModal');
-      showSuccess('Welcome back, ' + data.user.username + '!');
+      showNotification('Welcome back, ' + data.user.username + '!');
     } else {
       errorDiv.textContent = data.error || 'Login failed';
       errorDiv.style.display = 'block';
@@ -1456,7 +1456,7 @@ async function handleRegister(event) {
       saveAuthState(data.user, data.access_token, data.refresh_token);
       showLoggedIn();
       closeModal('registerModal');
-      showSuccess('Welcome, ' + data.user.username + '! Your account has been created.');
+      showNotification('Welcome, ' + data.user.username + '! Your account has been created.');
     } else {
       errorDiv.textContent = data.error || 'Registration failed';
       errorDiv.style.display = 'block';
@@ -1515,10 +1515,10 @@ async function handleUpdateProfile(event) {
 function logout() {
   clearAuthState();
   showLoggedOut();
-  showSuccess('You have been logged out successfully.');
+  showNotification('You have been logged out successfully.');
 }
 
-function showSuccess(message) {
+function showNotification(message) {
   // Create temporary success notification
   const notification = document.createElement('div');
   notification.style.cssText = 'position: fixed; top: 2rem; right: 2rem; background: #c6f6d5; color: #2f855a; padding: 1rem 2rem; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.15); z-index: 2000; font-weight: 600;';
