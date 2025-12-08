@@ -185,5 +185,7 @@ def test_admin_stats_endpoint(mock_db, client):
     response = client.get("/api/admin/stats")
     assert response.status_code == 200
     data = json.loads(response.data)
-    assert "total_users" in data
-    assert "total_courses" in data
+    assert "users" in data
+    assert "courses" in data
+    assert data["users"]["total"] == 0
+    assert data["courses"]["total"] == 0
