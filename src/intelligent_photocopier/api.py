@@ -493,7 +493,7 @@ def generate_course():  # pylint: disable=too-many-locals
                     f"https://github.com/chengxin199/"
                     f"Intelligent-Photocopier/tree/main/Lessons/{course_id}"
                 ),
-                deployed_url=(f"https://intelligentphotocopier.online/" f"lessons/{course_id}/"),
+                deployed_url=(f"https://intelligentphotocopier.online/" f"Lessons/{course_id}/"),
                 user_id=request.user_id,  # type: ignore
             )
             db.add(new_course)

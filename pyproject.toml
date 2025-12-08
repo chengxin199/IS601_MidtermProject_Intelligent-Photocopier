@@ -132,7 +132,10 @@ testpaths = ["tests"]
 
 [tool.coverage.run]
 omit = [
-  "src/intelligent_photocopier/*",
+  "src/intelligent_photocopier/demo.py",
+  "src/intelligent_photocopier/test_api.py",
+  "src/intelligent_photocopier/test_components.py",
+  "src/intelligent_photocopier/quickstart.py",
 ]
 
 [tool.coverage.report]
