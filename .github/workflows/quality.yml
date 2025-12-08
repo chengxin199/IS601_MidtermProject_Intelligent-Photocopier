@@ -57,6 +57,7 @@ jobs:
       - name: Install tooling
         run: |
           python -m pip install --upgrade pip
+          pip install -r requirements.txt
           pip install -r requirements-dev.txt
 
       - name: Verify format (Black/isort)
@@ -85,6 +86,7 @@ jobs:
       - name: Install tooling
         run: |
           python -m pip install --upgrade pip
+          pip install -r requirements.txt
           pip install -r requirements-dev.txt
       - name: mypy
         run: mypy src
@@ -109,6 +111,7 @@ jobs:
       - name: Install tooling
         run: |
           python -m pip install --upgrade pip
+          pip install -r requirements.txt
           pip install -r requirements-dev.txt
       - name: Run pytest with coverage (enforces threshold via pyproject.toml)
         run: |
@@ -135,6 +138,7 @@ jobs:
       - name: Install tooling
         run: |
           python -m pip install --upgrade pip
+          pip install -r requirements.txt
           pip install -r requirements-dev.txt
       - name: Bandit (code scan)
         run: bandit -q -r src -x tests

@@ -1042,7 +1042,7 @@ Example:
           <span style="padding: 0.375rem 0.875rem; background: rgba(255,255,255,0.3); border-radius: 8px; font-size: 0.85rem; font-weight: 600;">📅 ${new Date(course.created_at).toLocaleDateString()}</span>
         </div>
         <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
-          ${course.deployed_url ? `<a href="${course.deployed_url}" target="_blank" style="padding: 0.625rem 1.25rem; background: white; color: #667eea; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: all 0.3s;">View Course →</a>` : ''}
+          ${course.course_id ? `<a href="/Lessons/${course.course_id}/" target="_blank" style="padding: 0.625rem 1.25rem; background: white; color: #667eea; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: all 0.3s;">View Course →</a>` : ''}
           ${course.github_url ? `<a href="${course.github_url}" target="_blank" style="padding: 0.625rem 1.25rem; background: rgba(0,0,0,0.1); color: #1a202c; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: all 0.3s;">GitHub</a>` : ''}
         </div>
       </div>
@@ -1534,7 +1534,7 @@ function showNotification(message) {
 <!-- Version Footer -->
 <footer style="text-align: center; padding: 2rem; margin-top: 4rem; border-top: 1px solid #e2e8f0;">
   <p style="color: #718096; font-size: 0.875rem; margin: 0;">
-    Intelligent Photocopier <span style="font-weight: 600; color: #4a5568;">v1.0.11</span>
+    Intelligent Photocopier <span style="font-weight: 600; color: #4a5568;">v1.0.12</span>
   </p>
   <p style="color: #a0aec0; font-size: 0.75rem; margin: 0.5rem 0 0 0;">
     Last updated: December 08, 2025

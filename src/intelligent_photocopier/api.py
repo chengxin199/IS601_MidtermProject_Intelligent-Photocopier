@@ -59,15 +59,14 @@ def get_db():
 @app.route("/", methods=["GET", "HEAD"])
 def root():
     """Root endpoint for health checks."""
-    return jsonify({
-        "service": "Intelligent Photocopier API",
-        "status": "running",
-        "version": "1.0.8",
-        "endpoints": {
-            "health": "/api/health",
-            "docs": "https://intelligentphotocopier.online"
+    return jsonify(
+        {
+            "service": "Intelligent Photocopier API",
+            "status": "running",
+            "version": "1.0.8",
+            "endpoints": {"health": "/api/health", "docs": "https://intelligentphotocopier.online"},
         }
-    })
+    )
 
 
 @app.route("/api/health", methods=["GET"])
