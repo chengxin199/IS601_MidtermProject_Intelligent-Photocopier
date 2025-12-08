@@ -271,6 +271,7 @@ Generate a complete, professional README that matches the style of high-quality 
                 duration=course_info.get("duration"),
                 description=course_info.get("description"),
                 tags=["course", "programming", course_info.get("level", "").lower()],
+                file_type="index",
             )
 
             return front_matter + markdown_content
@@ -356,6 +357,7 @@ Generate professional, technical content that teaches the subject thoroughly."""
                 level=course_info.get("level"),
                 duration=course_info.get("duration"),
                 tags=["lesson", "content", course_info.get("level", "").lower()],
+                file_type="lesson-content",
             )
 
             return front_matter + markdown_content
@@ -425,6 +427,7 @@ Generate a comprehensive summary that helps students consolidate their learning 
                 course_id=course_info.get("course_id"),
                 level=course_info.get("level"),
                 tags=["summary", "assessment", course_info.get("level", "").lower()],
+                file_type="summary",
             )
 
             return front_matter + markdown_content
@@ -604,6 +607,7 @@ Generate a practical quick reference that students can use during coding."""
                     layout="layouts/course.njk",
                     course_id=course_info.get("course_id"),
                     tags=["reference", "quick-guide"],
+                    file_type="quick-reference",
                 )
                 return front_matter + markdown_content
             return self._generate_placeholder_quick_reference(course_info)
@@ -660,6 +664,7 @@ Make it practical and actionable for {course_info['level'].lower()} level develo
                     layout="layouts/course.njk",
                     course_id=course_info.get("course_id"),
                     tags=["best-practices", "guidelines"],
+                    file_type="best-practices",
                 )
                 return front_matter + markdown_content
             return self._generate_placeholder_best_practices(course_info)
@@ -749,6 +754,7 @@ Generate practical, code-focused exercises suitable for {course_info['level'].lo
                     layout="layouts/course.njk",
                     course_id=course_info.get("course_id"),
                     tags=["exercises", "practice"],
+                    file_type="exercise-instructions",
                 )
                 return front_matter + markdown_content
             return self._generate_placeholder_exercise_instructions(course_info)
@@ -819,6 +825,7 @@ Generate production-quality, well-tested solutions for {course_info['level'].low
                     layout="layouts/course.njk",
                     course_id=course_info.get("course_id"),
                     tags=["solutions", "code"],
+                    file_type="practice-solution",
                 )
                 return front_matter + markdown_content
             return self._generate_placeholder_practice_solution(course_info)
