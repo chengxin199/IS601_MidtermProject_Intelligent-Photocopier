@@ -3,11 +3,13 @@ services:
     name: intelligent-photocopier-api
     env: python
     buildCommand: pip install -r requirements.txt
-    startCommand: python -m src.intelligent_photocopier.api
+    startCommand: gunicorn src.intelligent_photocopier.api:app --bind 0.0.0.0:$PORT --timeout 120 --workers 2
     envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET_KEY
+        sync: false
       - key: OPENAI_API_KEY
         sync: false
       - key: FLASK_ENV
         value: production
-      - key: PORT
-        value: 5000
