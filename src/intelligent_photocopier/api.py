@@ -56,6 +56,20 @@ def get_db():
         db.close()
 
 
+@app.route("/", methods=["GET", "HEAD"])
+def root():
+    """Root endpoint for health checks."""
+    return jsonify({
+        "service": "Intelligent Photocopier API",
+        "status": "running",
+        "version": "1.0.8",
+        "endpoints": {
+            "health": "/api/health",
+            "docs": "https://intelligentphotocopier.online"
+        }
+    })
+
+
 @app.route("/api/health", methods=["GET"])
 def health_check():
     """Health check endpoint."""
@@ -651,5 +665,5 @@ def run_server(host: str = "0.0.0.0", port: int = 5000, debug: bool = False):  #
 if __name__ == "__main__":
     # Get port from environment variable (for Render.com, Heroku, etc.)
     port = int(os.getenv("PORT", "5000"))
-    debug = os.getenv("FLASK_ENV") != "production"
+    debug = os.getenv("FLASK_ENV", "development") != "production"
     run_server(port=port, debug=debug)
