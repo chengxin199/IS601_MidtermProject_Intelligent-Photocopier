@@ -115,6 +115,8 @@ class CourseGenerator:
 
         if course_id := metadata.get("course_id"):
             front_matter.append(f"courseId: {course_id}")
+            # Add permalink for correct URL generation
+            front_matter.append(f"permalink: /Lessons/{course_id}/index.html")
         if level := metadata.get("level"):
             front_matter.append(f"level: {level}")
         if duration := metadata.get("duration"):
