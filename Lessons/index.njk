@@ -273,7 +273,7 @@ Example:
         <button class="btn" onclick="resetBuilder()" style="flex: 1; background: #e2e8f0; color: #4a5568;">
           Create Another Course
         </button>
-        <button class="btn" onclick="viewCourse()" style="flex: 2;">
+        <button class="btn" onclick="viewCourse(generatedCourseId)" style="flex: 2;">
           👀 View Generated Course
         </button>
       </div>
@@ -751,7 +751,7 @@ Example:
         <button onclick="previewCourse('${courseId}')" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 1rem 2rem; border-radius: 12px; font-size: 1.1rem; font-weight: 600; cursor: pointer; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); transition: all 0.3s ease;">
           👁️ Preview Now
         </button>
-        <button id="viewCourseBtn" onclick="viewCourse('${courseId}')" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 1rem 2rem; border-radius: 12px; font-size: 1.1rem; font-weight: 600; cursor: pointer; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); transition: all 0.3s ease; white-space: nowrap;">
+        <button id="viewCourseBtn" onclick="viewCourse('${courseId}')" style="display: none; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 1rem 2rem; border-radius: 12px; font-size: 1.1rem; font-weight: 600; cursor: pointer; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); transition: all 0.3s ease; white-space: nowrap;">
           🌐 <span id="btnText">Deploying...</span>
         </button>
         <button onclick="viewMyCourses()" style="background: white; color: #667eea; border: 2px solid #667eea; padding: 1rem 2rem; border-radius: 12px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; white-space: nowrap;">📚 My Courses</button>
